@@ -1,0 +1,151 @@
+﻿@model VerseCraft.ViewModels.VerifyOtpViewModel
+
+@{
+    ViewData["Title"] = "Verify OTP";
+    ViewData["Header"] = "Enter your OTP Code here to continue";
+    Layout = "_AuthLayout";
+}
+
+<style>
+    .card-verify {
+  
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        background: #fff;
+        padding: 2rem;
+        text-align: center;
+    }
+
+        .card-verify h6 {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+    .email-display {
+        font-size: 0.95rem;
+        color: #666;
+        margin-top: 0.3rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .otp-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .otp-inputs input {
+            width: 2.8rem;
+            height: 2.8rem;
+            text-align: center;
+            font-size: 1.25rem;
+            border: 1px solid #ccc;
+            border-radius: 0.5rem;
+            transition: border 0.2s;
+        }
+
+            .otp-inputs input:focus {
+                border-color: #FF6F91;
+                outline: none;
+            }
+
+    .resend-container {
+        margin-top: 1.2rem;
+    }
+
+    #resendBtn {
+        font-size: 0.95rem;
+        color: #FF6F91;
+        background: none;
+        border: none;
+        padding: 0;
+        transition: color 0.3s;
+    }
+
+        #resendBtn:hover {
+            color: #FF4C70;
+            text-decoration: underline;
+        }
+
+        #resendBtn:disabled {
+            color: #ccc;
+            pointer-events: none;
+        }
+</style>
+
+<div class="app-auth-wrapper">
+    <div class="card-verify">
+        <h6>Please enter the one-time password to verify your account</h6>
+        <div class="email-display">A 6-digit code has been sent to your email</div>
+
+        <form id="verifyForm" asp-action="VerifyOtp" method="post">
+            <input asp-for="UserId" type="hidden" />
+            <div class="otp-inputs" id="otp">
+                <input class="form-control" type="text" maxlength="1" />
+                <input class="form-control" type="text" maxlength="1" />
+                <input class="form-control" type="text" maxlength="1" />
+                <input class="form-control" type="text" maxlength="1" />
+                <input class="form-control" type="text" maxlength="1" />
+                <input class="form-control" type="text" maxlength="1" />
+            </div>
+            <button type="submit" class="btn btn-accent">Verify</button>
+        </form>
+
+        <form id="resendForm" asp-action="ResendOtp" method="post" class="resend-container">
+            <input type="hidden" name="userId" value="@Model.UserId" />
+            <button type="submit" id="resendBtn" disabled>Resend OTP (<span id="countdown">30</span>s)</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputs = document.querySelectorAll('#otp input');
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener('input', function () {
+                    if (this.value.length > 1) {
+                        this.value = this.value[0];
+                    }
+                    if (this.value && i < inputs.length - 1) {
+                        inputs[i + 1].focus();
+                    }
+                });
+
+                inputs[i].addEventListener('keydown', function (event) {
+                    if (event.key === 'Backspace') {
+                        this.value = '';
+                        if (i > 0) {
+                            inputs[i - 1].focus();
+                        }
+                    }
+                });
+            }
+
+            document.getElementById('verifyForm').addEventListener('submit', function () {
+                let otp = '';
+                inputs.forEach(input => otp += input.value);
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'Otp';
+                hidden.value = otp;
+                this.appendChild(hidden);
+            });
+
+            let timer = 30;
+            const resendBtn = document.getElementById('resendBtn');
+            const countdown = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                timer--;
+                countdown.textContent = timer;
+                if (timer <= 0) {
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Resend OTP';
+                    clearInterval(interval);
+                }
+            }, 1000);
+        });
+    </script>
+}

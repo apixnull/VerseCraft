@@ -1,0 +1,47 @@
+﻿@model VerseCraft.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    ViewData["Header"] = "Welcome back—Log in to continue";
+    Layout = "_AuthLayout";
+}
+
+<h2 class="text-center mb-3 text-secondary">Sign In</h2>
+
+<form asp-action="Login" method="post" novalidate>
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label text-muted"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger small"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label text-muted"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger small"></span>
+    </div>
+    <div class="text-end mb-3">
+        <a asp-controller="Auth" asp-action="ForgotPassword" class="text-decoration-none small text-muted">
+            Forgot password?
+        </a>
+    </div>
+    <button type="submit" class="btn btn-accent w-100 mb-2">Login</button>
+</form>
+
+<div class="text-center mb-3">
+    <small class="text-muted">— or —</small>
+</div>
+
+<div class="d-grid mb-3">
+    <a asp-controller="Auth" asp-action="GoogleLogin" class="btn google-btn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+             style="height:1em; margin-right:.5em;" alt="Google logo" />
+        Sign in with Google
+    </a>
+</div>
+
+<div class="text-center">
+    <small class="text-secondary">
+        New to VerseCraft?
+        <a asp-controller="Auth" asp-action="Register">Create an account</a>
+    </small>
+</div>

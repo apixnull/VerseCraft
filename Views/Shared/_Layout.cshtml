@@ -1,0 +1,160 @@
+﻿@{
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var userDisplayName = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value
+                          ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - VerseCraft</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
+</head>
+<body>
+
+
+
+
+    @* <div id="global-loading"> *@
+    @*     <div class="spinner"></div> *@
+    @* </div> *@
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">VerseCraft</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Poems" asp-action="Feed">Explore Poems</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Anthology">Anthology</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav align-items-center">
+                        @if (isAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            </li>
+                            <li class="nav-item me-2">
+                                <span class="nav-link text-muted">@userDisplayName</span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-primary btn-sm" asp-controller="Auth" asp-action="Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-sm" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Toast container (25% down, top-right) -->
+        <div id="toast-container" class="toast-container"></div>
+    </header>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-light border-top text-center text-lg-start mt-auto">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5>About VerseCraft</h5>
+                    <p>VerseCraft is your creative space for reading and sharing poetry. Explore, write, and connect with fellow poets.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Contact Us</h5>
+                    <p>Email: <a href="mailto:example@gmail.com">example@gmail.com</a></p>
+                    <div class="d-flex justify-content-center gap-3 mt-2">
+                        <a href="#" class="text-dark"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-dark"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="text-dark"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-dark"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-dark"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-dark">Privacy Policy</a></li>
+                        <li><a asp-controller="Home" asp-action="AboutUs" class="text-decoration-none text-dark">About Us</a></li>
+                        <li><a asp-controller="Home" asp-action="Anthology" class="text-decoration-none text-dark">Anthology</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="bg-dark text-white text-center py-2">
+            &copy; 2025 VerseCraft. All rights reserved.
+        </div>
+    </footer>
+
+
+
+    <script src="~/js/layout.js" asp-append-version="true"></script>
+    <script src="~/js/loading.js" asp-append-version="true"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Toast Message Logic -->
+    @if (TempData["SUCCESS"] != null)
+    {
+        <script>
+            showToast('success', '@TempData["SUCCESS"]');
+        </script>
+    }
+
+    @if (TempData["ERROR"] != null)
+    {
+        <script>
+            showToast('error', '@TempData["ERROR"]');
+        </script>
+    }
+
+    @if (TempData["INFO"] != null)
+    {
+        <script>
+            showToast('info', '@TempData["INFO"]');
+        </script>
+    }
+
+    @if (TempData["WARNING"] != null)
+    {
+        <script>
+            showToast('warning', '@TempData["WARNING"]');
+        </script>
+    }
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,70 @@
+﻿@* Views/Shared/_AuthLayout.cshtml *@
+@{
+    Layout = null;
+    var title = ViewData["Title"] ?? "VerseCraft";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@title - VerseCraft</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
+    
+</head>
+<body>
+
+    <header class="app-header">
+        <h1>VerseCraft</h1>
+        <p>@(ViewData["Header"] ?? "")</p>
+    </header>
+    <!-- Toast container (25% down, top-right) -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <div class="app-auth-wrapper">
+        @RenderBody()
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+    <script src="~/js/loading.js" asp-append-version="true"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
+
+    
+    <!-- Toast Message Logic -->
+    @if (TempData["SUCCESS"] != null)
+    {
+        <script>
+            showToast('success', '@TempData["SUCCESS"]');
+        </script>
+    }
+
+    @if (TempData["ERROR"] != null)
+    {
+        <script>
+            showToast('error', '@TempData["ERROR"]');
+        </script>
+    }
+
+    @if (TempData["INFO"] != null)
+    {
+        <script>
+            showToast('info', '@TempData["INFO"]');
+        </script>
+    }
+
+    @if (TempData["WARNING"] != null)
+    {
+        <script>
+            showToast('warning', '@TempData["WARNING"]');
+        </script>
+    }
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

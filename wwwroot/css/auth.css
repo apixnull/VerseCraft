@@ -1,0 +1,76 @@
+﻿/* auth.css */
+
+/* reset and box-sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* full-screen gradient background */
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* header */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 0;
+  background: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+.app-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+}
+.app-header p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* wrapper pushed below header */
+.app-auth-wrapper {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 6rem;  /* roughly header height + some breathing room */
+  padding: 2rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* accent buttons */
+.btn-accent,
+.btn-accent:focus,
+.btn-accent:active,
+.btn-accent.btn-loading {
+  background-color: #FF6F91;
+  color: white;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  transition: background-color 0.2s ease-in-out;
+}
+.btn-accent:hover,
+.btn-accent.btn-loading:hover {
+  background-color: #FF4C70 !important;
+}
+
+/* Google button */
+.google-btn {
+  background-color: #4285F4;
+  color: white;
+}
+.google-btn:hover {
+  background-color: #357AE8;
+}
