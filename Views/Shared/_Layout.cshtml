@@ -154,6 +154,12 @@
         </script>
     }
 
+    @if (!string.IsNullOrEmpty(Context.Request.Query["message"]))
+    {
+        <script>
+            showToast('warning',  '@Context.Request.Query["message"]');
+        </script>
+    }
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

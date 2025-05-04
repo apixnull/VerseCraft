@@ -21,9 +21,36 @@ namespace VerseCraft
                     options.LoginPath = "/Auth/Login";
                     options.LogoutPath = "/Auth/Logout";
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
+
+                    // 👇 Add custom logic to pass message
+                    options.Events = new CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = context =>
+                        {
+                            if (context.Request.Path.StartsWithSegments("/admin"))
+                            {
+                                context.Response.Redirect("/Auth/NotFoundPage");
+                                return Task.CompletedTask;
+                            }
+
+                            context.Response.Redirect("/Auth/Login");
+                            return Task.CompletedTask;
+                        },
+                        OnRedirectToAccessDenied = context =>
+                        {
+                            context.Response.Redirect("/Home/Index?message=You are not authorized to access admin pages");
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
-            builder.Services.AddAuthorization();
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireRole("Admin"));
+            });
+
 
 
             builder.Services.AddSingleton<EmailService>();
@@ -56,14 +83,17 @@ namespace VerseCraft
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // order matter here
+            app.MapControllerRoute(
+               name: "areas",
+               pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+             );
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-              );
+           
 
             app.Run();
         }

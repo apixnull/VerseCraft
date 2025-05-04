@@ -105,6 +105,12 @@ namespace VerseCraft.Controllers
 
             TempData["SUCCESS"] = "Logged in successfully.";
 
+            // 🔁 Role-based redirection
+            if (user.IsAdmin)
+            {
+                return RedirectToAction("Main", "Dashboard", new { area = "admin" });
+            }
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -310,6 +316,11 @@ namespace VerseCraft.Controllers
         }
 
 
+        /********************************************** 404 NOT FOUND PAGE **********************************************/
+        public IActionResult NotFoundPage()
+        {
+            return View("NotFound");
+        }
 
         /********************************************** HELPER **********************************************/
 

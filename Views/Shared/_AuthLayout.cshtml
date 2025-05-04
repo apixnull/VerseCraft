@@ -65,6 +65,13 @@
         </script>
     }
 
+    @if (!string.IsNullOrEmpty(Context.Request.Query["message"]))
+    {
+        <script>
+            showToast('warning',  '@Context.Request.Query["message"]');
+        </script>
+    }
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
