@@ -1,0 +1,78 @@
+﻿@model List<VerseCraft.Models.Anthology>
+@{
+    ViewData["Title"] = "Anthology";
+}
+
+<style>
+    .anthology-section {
+        background: linear-gradient(to right, #dbeafe, #fce7f3);
+        padding: 3rem 1rem;
+    }
+
+    .anthology-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+        .anthology-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    .anthology-img {
+        height: 180px;
+        object-fit: cover;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+
+    .card-title {
+        color: #1d4ed8;
+        font-weight: 600;
+    }
+
+    .btn-outline-primary {
+        border-color: #ec4899;
+        color: #ec4899;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #ec4899;
+            color: #fff;
+        }
+</style>
+
+<section class="anthology-section">
+    <h2 class="mb-5 text-center text-primary">Anthology Collection</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+        @foreach (var anthology in Model)
+        {
+            <div class="col d-flex">
+                <div class="card anthology-card h-100 shadow-sm">
+                    @if (!string.IsNullOrWhiteSpace(anthology.ImagePath))
+                    {
+                        <img src="@anthology.ImagePath" class="card-img-top anthology-img" alt="@anthology.Title" />
+                    }
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@anthology.Title</h5>
+                        <p class="card-text text-muted mb-1"><strong>Author:</strong> @anthology.Author</p>
+                        <p class="card-text text-muted mb-2"><strong>License:</strong> @anthology.LicenseType</p>
+                        <p class="card-text flex-grow-1">
+                            @(anthology.Content.Length > 100
+                                ? anthology.Content.Substring(0, 100) + "..."
+                                : anthology.Content)
+                        </p>
+                        <a class="btn btn-sm btn-outline-primary mt-auto"
+                           asp-controller="Home"
+                           asp-action="ReadAnthology"
+                           asp-route-id="@anthology.Id">
+                            See More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

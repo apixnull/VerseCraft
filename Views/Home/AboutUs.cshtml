@@ -1,0 +1,101 @@
+﻿@model VerseCraft.ViewModels.ContactFormViewModel
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<style>
+    .section-versecraft {
+        height: 70vh;
+        padding: 60px 20px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .section-versecraft h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .section-versecraft p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+    .bg-poetry {
+        background: linear-gradient(135deg, #FF6F91, #FF9671);
+    }
+
+    .bg-community {
+        background: linear-gradient(135deg, #845EC2, #D65DB1);
+    }
+
+    .bg-expression {
+        background: linear-gradient(135deg, #00C9A7, #0081CF);
+    }
+
+    .icon-circle {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: white;
+    }
+</style>
+
+<!-- Contact Form First -->
+<div class="container my-5">
+    <h2 class="text-center mb-4"><i class="bi bi-envelope-paper icon-circle"></i> Get in Touch</h2>
+    <p class="text-muted text-center mb-4">We’d love to hear from you! Whether it’s feedback, collaboration, or just a hello, drop us a line below.</p>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="AboutUs" method="post" novalidate>
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"><i class="bi bi-person-fill"></i> Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"><i class="bi bi-envelope-fill"></i> Email</label>
+                    <input asp-for="Email" type="email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label"><i class="bi bi-chat-left-text-fill"></i> Message</label>
+                    <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-lg btn-primary">
+                        <i class="bi bi-send-check-fill"></i> Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Section 1: About VerseCraft -->
+<div class="section-versecraft bg-poetry text-center">
+    <i class="bi bi-journal-richtext icon-circle"></i>
+    <h2>Celebrate Poetry & Artistry</h2>
+    <p>VerseCraft is a home for poets, writers, and readers. Publish, explore, and elevate voices that speak through rhythm and metaphor. Whether traditional or modern, we welcome all forms of poetic expression.</p>
+</div>
+
+<!-- Section 2: Community -->
+<div class="section-versecraft bg-community text-center">
+    <i class="bi bi-people-fill icon-circle"></i>
+    <h2>Be Part of the Movement</h2>
+    <p>Connect with a diverse community of creators and readers. Share thoughts, get feedback, and collaborate with others who value the art of language and the power of verse.</p>
+</div>
+
+<!-- Section 3: Voice & Expression -->
+<div class="section-versecraft bg-expression text-center">
+    <i class="bi bi-mic-fill icon-circle"></i>
+    <h2>Empower Your Voice</h2>
+    <p>Your words matter. Whether you write to heal, to inspire, or to resist, VerseCraft gives your message a home where it can resonate with hearts across the world.</p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,89 @@
+﻿@model VerseCraft.Models.Anthology
+
+@{
+    ViewData["Title"] = "Read Anthology - " + Model.Title;
+}
+
+<style>
+    .gradient-bg {
+        background: linear-gradient(135deg, #d0e8f2, #f8d0e8);
+    }
+
+    .anthology-card {
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+    .anthology-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2a2a2a;
+    }
+
+    .anthology-label {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .back-button {
+        background-color: lightblue; /* very light pink */
+        color: #333;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+        .back-button:hover {
+            background-color: #ffd6ea; /* still light pink but a bit deeper */
+            transform: scale(1.05);
+            text-decoration: none;
+        }
+
+
+    .section-title {
+        color: #333;
+        font-size: 1.25rem;
+        margin-top: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+  
+</style>
+
+<section class="py-5 gradient-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card anthology-card">
+                    @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+                    {
+                        <img src="@Model.ImagePath" class="card-img-top" style="height: 300px; object-fit: cover; border-top-left-radius: 1rem; border-top-right-radius: 1rem;" alt="@Model.Title" />
+                    }
+                    <div class="card-body p-4">
+                        <h2 class="anthology-title">@Model.Title</h2>
+                        <p class="card-text"><span class="anthology-label">Author:</span> @Model.Author</p>
+                        <p class="card-text"><span class="anthology-label">License:</span> @Model.LicenseType</p>
+                        <p class="card-text"><span class="anthology-label">Copyright Notice:</span> @Model.CopyrightNotice</p>
+
+                        <div>
+                            <h5 class="section-title">Content</h5>
+                            <p class="card-text">@Model.Content</p>
+                        </div>
+
+                        <div>
+                            <h5 class="section-title">Terms and Conditions</h5>
+                            <p class="card-text">@Model.TermsAndConditions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a class="back-button" asp-controller="Home" asp-action="DisplayAnthology">← Back to Anthology</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

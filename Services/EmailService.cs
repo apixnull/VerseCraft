@@ -99,6 +99,38 @@ namespace VerseCraft.Services
             }
         }
 
+        public async Task SendContactMessageAsync(string senderName, string senderEmail, string messageContent)
+        {
+            var client = new SendGridClient(_apiKey);
+            var to = new EmailAddress("apixnull@gmail.com", "VerseCraft Admin"); // Replace with your real email
+            var subject = $"New Contact Form Message from {senderName}";
+
+            var plainTextContent = $"From: {senderName} ({senderEmail})\n\nMessage:\n{messageContent}";
+
+            var htmlContent = $@"
+        <html>
+            <body style='font-family: Arial, sans-serif;'>
+                <div style='background-color: #f4f4f9; padding: 20px;'>
+                    <div style='background-color: #fff; border-radius: 10px; padding: 20px;'>
+                        <h2 style='color: #FF6F91;'>New Contact Message</h2>
+                        <p><strong>Name:</strong> {senderName}</p>
+                        <p><strong>Email:</strong> {senderEmail}</p>
+                        <h4>Message:</h4>
+                        <p>{messageContent}</p>
+                    </div>
+                </div>
+            </body>
+        </html>";
+
+            var msg = MailHelper.CreateSingleEmail(_from, to, subject, plainTextContent, htmlContent);
+            var response = await client.SendEmailAsync(msg);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorDetails = await response.Body.ReadAsStringAsync();
+                throw new Exception($"Failed to send contact message. Status: {response.StatusCode}, Details: {errorDetails}");
+            }
+        }
 
     }
 }
