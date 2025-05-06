@@ -40,11 +40,19 @@ namespace VerseCraft
                                 return Task.CompletedTask;
                             }
 
+                            if (context.Request.Path.StartsWithSegments("/UserDashboard"))
+                            {
+                                context.Response.Redirect("/Home/Index?message=You need to login first to access this page");
+                                return Task.CompletedTask;
+                            }
+
                             context.Response.Redirect("/Auth/Login");
                             return Task.CompletedTask;
                         },
                         OnRedirectToAccessDenied = context =>
                         {
+                           
+
                             context.Response.Redirect("/Home/Index?message=You are not authorized to access admin pages");
                             return Task.CompletedTask;
                         }

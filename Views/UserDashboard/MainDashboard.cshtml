@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Welcome to Your Dashboard</h2>
+    <div class="row g-4">
+        <!-- Existing Dashboard Cards -->
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Poems" asp-action="MyPoems" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="bi bi-journal-text fs-1 mb-3 text-primary"></i>
+                        <h5 class="card-title">My Poems</h5>
+                        <p class="card-text small">Manage your submitted works</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="UserDashboard" asp-action="SubmitPoem" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="bi bi-pencil-square fs-1 mb-3 text-success"></i>
+                        <h5 class="card-title">Submit a Poem</h5>
+                        <p class="card-text small">Share a new piece with the world</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Poems" asp-action="Feed" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="bi bi-compass fs-1 mb-3 text-info"></i>
+                        <h5 class="card-title">Explore Poems</h5>
+                        <p class="card-text small">Discover poems by other users</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a asp-controller="Home" asp-action="DisplayAnthology" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm h-100">
+                    <div class="card-body">
+                        <i class="bi bi-book fs-1 mb-3 text-warning"></i>
+                        <h5 class="card-title">Anthology</h5>
+                        <p class="card-text small">View curated collection</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Informational Section -->
+<div class="py-5 bg-light border-top">
+    <div class="container">
+        <h3 class="mb-4 text-center">Poetry Guidelines & Community Tips</h3>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <i class="bi bi-lightbulb fs-2 text-primary mb-3"></i>
+                    <h5>Craft with Intention</h5>
+                    <p class="text-muted small">Your words have power. Whether it's a haiku or free verse, focus on clarity, emotion, and imagery. Don't be afraid to experiment.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <i class="bi bi-people fs-2 text-success mb-3"></i>
+                    <h5>Engage with Others</h5>
+                    <p class="text-muted small">VerseCraft thrives on community. Read, like, and comment on poems from fellow writers to build connections and improve together.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <i class="bi bi-bookmark-star fs-2 text-warning mb-3"></i>
+                    <h5>Understand the Anthology</h5>
+                    <p class="text-muted small">Selected poems appear in our curated anthology — a space for standout work that reflects emotion, originality, and thoughtfulness.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
