@@ -3,11 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>@ViewData["Title"] - Admin Panel</title>
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/admin_layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
-    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .text-danger {
+            color: #dc3545; /* Standard Bootstrap danger color */
+            font-size: 0.875rem; /* Decreased font size */
+            font-weight: 500; /* Slightly bold for better visibility */
+            margin-top: 5px; /* Adding a small margin to separate it from the input field */
+        }
+
+    </style>
 </head>
 <body>
     @* <div id="global-loading"> *@
@@ -15,7 +27,7 @@
     @* </div> *@
     <!-- Toast container (25% down, top-right) -->
     <div id="toast-container" class="toast-container"></div>
-    <div class="sidebar">
+    <div class="vs-sidebar">
         <div class="logo-details">
             <div class="logo_name">VerseCraft Admin</div>
             <i class='bx bx-menu' id="btn"></i>
@@ -29,7 +41,7 @@
                 <span class="tooltip">Dashboard</span>
             </li>
             <li>
-                <a asp-controller="Users" asp-action="Index">
+                <a asp-controller="Users" asp-action="DisplayUser">
                     <i class='bx bx-user'></i>
                     <span class="links_name">Users</span>
                 </a>
@@ -43,9 +55,9 @@
                 <span class="tooltip">Poems</span>
             </li>
             <li>
-                <a asp-controller="Analytics" asp-action="Index">
+                <a asp-area="admin" asp-controller="Anthology" asp-action="DisplayAnthology">
                     <i class='bx bx-pie-chart-alt-2'></i>
-                    <span class="links_name">Analytics</span>
+                    <span class="links_name">Anthology</span>
                 </a>
                 <span class="tooltip">Analytics</span>
             </li>
@@ -117,27 +129,28 @@
 
 
     <script>
-        let sidebar = document.querySelector(".sidebar");
+        let vsSidebar = document.querySelector(".vs-sidebar");
         let closeBtn = document.querySelector("#btn");
         let searchBtn = document.querySelector(".bx-search");
 
         closeBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
+            vsSidebar.classList.toggle("open");
             menuBtnChange();
         });
 
         searchBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
+            vsSidebar.classList.toggle("open");
             menuBtnChange();
         });
 
         function menuBtnChange() {
-            if (sidebar.classList.contains("open")) {
+            if (vsSidebar.classList.contains("open")) {
                 closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
             } else {
                 closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
             }
         }
     </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

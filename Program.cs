@@ -14,7 +14,15 @@ namespace VerseCraft
             var builder = WebApplication.CreateBuilder(args);
             Env.Load();
 
-            // 2️⃣ Register Authentication & Cookie Scheme
+            // Get the base directory for images from an environment variable (or fallback to default path)
+            string uploadDirectory = Environment.GetEnvironmentVariable("UPLOAD_DIRECTORY") ?? "wwwroot/uploads/anthologies/";
+
+            // Ensure the upload directory exists (can be done here, but it's optional)
+            if (!Directory.Exists(uploadDirectory))
+            {
+                Directory.CreateDirectory(uploadDirectory);
+            }
+
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -22,7 +30,6 @@ namespace VerseCraft
                     options.LogoutPath = "/Auth/Logout";
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
 
-                    // 👇 Add custom logic to pass message
                     options.Events = new CookieAuthenticationEvents
                     {
                         OnRedirectToLogin = context =>
@@ -44,20 +51,14 @@ namespace VerseCraft
                     };
                 });
 
-
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminOnly", policy =>
                     policy.RequireRole("Admin"));
             });
 
-
-
             builder.Services.AddSingleton<EmailService>();
 
-
-
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             // 1️⃣ Register DbContext with SQLite
@@ -67,11 +68,9 @@ namespace VerseCraft
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -83,17 +82,14 @@ namespace VerseCraft
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // order matter here
             app.MapControllerRoute(
-               name: "areas",
-               pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-             );
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+            );
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
-           
 
             app.Run();
         }

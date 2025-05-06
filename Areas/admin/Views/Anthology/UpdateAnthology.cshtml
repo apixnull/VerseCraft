@@ -1,0 +1,70 @@
+﻿@model VerseCraft.Areas.Admin.ViewModels.AnthologyViewModel
+@{
+    ViewData["Title"] = "Update Anthology";
+}
+<link rel="stylesheet" href="~/css/addAnthology.css" asp-append-version="true" />
+
+<div class="container">
+    <div class="header">
+        <h2 class="form-title"><i class='bx bx-edit'></i> Update Anthology</h2>
+        <a asp-area="admin" asp-controller="Anthology" asp-action="DisplayAnthology" class="back-btn">
+            <i class='bx bx-arrow-back'></i> Back to List
+        </a>
+    </div>
+
+    <form asp-action="UpdateAnthology" method="post" enctype="multipart/form-data" class="anthology-form">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Content"></label>
+            <textarea asp-for="Content" rows="5" class="form-control"></textarea>
+            <span asp-validation-for="Content"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Author"></label>
+            <input asp-for="Author" class="form-control" />
+            <span asp-validation-for="Author"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CopyrightNotice"></label>
+            <input asp-for="CopyrightNotice" class="form-control" />
+            <span asp-validation-for="CopyrightNotice"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LicenseType"></label>
+            <input asp-for="LicenseType" class="form-control" />
+            <span asp-validation-for="LicenseType"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TermsAndConditions"></label>
+            <textarea asp-for="TermsAndConditions" rows="3" class="form-control"></textarea>
+            <span asp-validation-for="TermsAndConditions"></span>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ExistingImagePath))
+        {
+            <div class="form-group">
+                <label>Current Image</label><br />
+                <img src="@Url.Content(Model.ExistingImagePath)" alt="Current Image" style="max-width: 100%; max-height: 200px; border-radius: 6px;" />
+            </div>
+        }
+
+        <div class="form-group">
+            <label asp-for="ImageFile">Replace Image (optional)</label>
+            <input asp-for="ImageFile" type="file" class="form-control" />
+            <span asp-validation-for="ImageFile"></span>
+        </div>
+
+        <button type="submit" class="btn-submit">Update Anthology</button>
+    </form>
+</div>

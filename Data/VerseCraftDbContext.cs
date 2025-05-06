@@ -10,6 +10,10 @@ namespace VerseCraft.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<Poem> Poems => Set<Poem>();
         public DbSet<Comment> Comments => Set<Comment>();
+
+        // Add DbSet for Anthology
+        public DbSet<Anthology> Anthologies { get; set; }
+
         public DbSet<OTPToken> OTPTokens => Set<OTPToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

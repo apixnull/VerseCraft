@@ -1,0 +1,55 @@
+﻿@model List<VerseCraft.Models.User>
+@{
+    ViewData["Title"] = "User Management";
+}
+<link rel="stylesheet" href="~/css/displayUser.css" asp-append-version="true" />
+
+<div class="container">
+    <div class="header">
+        <div class="title"><i class='bx bx-user-circle'></i> User List </div>
+        <input type="text" id="searchInput" placeholder="Search users..." class="search-input" />
+    </div>
+
+    <div class="table-container">
+        <table id="userTable" class="user-table">
+            <thead>
+                <tr>
+                    <th><i class='bx bx-hash'></i>ID</th>
+                    <th><i class='bx bx-user'></i> Name</th>
+                    <th><i class='bx bx-envelope'></i> Email</th>
+                    <th><i class='bx bx-check-shield'></i> Verified</th>
+                    <th><i class='bx bx-shield'></i> Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@Model[i].Name</td>
+                        <td>@Model[i].Email</td>
+                        <td>
+                            <span class="badge @(Model[i].IsVerified ? "verified" : "not-verified")">
+                                @(Model[i].IsVerified ? "Yes" : "No")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(Model[i].IsAdmin ? "admin" : "user")">
+                                @(Model[i].IsAdmin ? "Admin" : "User")
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+        const value = this.value.toLowerCase();
+        document.querySelectorAll("#userTable tbody tr").forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(value) ? "" : "none";
+        });
+    });
+</script>
