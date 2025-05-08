@@ -1,0 +1,374 @@
+﻿@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<link rel="stylesheet" href="~/css/mainDashboard.css" asp-append-version="true" />
+
+
+<div class="anthology-header">
+    <h1 class="anthology-title">Your Poetry Collections</h1>
+    <p class="anthology-subtitle">Curate your personal anthology of beloved poems, organize them by themes, and revisit your favorites anytime.</p>
+</div>
+
+<div class="anthology-container">
+    <div class="tabs-container">
+        <ul class="nav nav-tabs" id="anthologyTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="my-collections-tab" data-bs-toggle="tab" data-bs-target="#my-collections" type="button" role="tab" aria-controls="my-collections" aria-selected="true">
+                    <i class="bi bi-collection"></i> My Collections
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="saved-poems-tab" data-bs-toggle="tab" data-bs-target="#saved-poems" type="button" role="tab" aria-controls="saved-poems" aria-selected="false">
+                    <i class="bi bi-bookmark-heart"></i> Saved Poems
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="discover-tab" data-bs-toggle="tab" data-bs-target="#discover" type="button" role="tab" aria-controls="discover" aria-selected="false">
+                    <i class="bi bi-globe"></i> Discover Public Collections
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content" id="anthologyTabContent">
+        <!-- My Collections Tab -->
+        <div class="tab-pane fade show active" id="my-collections" role="tabpanel" aria-labelledby="my-collections-tab">
+            <!-- If user has collections, display them -->
+            <div class="row">
+                <!-- Sample Collection 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="collection-card">
+                        <div class="collection-cover" style="background-image: url('/images/nature-anthology.jpg')">
+                            <div class="collection-overlay">
+                                <h3 class="collection-title">Nature's Whispers</h3>
+                            </div>
+                        </div>
+                        <div class="collection-details">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="bi bi-bookmark-fill text-primary"></i> 12 poems</span>
+                                <span class="public-badge"><i class="bi bi-eye"></i> Public</span>
+                            </div>
+                            <p class="collection-desc">A collection of poems that celebrate the beauty and wisdom of the natural world.</p>
+                            <div class="collection-meta">
+                                <span><i class="bi bi-calendar3"></i> Updated 3 days ago</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Collection 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="collection-card">
+                        <div class="collection-cover" style="background-image: url('/images/love-anthology.jpg')">
+                            <div class="collection-overlay">
+                                <h3 class="collection-title">Love & Loss</h3>
+                            </div>
+                        </div>
+                        <div class="collection-details">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="bi bi-bookmark-fill text-primary"></i> 8 poems</span>
+                                <span class="private-badge"><i class="bi bi-lock"></i> Private</span>
+                            </div>
+                            <p class="collection-desc">Emotional verses that explore the depths of human connection and heartbreak.</p>
+                            <div class="collection-meta">
+                                <span><i class="bi bi-calendar3"></i> Updated 1 week ago</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Collection 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="collection-card">
+                        <div class="collection-cover" style="background-image: url('/images/urban-anthology.jpg')">
+                            <div class="collection-overlay">
+                                <h3 class="collection-title">Urban Rhythms</h3>
+                            </div>
+                        </div>
+                        <div class="collection-details">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="bi bi-bookmark-fill text-primary"></i> 5 poems</span>
+                                <span class="public-badge"><i class="bi bi-eye"></i> Public</span>
+                            </div>
+                            <p class="collection-desc">Modern poetry capturing the essence of city life and urban experiences.</p>
+                            <div class="collection-meta">
+                                <span><i class="bi bi-calendar3"></i> Updated 2 weeks ago</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- "Create New Collection" Card -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="collection-card h-100 d-flex align-items-center justify-content-center" style="background-color: #f8f9fa; min-height: 300px;">
+                        <div class="text-center p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-plus-circle" style="font-size: 3rem; color: #0d6efd;"></i>
+                            </div>
+                            <h4>Create New Collection</h4>
+                            <p class="text-muted">Start a new themed anthology of poems</p>
+                            <button class="btn btn-primary mt-2">
+                                <i class="bi bi-plus"></i> New Collection
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Poems Tab -->
+        <div class="tab-pane fade" id="saved-poems" role="tabpanel" aria-labelledby="saved-poems-tab">
+            <!-- Sample saved poems similar to the Feed layout but with options to add to collections -->
+            <div class="poem-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h2 class="poem-title">Moonlit Reminiscence</h2>
+                        <div class="poem-author">By Sophia Williams</div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="addToCollectionDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-folder-plus"></i> Add to Collection
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="addToCollectionDropdown1">
+                            <li><a class="dropdown-item" href="#">Nature's Whispers</a></li>
+                            <li><a class="dropdown-item" href="#">Love & Loss</a></li>
+                            <li><a class="dropdown-item" href="#">Urban Rhythms</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-plus-circle"></i> Create New Collection</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="poem-content">
+                    In the quiet hours when the world sleeps,
+                    I find myself wandering through memories,
+                    Like rooms in an old, familiar house.
+                    Each doorway leads to moments long past,
+                    Yet still vivid in the theater of my mind.
+
+                    The moon casts silver light through my window,
+                    Illuminating fragments of what once was.
+                    I trace the outline of your smile in the darkness,
+                    A cartography of love and loss,
+                    Mapped across the terrain of years.
+
+                    Time may distance us from what we've lived,
+                    But cannot erase the imprint left behind.
+                    In this moonlit hour of reminiscence,
+                    I honor what shaped me,
+                    And release what no longer serves.
+                </div>
+                <div class="tags mb-3 mt-3">
+                    <span class="tag-pill">Memory</span>
+                    <span class="tag-pill">Free Verse</span>
+                    <span class="tag-pill">Night</span>
+                </div>
+                <div class="poem-meta">
+                    <span><i class="bi bi-calendar3"></i> Saved 3 days ago</span>
+                    <div class="poem-actions">
+                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-heart-fill"></i> 36</button>
+                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-bookmark-x"></i> Remove</button>
+                        <a href="#" class="btn btn-sm btn-outline-dark"><i class="bi bi-box-arrow-up-right"></i> View Original</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="poem-card">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h2 class="poem-title">Whispers of Autumn</h2>
+                        <div class="poem-author">By Emily Chen</div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="addToCollectionDropdown2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-folder-plus"></i> Add to Collection
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="addToCollectionDropdown2">
+                            <li><a class="dropdown-item" href="#">Nature's Whispers</a></li>
+                            <li><a class="dropdown-item" href="#">Love & Loss</a></li>
+                            <li><a class="dropdown-item" href="#">Urban Rhythms</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-plus-circle"></i> Create New Collection</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="poem-content">
+                    Crimson leaves drift down,
+                    Whispering secrets of change.
+                    Time's gentle passage.
+
+                    The earth breathes deeply,
+                    Preparing for winter's sleep,
+                    As light softly fades.
+
+                    In this transition,
+                    I find myself transforming,
+                    Just like the seasons.
+                </div>
+                <div class="tags mb-3 mt-3">
+                    <span class="tag-pill">Nature</span>
+                    <span class="tag-pill">Haiku</span>
+                    <span class="tag-pill">Autumn</span>
+                </div>
+                <div class="poem-meta">
+                    <span><i class="bi bi-calendar3"></i> Saved 1 week ago</span>
+                    <div class="poem-actions">
+                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-heart-fill"></i> 24</button>
+                        <button class="btn btn-sm btn-outline-danger"><i class="bi bi-bookmark-x"></i> Remove</button>
+                        <a href="#" class="btn btn-sm btn-outline-dark"><i class="bi bi-box-arrow-up-right"></i> View Original</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Discover Public Collections Tab -->
+        <div class="tab-pane fade" id="discover" role="tabpanel" aria-labelledby="discover-tab">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search public collections...">
+                        <button class="btn btn-primary" type="button"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Public Collection 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="collection-card">
+                        <div class="collection-cover" style="background-image: url('/images/classics-anthology.jpg')">
+                            <div class="collection-overlay">
+                                <h3 class="collection-title">Classical Masters</h3>
+                            </div>
+                        </div>
+                        <div class="collection-details">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="bi bi-bookmark-fill text-primary"></i> 24 poems</span>
+                                <span><i class="bi bi-person-circle"></i> By LiteraryScholar</span>
+                            </div>
+                            <p class="collection-desc">A curated selection of timeless poems from the greatest literary minds.</p>
+                            <div class="collection-meta">
+                                <span><i class="bi bi-eye"></i> 1.2K views</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Explore</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Public Collection 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="collection-card">
+                        <div class="collection-cover" style="background-image: url('/images/contemporary-anthology.jpg')">
+                            <div class="collection-overlay">
+                                <h3 class="collection-title">Contemporary Voices</h3>
+                            </div>
+                        </div>
+                        <div class="collection-details">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="bi bi-bookmark-fill text-primary"></i> 17 poems</span>
+                                <span><i class="bi bi-person-circle"></i> By ModernMuse</span>
+                            </div>
+                            <p class="collection-desc">Innovative work from today's most exciting poets, breaking boundaries and challenging conventions.</p>
+                            <div class="collection-meta">
+                                <span><i class="bi bi-eye"></i> 876 views</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Explore</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Public Collection 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="collection-card">
+                        <div class="collection-cover" style="background-image: url('/images/healing-anthology.jpg')">
+                            <div class="collection-overlay">
+                                <h3 class="collection-title">Healing Words</h3>
+                            </div>
+                        </div>
+                        <div class="collection-details">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><i class="bi bi-bookmark-fill text-primary"></i> 19 poems</span>
+                                <span><i class="bi bi-person-circle"></i> By SoulHealer</span>
+                            </div>
+                            <p class="collection-desc">Poems that comfort, inspire, and guide through life's difficult passages.</p>
+                            <div class="collection-meta">
+                                <span><i class="bi bi-eye"></i> 1.5K views</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Explore</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating action button to create new collection -->
+<a href="#" class="btn btn-primary create-collection-btn">
+    <i class="bi bi-plus"></i>
+</a>
+
+<script>
+    // This would be replaced with actual functionality in the full implementation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching and collection management functionality would be implemented here
+        console.log('Anthology page loaded');
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Informational Section -->
+<div class="py-5 bg-light border-top">
+    <div class="container">
+        <h3 class="mb-4 text-center">Poetry Guidelines & Community Tips</h3>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <i class="bi bi-lightbulb fs-2 text-primary mb-3"></i>
+                    <h5>Craft with Intention</h5>
+                    <p class="text-muted small">Your words have power. Whether it's a haiku or free verse, focus on clarity, emotion, and imagery. Don't be afraid to experiment.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <i class="bi bi-people fs-2 text-success mb-3"></i>
+                    <h5>Engage with Others</h5>
+                    <p class="text-muted small">VerseCraft thrives on community. Read, like, and comment on poems from fellow writers to build connections and improve together.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded shadow-sm h-100">
+                    <i class="bi bi-bookmark-star fs-2 text-warning mb-3"></i>
+                    <h5>Understand the Anthology</h5>
+                    <p class="text-muted small">Selected poems appear in our curated anthology — a space for standout work that reflects emotion, originality, and thoughtfulness.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

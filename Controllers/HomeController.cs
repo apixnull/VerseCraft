@@ -21,36 +21,14 @@ namespace VerseCraft.Controllers
             _emailService = emailService;
         }
 
+        /***************************************      Index      ********************************************/ 
         public IActionResult Index()
         {
             return View();
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> DisplayAnthology()
-        {
-            var anthologies = await _context.Anthologies
-                .OrderByDescending(a => a.CreatedAt)
-                .ToListAsync();
-
-            return View(anthologies);
-        }
-
-        [HttpGet]
-        public IActionResult ReadAnthology(int id)
-        {
-            var anthology = _context.Anthologies.FirstOrDefault(a => a.Id == id);
-            if (anthology == null)
-            {
-                return NotFound();
-            }
-
-            return View(anthology);
-        }
-
-
-    
+        /***************************************      About Us    ********************************************/
 
         [HttpGet]
         public IActionResult AboutUs()
@@ -58,8 +36,18 @@ namespace VerseCraft.Controllers
             return View();
         }
 
+
+        /***************************************      Contact Us      ********************************************/
+        [HttpGet]
+        public IActionResult ContactUs()
+        {
+            return View();
+        }
+
+
+
         [HttpPost]
-        public async Task<IActionResult> AboutUs(ContactFormViewModel model)
+        public async Task<IActionResult> ContactUs(ContactFormViewModel model)
         {
             if (!ModelState.IsValid)
             {

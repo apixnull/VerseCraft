@@ -2,114 +2,98 @@
     ViewData["Title"] = "Home Page";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
 
-<style>
-    .section {
-        height: 80vh;
-        display: flex;
-        align-items: center;
-        padding: 2rem;
-    }
+<main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Welcome to VerseCraft</h1>
+            <p>
+                A creative home for poets, readers, and dreamers. Share your work, explore others’ creativity, and build your literary world with us.
+            </p>
+            <a class="btn btn-primary btn-lg" asp-controller="Auth" asp-action="Register">
+                <i class="bi bi-person-plus me-1"></i> Get Started
+            </a>
+        </div>
+        <div class="hero-image">
+            <img src="~/images/writing-poem.jfif" alt="Writing Poetry" />
+        </div>
+    </section>
 
-        .section:nth-child(even) {
-            background-color: #f8f9fa;
-        }
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-search"></i></div>
+                <h4>Explore Community Poems</h4>
+                <p>
+                    Browse poems from users worldwide. Use filters and tags to discover themes you connect with, or just enjoy browsing organically.
+                </p>
+                <a class="btn btn-outline-primary mt-2" asp-controller="Poems" asp-action="Feed">Start Exploring</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-pencil-square"></i></div>
+                <h4>Submit Your Poetry</h4>
+                <p>
+                    Have a poem that deserves to be read? Share it on VerseCraft! Our simple submission form lets you upload your work in seconds.
+                </p>
+                <a class="btn btn-primary mt-2" asp-controller="Poems" asp-action="Submit">Share a Poem</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-bookmark-heart"></i></div>
+                <h4>Create Your Anthology</h4>
+                <p>
+                    Build a personalized collection of your favorite poems. Save works you love, revisit them later, or explore public anthologies shared by others.
+                </p>
+                <a class="btn btn-outline-dark mt-2" asp-controller="Home" asp-action="Anthology">Build Your Collection</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="bi bi-people"></i></div>
+                <h4>Connect & Collaborate</h4>
+                <p>
+                    Follow poets, comment on works, and join a supportive community. Collaboration and feedback help everyone grow.
+                </p>
+                <a class="btn btn-outline-primary mt-2" asp-controller="Home" asp-action="AboutUs">Meet the Community</a>
+            </div>
+        </div>
+    </section>
 
-    .section-content {
-        flex: 1;
-        padding: 1rem;
-    }
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="row justify-content-center">
+            <div class="col-md-4 testimonial">
+                <div class="testimonial-quote">
+                    <i class="bi bi-quote"></i>
+                    "VerseCraft helped me find my voice and connect with poets around the world."
+                </div>
+                <div class="testimonial-user">— Maya, Poet</div>
+            </div>
+            <div class="col-md-4 testimonial">
+                <div class="testimonial-quote">
+                    <i class="bi bi-quote"></i>
+                    "The anthology feature is amazing! I love curating my favorite poems."
+                </div>
+                <div class="testimonial-user">— Alex, Reader</div>
+            </div>
+            <div class="col-md-4 testimonial">
+                <div class="testimonial-quote">
+                    <i class="bi bi-quote"></i>
+                    "A beautiful, welcoming space for both new and experienced writers."
+                </div>
+                <div class="testimonial-user">— Priya, Writer</div>
+            </div>
+        </div>
+    </section>
 
-    .section-image {
-        flex: 1;
-        text-align: center;
-    }
-
-        .section-image img {
-            max-width: 80%;
-            height: auto;
-            border-radius: 1rem;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-    .section h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .section p {
-        font-size: 1.1rem;
-    }
-
-    .btn-learn {
-        margin-top: 1.5rem;
-    }
-
-    .icon-feature {
-        font-size: 2rem;
-        margin-right: 0.5rem;
-        color: #0d6efd;
-    }
-</style>
-
-<section class="section bg-light text-dark">
-    <div class="section-content text-center">
-        <h1>Welcome to <span class="text-primary">VerseCraft</span></h1>
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <h2>Ready to start your poetic journey?</h2>
         <p>
-            A platform built for poets, readers, and dreamers. Share your work, explore others’ creativity, and build your literary world with us.
+            Join VerseCraft today and become part of a vibrant, creative community. Whether you write, read, or just want to be inspired, there’s a place for you here.
         </p>
-        <a class="btn btn-primary btn-learn" asp-controller="Auth" asp-action="Register">Get Started</a>
-    </div>
-    <div class="section-image">
-        <img src="~/images/writing-poem.jfif" alt="Writing Poetry" />
-    </div>
-</section>
-
-<section class="section">
-    <div class="section-image">
-        <img src="~/images/poem-explore.svg" alt="Explore Poems" />
-    </div>
-    <div class="section-content">
-        <h1><i class="bi bi-search icon-feature"></i> Explore Community Poems</h1>
-        <p>
-            Browse poems from users worldwide. Our feed features raw, real, and rhythmic works about love, hope, grief, nature, and personal journeys.
-        </p>
-        <p>
-            Use filters and tags to discover themes you connect with — or just enjoy browsing organically.
-        </p>
-        <a class="btn btn-outline-primary btn-learn" asp-controller="Poems" asp-action="Feed">Start Exploring</a>
-    </div>
-</section>
-
-<section class="section bg-light text-dark">
-    <div class="section-content">
-        <h1><i class="bi bi-pencil-square icon-feature"></i> Submit Your Poetry</h1>
-        <p>
-            Have a poem that deserves to be read? Share it on VerseCraft! Our simple submission form lets you upload your work in seconds.
-        </p>
-        <p>
-            All poems stay yours. You can manage, edit, or remove them anytime through your dashboard.
-        </p>
-        <a class="btn btn-primary btn-learn" asp-controller="Poems" asp-action="Submit">Share a Poem</a>
-    </div>
-    <div class="section-image">
-        <img src="~/images/submit-poem.jpg" alt="Submit Poem" />
-    </div>
-</section>
-
-<section class="section">
-    <div class="section-image">
-        <img src="~/images/anthology-book.jpg" alt="Anthology Collection" />
-    </div>
-    <div class="section-content">
-        <h1><i class="bi bi-bookmark-heart icon-feature"></i> Create Your Anthology</h1>
-        <p>
-            Build a personalized collection of your favorite poems. Save works you love, revisit them later, or explore public anthologies shared by others.
-        </p>
-        <p>
-            Your anthology grows with you — reflecting your taste and poetic journey.
-        </p>
-        <a class="btn btn-outline-dark btn-learn" asp-controller="Home" asp-action="Anthology">Build Your Collection</a>
-    </div>
-</section>
+        <a class="btn btn-lg btn-primary" asp-controller="Auth" asp-action="Register">
+            <i class="bi bi-person-plus"></i> Join Now
+        </a>
+    </section>
+</main>

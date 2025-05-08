@@ -11,19 +11,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - VerseCraft</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
+   
 </head>
 <body>
-
-
-
-
-    @* <div id="global-loading"> *@
-    @*     <div class="spinner"></div> *@
-    @* </div> *@
     <header>
         <nav class="navbar navbar-expand-lg">
             <div class="container">
@@ -34,12 +28,12 @@
                 </button>
 
                 <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Poems" asp-action="Feed">Explore Poems</a>
+                            <a class="nav-link" asp-controller="Poems" asp-action="Feed">Poems</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About Us</a>
@@ -47,13 +41,16 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="DisplayAnthology">Anthology</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+                        </li>
                     </ul>
 
-                    <ul class="navbar-nav align-items-center">
+                    <ul class="navbar-nav align-items-center mb-2 mb-lg-0">
                         @if (isAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="UserDashboard" asp-action="MainDashboard">Dashboard</a>
+                                <a class="nav-link" asp-controller="Collection" asp-action="MainDashboard">My Collections</a>
                             </li>
                             <li class="nav-item me-2">
                                 <span class="nav-link text-muted">@userDisplayName</span>
@@ -85,7 +82,7 @@
         @RenderBody()
     </main>
 
-    <footer class="bg-light border-top text-center text-lg-start mt-auto">
+    <footer class="border-top text-center text-lg-start mt-auto">
         <div class="container py-4">
             <div class="row">
                 <div class="col-md-4 mb-3">
@@ -95,7 +92,7 @@
                 <div class="col-md-4 mb-3">
                     <h5>Contact Us</h5>
                     <p>Email: <a href="mailto:example@gmail.com">example@gmail.com</a></p>
-                    <div class="d-flex justify-content-center gap-3 mt-2">
+                    <div class="footer-social d-flex justify-content-center gap-3 mt-2">
                         <a href="#" class="text-dark"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="text-dark"><i class="bi bi-twitter-x"></i></a>
                         <a href="#" class="text-dark"><i class="bi bi-instagram"></i></a>
@@ -118,8 +115,6 @@
         </div>
     </footer>
 
-
-
     <script src="~/js/layout.js" asp-append-version="true"></script>
     <script src="~/js/loading.js" asp-append-version="true"></script>
     <script src="~/js/toast.js" asp-append-version="true"></script>
@@ -132,28 +127,24 @@
             showToast('success', '@TempData["SUCCESS"]');
         </script>
     }
-
     @if (TempData["ERROR"] != null)
     {
         <script>
             showToast('error', '@TempData["ERROR"]');
         </script>
     }
-
     @if (TempData["INFO"] != null)
     {
         <script>
             showToast('info', '@TempData["INFO"]');
         </script>
     }
-
     @if (TempData["WARNING"] != null)
     {
         <script>
             showToast('warning', '@TempData["WARNING"]');
         </script>
     }
-
     @if (!string.IsNullOrEmpty(Context.Request.Query["message"]))
     {
         <script>

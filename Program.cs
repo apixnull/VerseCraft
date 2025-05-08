@@ -14,14 +14,7 @@ namespace VerseCraft
             var builder = WebApplication.CreateBuilder(args);
             Env.Load();
 
-            // Get the base directory for images from an environment variable (or fallback to default path)
-            string uploadDirectory = Environment.GetEnvironmentVariable("UPLOAD_DIRECTORY") ?? "wwwroot/uploads/anthologies/";
 
-            // Ensure the upload directory exists (can be done here, but it's optional)
-            if (!Directory.Exists(uploadDirectory))
-            {
-                Directory.CreateDirectory(uploadDirectory);
-            }
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

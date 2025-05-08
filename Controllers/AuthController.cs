@@ -7,7 +7,7 @@ using VerseCraft.Data;
 using VerseCraft.Models;
 using VerseCraft.ViewModels;
 using VerseCraft.Services;
-using NuGet.Protocol;
+
 
 namespace VerseCraft.Controllers
 {
@@ -33,7 +33,7 @@ namespace VerseCraft.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            if (await _context.Users.AnyAsync(u => u.Email == model.Email))
+            if (await _context.Users.AnyAsync(u => u.Email == model.Email.Trim().ToLower()))
             {
                 ModelState.AddModelError(nameof(model.Email), "Email is already registered.");
                 return View(model);
@@ -111,7 +111,7 @@ namespace VerseCraft.Controllers
                 return RedirectToAction("Main", "Dashboard", new { area = "admin" });
             }
 
-            return RedirectToAction("UserDashboard", "MainDashboard");
+            return RedirectToAction("MainDashboard", "Collection");
         }
 
         /********************************************** LOGOUT **********************************************/

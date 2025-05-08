@@ -3,98 +3,125 @@
     ViewData["Title"] = "About Us";
 }
 
-<style>
-    .section-versecraft {
-        height: 70vh;
-        padding: 60px 20px;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+<link rel="stylesheet" href="~/css/aboutUs.css" asp-append-version="true" />
 
-        .section-versecraft h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .section-versecraft p {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-    .bg-poetry {
-        background: linear-gradient(135deg, #FF6F91, #FF9671);
-    }
-
-    .bg-community {
-        background: linear-gradient(135deg, #845EC2, #D65DB1);
-    }
-
-    .bg-expression {
-        background: linear-gradient(135deg, #00C9A7, #0081CF);
-    }
-
-    .icon-circle {
-        font-size: 3rem;
-        margin-bottom: 15px;
-        color: white;
-    }
-</style>
-
-<!-- Contact Form First -->
-<div class="container my-5">
-    <h2 class="text-center mb-4"><i class="bi bi-envelope-paper icon-circle"></i> Get in Touch</h2>
-    <p class="text-muted text-center mb-4">We’d love to hear from you! Whether it’s feedback, collaboration, or just a hello, drop us a line below.</p>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <form asp-action="AboutUs" method="post" novalidate>
-                <div class="mb-3">
-                    <label asp-for="Name" class="form-label"><i class="bi bi-person-fill"></i> Name</label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="Email" class="form-label"><i class="bi bi-envelope-fill"></i> Email</label>
-                    <input asp-for="Email" type="email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="Content" class="form-label"><i class="bi bi-chat-left-text-fill"></i> Message</label>
-                    <textarea asp-for="Content" class="form-control" rows="5"></textarea>
-                    <span asp-validation-for="Content" class="text-danger"></span>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-lg btn-primary">
-                        <i class="bi bi-send-check-fill"></i> Send Message
-                    </button>
-                </div>
-            </form>
-        </div>
+<div class="about-header">
+    <div class="container">
+        <h1>About <span class="text-primary">VerseCraft</span></h1>
+        <p>Empowering poets and readers to connect through the transformative power of words since 2025</p>
     </div>
 </div>
 
-<!-- Section 1: About VerseCraft -->
-<div class="section-versecraft bg-poetry text-center">
-    <i class="bi bi-journal-richtext icon-circle"></i>
-    <h2>Celebrate Poetry & Artistry</h2>
-    <p>VerseCraft is a home for poets, writers, and readers. Publish, explore, and elevate voices that speak through rhythm and metaphor. Whether traditional or modern, we welcome all forms of poetic expression.</p>
-</div>
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2>Our Mission</h2>
+                <p>
+                    VerseCraft was founded with a simple yet powerful mission: to create a vibrant community where poetry thrives in the digital age. We believe that poetry has the unique ability to connect souls, transcend boundaries, and express the full spectrum of human experience.
+                </p>
+                <p>
+                    We're dedicated to providing a platform that elevates poetic voices from all backgrounds, celebrates diverse perspectives, and fosters meaningful connections between writers and readers. In a world of noise and haste, VerseCraft offers a sanctuary for thoughtful expression and contemplation.
+                </p>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="~/images/mission-image.jpg" alt="Our Mission" class="about-img shadow" />
+            </div>
+        </div>
+    </div>
+</section>
 
-<!-- Section 2: Community -->
-<div class="section-versecraft bg-community text-center">
-    <i class="bi bi-people-fill icon-circle"></i>
-    <h2>Be Part of the Movement</h2>
-    <p>Connect with a diverse community of creators and readers. Share thoughts, get feedback, and collaborate with others who value the art of language and the power of verse.</p>
-</div>
+<section class="about-section">
+    <div class="container">
+        <h2 class="mb-5">Our Core Values</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="values-item">
+                    <div class="values-icon">
+                        <i class="bi bi-megaphone"></i>
+                    </div>
+                    <div class="values-content">
+                        <h4>Amplifying Voices</h4>
+                        <p>We believe every poet deserves to be heard, regardless of background or experience level. Our platform gives equal opportunity to established and emerging voices alike.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="values-item">
+                    <div class="values-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="values-content">
+                        <h4>Building Community</h4>
+                        <p>Poetry flourishes in community. We foster connections between writers and readers through shared appreciation, constructive feedback, and collaborative growth.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="values-item">
+                    <div class="values-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <div class="values-content">
+                        <h4>Respecting Creators</h4>
+                        <p>We uphold the rights of poets over their work. On VerseCraft, you maintain ownership of your creations while sharing them with an appreciative audience.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="values-item">
+                    <div class="values-icon">
+                        <i class="bi bi-flower1"></i>
+                    </div>
+                    <div class="values-content">
+                        <h4>Nurturing Growth</h4>
+                        <p>We view poetry as a journey, not a destination. Our platform provides tools and community support to help poets develop their craft and discover their unique voice.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<!-- Section 3: Voice & Expression -->
-<div class="section-versecraft bg-expression text-center">
-    <i class="bi bi-mic-fill icon-circle"></i>
-    <h2>Empower Your Voice</h2>
-    <p>Your words matter. Whether you write to heal, to inspire, or to resist, VerseCraft gives your message a home where it can resonate with hearts across the world.</p>
-</div>
+<section class="about-section">
+    <div class="container">
+        <h2 class="mb-5">Meet Our Team</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="team-member">
+                    <img src="~/images/team-1.jpg" alt="Team Member">
+                    <h5>Mark Joshua Alducente</h5>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="team-member">
+                    <img src="~/images/team-2.jpg" alt="Team Member">
+                    <h5>Romeo Baynosa Jr.</h5>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="team-member">
+                    <img src="~/images/team-3.jpg" alt="Team Member">
+                    <h5>Jhana Marie Catabas</h5>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-6">
+                <div class="team-member">
+                    <img src="~/images/team-4.jpg" alt="Team Member">
+                    <h5>Jasper Cesa</h5>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-6">
+                <div class="team-member">
+                    <img src="~/images/team-5.jpg" alt="Team Member">
+                    <h5>Angelito Lingo</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

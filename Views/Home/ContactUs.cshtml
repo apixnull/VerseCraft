@@ -1,0 +1,43 @@
+﻿@model VerseCraft.ViewModels.ContactFormViewModel
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<link rel="stylesheet" href="~/css/contactUs.css" asp-append-version="true" />
+
+<div class="container">
+    <div class="contact-section">
+        <h2 class="text-center mb-2">
+            <span class="icon-circle"><i class="bi bi-envelope-paper"></i></span>
+            <br />
+            Get in Touch
+        </h2>
+        <p class="text-muted text-center mb-4">We’d love to hear from you! Whether it’s feedback, collaboration, or just a hello, drop us a line below.</p>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <form asp-action="ContactUs" method="post" novalidate>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"><i class="bi bi-person-fill"></i> Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"><i class="bi bi-envelope-fill"></i> Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label"><i class="bi bi-chat-left-text-fill"></i> Message</label>
+                        <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-lg btn-primary">
+                            <i class="bi bi-send-check-fill"></i> Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

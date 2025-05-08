@@ -1,64 +1,54 @@
-﻿using System.ComponentModel.DataAnnotations;
-using VerseCraft.Models;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-public class Poem
+namespace VerseCraft.Models
 {
-    public int Id { get; set; }
+    public class Poem
+    {
+        [Key]
+        public int Id { get; set; }
 
-    [Required, MaxLength(200)]
-    public string Title { get; set; } = null!;
-    // e.g., "Ode to the Moon"
+        [Required, StringLength(200)]
+        public string Title { get; set; } = string.Empty;
 
-    [Required]
-    public string Content { get; set; } = null!;
-    // Full poem content
+        [Required]
+        public string Content { get; set; } = string.Empty;
 
-    [MaxLength(300)]
-    public string? Summary { get; set; }
-    // e.g., "A lyrical meditation on solitude and nighttime wonder."
+        [StringLength(500)]
+        public string? Summary { get; set; }
 
-    [MaxLength(100)]
-    public string? Genre { get; set; }
-    // e.g., "Romance", "Nature", "Spiritual"
+        [StringLength(100)]
+        public string? Genre { get; set; }
 
-    [MaxLength(100)]
-    public string? Style { get; set; }
-    // e.g., "Haiku", "Free Verse", "Sonnet"
+        [StringLength(100)]
+        public string? Style { get; set; }
 
-    [MaxLength(100)]
-    public string? Language { get; set; }
-    // e.g., "English", "French"
+        [StringLength(100)]
+        public string? Language { get; set; }
 
-    [MaxLength(100)]
-    public string? Mood { get; set; }
-    // e.g., "Melancholic", "Joyful", "Reflective"
+        [StringLength(100)]
+        public string? Mood { get; set; }
 
-    [MaxLength(200)]
-    public string? CoverImagePath { get; set; }
-    // e.g., "uploads/poems/moonlight.jpg"
+        [StringLength(200)]
+        public string? CoverImagePath { get; set; }
 
-    public bool IsPublic { get; set; } = true;
-    // Determines if poem is visible to everyone
+        public bool IsPublic { get; set; } = true;
 
-    public bool IsApproved { get; set; } = false;
-    // Admin-only flag: must be approved to appear in anthology
+        public bool IsApproved { get; set; } = false;
 
-    public bool IsFeatured { get; set; } = false;
-    // Highlighted on homepage or special collections
+        public bool IsFeatured { get; set; } = false;
 
-    public int ViewCount { get; set; } = 0;
-    // Tracks number of times poem was viewed
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    // When the poem was created
+        public DateTime? UpdatedAt { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
-    // Last edited time, if any
+        public string Author { get; set; } = string.Empty; // Poem author as a string
 
-    public int UserId { get; set; }
-    public User User { get; set; } = null!;
-    // Reference to the author
+        public int? UserId { get; set; } // Nullable UserId, if the poem is not owned by a user, it can be null
 
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    // Optional: comments or reactions
+        public virtual User? User { get; set; }  // Navigation property to User
+        public int? AnthologyId { get; set; } // Optional reference to the Anthology
+
+        public virtual Anthology? Anthology { get; set; } // Optional navigation property for easier access to Anthology
+    }
 }

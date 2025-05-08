@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VerseCraft.Data;
 
@@ -10,42 +11,14 @@ using VerseCraft.Data;
 namespace VerseCraft.Migrations
 {
     [DbContext(typeof(VerseCraftDbContext))]
-    partial class VerseCraftDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250506104406_Klarohon-TiniYawa")]
+    partial class KlarohonTiniYawa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
-
-            modelBuilder.Entity("AnthologyUser", b =>
-                {
-                    b.Property<int>("SavedAnthologiesId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("User1Id")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("SavedAnthologiesId", "User1Id");
-
-                    b.HasIndex("User1Id");
-
-                    b.ToTable("UserSavedAnthologies", (string)null);
-                });
-
-            modelBuilder.Entity("PoemUser", b =>
-                {
-                    b.Property<int>("SavedPoemsId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("User1Id")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("SavedPoemsId", "User1Id");
-
-                    b.HasIndex("User1Id");
-
-                    b.ToTable("UserSavedPoems", (string)null);
-                });
 
             modelBuilder.Entity("VerseCraft.Models.Anthology", b =>
                 {
@@ -234,36 +207,6 @@ namespace VerseCraft.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("AnthologyUser", b =>
-                {
-                    b.HasOne("VerseCraft.Models.Anthology", null)
-                        .WithMany()
-                        .HasForeignKey("SavedAnthologiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VerseCraft.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("User1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PoemUser", b =>
-                {
-                    b.HasOne("VerseCraft.Models.Poem", null)
-                        .WithMany()
-                        .HasForeignKey("SavedPoemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VerseCraft.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("User1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("VerseCraft.Models.Anthology", b =>

@@ -3,154 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <title>@ViewData["Title"] - Admin Panel</title>
-    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/admin_layout.css" asp-append-version="true" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/adminLayout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        .text-danger {
-            color: #dc3545; /* Standard Bootstrap danger color */
-            font-size: 0.875rem; /* Decreased font size */
-            font-weight: 500; /* Slightly bold for better visibility */
-            margin-top: 5px; /* Adding a small margin to separate it from the input field */
-        }
-
-    </style>
 </head>
 <body>
-    @* <div id="global-loading"> *@
-    @*     <div class="spinner"></div> *@
-    @* </div> *@
-    <!-- Toast container (25% down, top-right) -->
-    <div id="toast-container" class="toast-container"></div>
-    <div class="vs-sidebar">
-        <div class="logo-details">
-            <div class="logo_name">VerseCraft Admin</div>
-            <i class='bx bx-menu' id="btn"></i>
-        </div>
-        <ul class="nav-list">
-            <li>
-                <a asp-area="admin" asp-controller="Dashboard" asp-action="Main">
-                    <i class='bx bx-grid-alt'></i>
-                    <span class="links_name">Dashboard</span>
-                </a>
-                <span class="tooltip">Dashboard</span>
-            </li>
-            <li>
-                <a asp-controller="Users" asp-action="DisplayUser">
-                    <i class='bx bx-user'></i>
-                    <span class="links_name">Users</span>
-                </a>
-                <span class="tooltip">Users</span>
-            </li>
-            <li>
-                <a asp-controller="Poems" asp-action="Index">
-                    <i class='bx bx-chat'></i>
-                    <span class="links_name">Poems</span>
-                </a>
-                <span class="tooltip">Poems</span>
-            </li>
-            <li>
-                <a asp-area="admin" asp-controller="Anthology" asp-action="DisplayAnthology">
-                    <i class='bx bx-pie-chart-alt-2'></i>
-                    <span class="links_name">Anthology</span>
-                </a>
-                <span class="tooltip">Analytics</span>
-            </li>
-            <li>
-                <a asp-controller="Settings" asp-action="Index">
-                    <i class='bx bx-cog'></i>
-                    <span class="links_name">Settings</span>
-                </a>
-                <span class="tooltip">Settings</span>
-            </li>
-            <li class="profile">
-                <div class="profile-details">
-                    <img src="~/images/admin_pic.png" alt="profileImg">
-                    <div class="name_job">
-                        <div class="name">Admin Apix</div>
-                    </div>
-                </div>
-                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" style="margin: 0;">
-                    <button type="submit" style="all: unset; cursor: pointer;">
-                        <i class='bx bx-log-out' id="log_out"></i>
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </div>
 
-    <section class="home-section">
-        <div class="text">@ViewData["Title"]</div>
+    <!-- Toast container (untouched) -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-gem me-2" style="color:#00d4ff;"></i> VerseCraft Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="adminNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="admin" asp-controller="Dashboard" asp-action="Main">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Users" asp-action="DisplayUser">
+                            <i class="bi bi-people"></i> Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Poems" asp-action="DisplayPoem">
+                            <i class="bi bi-journal-text"></i> Poems
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="admin" asp-controller="Anthology" asp-action="Index">
+                            <i class="bi bi-collection"></i> Anthology
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Settings" asp-action="Index">
+                            <i class="bi bi-gear"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-white fw-semibold d-none d-md-inline">Admin Apix</span>
+                    <img src="~/images/admin_pic.png" alt="Admin" class="admin-avatar ms-2 me-2">
+                    <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="mb-0">
+                        <button type="submit" class="btn btn-sm btn-outline-light">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container mt-4">
+        <h4 class="mb-3">@ViewData["Title"]</h4>
         <div class="admin-body">
             @RenderBody()
         </div>
     </section>
 
- 
     <script src="~/js/loading.js" asp-append-version="true"></script>
     <script src="~/js/toast.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Toast Message Logic -->
     @if (TempData["SUCCESS"] != null)
     {
-        <script>
-            showToast('success', '@TempData["SUCCESS"]');
-        </script>
+        <script> showToast('success', '@TempData["SUCCESS"]'); </script>
     }
-
     @if (TempData["ERROR"] != null)
     {
-        <script>
-            showToast('error', '@TempData["ERROR"]');
-        </script>
+        <script> showToast('error', '@TempData["ERROR"]'); </script>
     }
-
     @if (TempData["INFO"] != null)
     {
-        <script>
-            showToast('info', '@TempData["INFO"]');
-        </script>
+        <script> showToast('info', '@TempData["INFO"]'); </script>
     }
-
     @if (TempData["WARNING"] != null)
     {
-        <script>
-            showToast('warning', '@TempData["WARNING"]');
-        </script>
+        <script> showToast('warning', '@TempData["WARNING"]'); </script>
     }
 
-
-
-
-    <script>
-        let vsSidebar = document.querySelector(".vs-sidebar");
-        let closeBtn = document.querySelector("#btn");
-        let searchBtn = document.querySelector(".bx-search");
-
-        closeBtn.addEventListener("click", () => {
-            vsSidebar.classList.toggle("open");
-            menuBtnChange();
-        });
-
-        searchBtn.addEventListener("click", () => {
-            vsSidebar.classList.toggle("open");
-            menuBtnChange();
-        });
-
-        function menuBtnChange() {
-            if (vsSidebar.classList.contains("open")) {
-                closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
-            } else {
-                closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
-            }
-        }
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

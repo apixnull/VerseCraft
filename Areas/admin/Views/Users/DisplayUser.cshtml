@@ -2,54 +2,71 @@
 @{
     ViewData["Title"] = "User Management";
 }
+
 <link rel="stylesheet" href="~/css/displayUser.css" asp-append-version="true" />
 
-<div class="container">
-    <div class="header">
-        <div class="title"><i class='bx bx-user-circle'></i> User List </div>
-        <input type="text" id="searchInput" placeholder="Search users..." class="search-input" />
+<div class="card border-0 shadow-lg admin-body p-0">
+    <!-- Header -->
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center bg-transparent border-bottom-0 px-4 pt-4 pb-2">
+        <h5 class="mb-2 mb-sm-0 fw-bold" style="color:#00d4ff;">
+            <i class="bi bi-people-fill me-2"></i> User List
+        </h5>
+        <div class="input-group mt-2 mt-sm-0" style="max-width: 270px;">
+            <span class="input-group-text bg-dark border-0 text-white">
+                <i class="bi bi-search"></i>
+            </span>
+            <input type="text" id="searchInput" placeholder="Search users..."
+                   class="form-control form-control-sm bg-dark text-white border-0 shadow-none"
+                   style="border-radius: 0 8px 8px 0;" />
+        </div>
     </div>
 
-    <div class="table-container">
-        <table id="userTable" class="user-table">
-            <thead>
-                <tr>
-                    <th><i class='bx bx-hash'></i>ID</th>
-                    <th><i class='bx bx-user'></i> Name</th>
-                    <th><i class='bx bx-envelope'></i> Email</th>
-                    <th><i class='bx bx-check-shield'></i> Verified</th>
-                    <th><i class='bx bx-shield'></i> Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.Count; i++)
-                {
+    <!-- Table -->
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table id="userTable" class="table table-dark table-hover table-sm align-middle mb-0" style="border-radius: 0 0 18px 18px; overflow: hidden; min-width: 600px;">
+                <thead style="background: rgba(0,212,255,0.12); color: #00d4ff;">
                     <tr>
-                        <td>@(i + 1)</td>
-                        <td>@Model[i].Name</td>
-                        <td>@Model[i].Email</td>
-                        <td>
-                            <span class="badge @(Model[i].IsVerified ? "verified" : "not-verified")">
-                                @(Model[i].IsVerified ? "Yes" : "No")
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge @(Model[i].IsAdmin ? "admin" : "user")">
-                                @(Model[i].IsAdmin ? "Admin" : "User")
-                            </span>
-                        </td>
+                        <th style="min-width:40px;">#</th>
+                        <th style="min-width:120px;">Name</th>
+                        <th style="min-width:180px;">Email</th>
+                        <th style="min-width:80px;">Verified</th>
+                        <th style="min-width:80px;">Role</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model[i].Id</td>
+                            <td class="text-start">@Model[i].Name</td>
+                            <td class="text-start">@Model[i].Email</td>
+                            <td>
+                                <span class="badge rounded-pill bg-@(Model[i].IsVerified ? "success" : "danger") px-3 py-2">
+                                    @(Model[i].IsVerified ? "Yes" : "No")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill bg-@(Model[i].IsAdmin ? "primary" : "secondary") px-3 py-2">
+                                    @(Model[i].IsAdmin ? "Admin" : "User")
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<script>
-    document.getElementById("searchInput").addEventListener("keyup", function () {
-        const value = this.value.toLowerCase();
-        document.querySelectorAll("#userTable tbody tr").forEach(row => {
-            row.style.display = row.textContent.toLowerCase().includes(value) ? "" : "none";
+
+@section Scripts {
+    <script>
+        document.getElementById("searchInput").addEventListener("input", function () {
+            const val = this.value.toLowerCase();
+            document.querySelectorAll("#userTable tbody tr").forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(val) ? "" : "none";
+            });
         });
-    });
-</script>
+    </script>
+}
