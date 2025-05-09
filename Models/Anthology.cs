@@ -1,45 +1,67 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace VerseCraft.Models
 {
+    // Represents a collection of poems (anthology), including metadata and relationships.
     public class Anthology
     {
         [Key]
         public int Id { get; set; }
 
+        // ============================
+        // 📘 Main Information
+        // ============================
+
+        // The title of the anthology (required, max 255 chars).
         [Required, StringLength(255)]
         public string Title { get; set; } = string.Empty;
 
-        [StringLength(1000)]
-        public string? Description { get; set; }
+        // A description of the anthology (required, max 1000 chars).
+        [Required, StringLength(1000)]
+        public string Description { get; set; } = string.Empty;
 
-        [StringLength(500)]
-        public string? ImagePath { get; set; }
+        // Path to the cover image (required, max 500 chars).
+        [Required, StringLength(500)]
+        public string ImagePath { get; set; } = string.Empty;
 
+        // The author's display name (required, max 100 chars).
         [StringLength(100)]
-        public string? CreatedBy { get; set; }
+        public string AuthorName { get; set; } = string.Empty;
 
-
+        // The license type for the anthology (optional, max 100 chars).
         [StringLength(100)]
         public string? LicenseType { get; set; }
 
+        // Copyright notice (optional, max 500 chars).
         [StringLength(500)]
         public string? CopyrightNotice { get; set; }
 
-        public bool IsFeatured { get; set; } = false;
+        // ============================
+        // 👤 Ownership (Optional)
+        // ============================
 
-        public bool IsPublic { get; set; } = true;
+        // The ID of the user who created the anthology (optional).
+        public int? UserId { get; set; }
 
+        // The user who created the anthology (optional).
+        public virtual User? User { get; set; }
+
+        // ============================
+        // 📅 Metadata
+        // ============================
+
+        // The date and time the anthology was created (UTC).
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // The date and time the anthology was last updated (UTC).
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        // ============================
+        // 📚 Relationships
+        // ============================
+        public virtual ICollection<AnthologyPoem> AnthologyPoems { get; set; } = new List<AnthologyPoem>();
 
-        // Foreign key to User (author/creator of the anthology)
-        public int? UserId { get; set; }  // Nullable, since not all anthologies need a user
-
-        public virtual User? User { get; set; }  // Navigation property to User
-
-        public ICollection<Poem> Poems { get; set; } = new List<Poem>();
     }
 }

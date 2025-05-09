@@ -1,0 +1,42 @@
+﻿@model VerseCraft.Models.Anthology
+
+@{
+    ViewData["Title"] = "Anthology Details";
+}
+
+<div class="container mt-4">
+    <div class="text-center">
+        <h2>@Model.Title</h2>
+        <p class="text-muted">@Model.AuthorName</p>
+        <img src="@Model.ImagePath" alt="Cover" class="img-fluid rounded mb-3" style="max-height: 300px;" />
+        <p>@Model.Description</p>
+    </div>
+
+    <hr />
+    <h4>Included Poems</h4>
+    <div class="row">
+        @foreach (var item in Model.AnthologyPoems)
+        {
+            var poem = item.Poem;
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="@poem.CoverImagePath" class="card-img-top" alt="Poem Image" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@poem.Title</h5>
+                        <p class="card-subtitle text-muted">@poem.Style</p>
+                        <p class="card-text small">@poem.Summary</p>
+                        @if (!string.IsNullOrWhiteSpace(poem.Tags))
+                        {
+                            <div class="mt-2">
+                                @foreach (var tag in poem.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    <span class="badge bg-secondary">@tag.Trim()</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

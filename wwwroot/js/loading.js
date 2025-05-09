@@ -9,6 +9,10 @@ window.addEventListener('load', () => {
 // form-submit button loading animation
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('form').forEach(function (form) {
+
+        // ✅ Skip delete forms to let SweetAlert handle them
+        if (form.classList.contains('delete-form')) return;
+
         form.addEventListener('submit', function (e) {
             const submitButton = form.querySelector('button[type="submit"]');
             if (submitButton) {

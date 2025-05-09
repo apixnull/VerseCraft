@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VerseCraft.Data;
 
@@ -10,9 +11,11 @@ using VerseCraft.Data;
 namespace VerseCraft.Migrations
 {
     [DbContext(typeof(VerseCraftDbContext))]
-    partial class VerseCraftDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250509035015_Fix Database")]
+    partial class FixDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
@@ -65,21 +68,6 @@ namespace VerseCraft.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Anthologies");
-                });
-
-            modelBuilder.Entity("VerseCraft.Models.AnthologyPoem", b =>
-                {
-                    b.Property<int>("AnthologyId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PoemId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("AnthologyId", "PoemId");
-
-                    b.HasIndex("PoemId");
-
-                    b.ToTable("AnthologyPoems");
                 });
 
             modelBuilder.Entity("VerseCraft.Models.ApprovedItem", b =>
@@ -165,6 +153,9 @@ namespace VerseCraft.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AnthologyId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("AuthorName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -229,6 +220,8 @@ namespace VerseCraft.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AnthologyId");
 
                     b.HasIndex("UserId");
 
@@ -348,25 +341,6 @@ namespace VerseCraft.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("VerseCraft.Models.AnthologyPoem", b =>
-                {
-                    b.HasOne("VerseCraft.Models.Anthology", "Anthology")
-                        .WithMany("AnthologyPoems")
-                        .HasForeignKey("AnthologyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VerseCraft.Models.Poem", "Poem")
-                        .WithMany("AnthologyPoems")
-                        .HasForeignKey("PoemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Anthology");
-
-                    b.Navigation("Poem");
-                });
-
             modelBuilder.Entity("VerseCraft.Models.ApprovedItem", b =>
                 {
                     b.HasOne("VerseCraft.Models.Anthology", "Anthology")
@@ -414,10 +388,17 @@ namespace VerseCraft.Migrations
 
             modelBuilder.Entity("VerseCraft.Models.Poem", b =>
                 {
+                    b.HasOne("VerseCraft.Models.Anthology", "Anthology")
+                        .WithMany("Poems")
+                        .HasForeignKey("AnthologyId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("VerseCraft.Models.User", "User")
                         .WithMany("Poems")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Anthology");
 
                     b.Navigation("User");
                 });
@@ -479,12 +460,7 @@ namespace VerseCraft.Migrations
 
             modelBuilder.Entity("VerseCraft.Models.Anthology", b =>
                 {
-                    b.Navigation("AnthologyPoems");
-                });
-
-            modelBuilder.Entity("VerseCraft.Models.Poem", b =>
-                {
-                    b.Navigation("AnthologyPoems");
+                    b.Navigation("Poems");
                 });
 
             modelBuilder.Entity("VerseCraft.Models.User", b =>

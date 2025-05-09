@@ -1,0 +1,100 @@
+﻿@model IEnumerable<VerseCraft.Models.Poem>
+
+@{
+    ViewData["Title"] = "Manage Poems";
+}
+
+<div class="container my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="input-group" style="max-width: 400px;">
+            <input id="poemSearch" type="text" class="form-control" placeholder="Search by ID or Title…">
+            <button id="searchBtn" class="btn btn-outline-secondary" type="button">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        <a asp-action="CreatePoem" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Create New Poem
+        </a>
+    </div>
+
+    <table class="table table-hover" id="poemsTable">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Title</th>
+                <th style="width: 140px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var poem in Model)
+            {
+                <tr data-id="@poem.Id" data-title="@poem.Title.ToLower()">
+                    <td>@poem.Id</td>
+                    <td>@poem.Title</td>
+                    <td>
+                        <a asp-action="EditPoem" asp-route-id="@poem.Id" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a asp-action="DisplaySpecificPoem" asp-route-id="@poem.Id" class="btn btn-sm btn-outline-info"
+                           title="View details">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <form asp-action="DeletePoem" asp-route-id="@poem.Id"
+                              method="post" class="d-inline delete-form">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Search
+            const searchInput = document.getElementById('poemSearch');
+            const searchBtn = document.getElementById('searchBtn');
+            const rows = document.querySelectorAll('#poemsTable tbody tr');
+
+            function filterTable() {
+                const term = searchInput.value.trim().toLowerCase();
+                rows.forEach(row => {
+                    const id = row.dataset.id;
+                    const title = row.dataset.title;
+                    row.style.display = (!term || id.includes(term) || title.includes(term)) ? '' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('keyup', e => { if (e.key === 'Enter') filterTable(); });
+            searchBtn.addEventListener('click', filterTable);
+
+            // Delete confirmation
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const currentForm = this;
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "This will permanently delete the poem!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            currentForm.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VerseCraft.Areas.admin.ViewModels;
 using VerseCraft.Data;
 using VerseCraft.Models;
@@ -7,276 +8,230 @@ using VerseCraft.Models;
 namespace VerseCraft.Areas.admin.Controllers
 {
     [Area("admin")]
-    [Authorize(Roles = "Admin")] // 👮 Only accessible to Admins
+    [Authorize(Roles = "Admin")] // 👈 Protects all actions in this controller
     public class PoemsController : Controller
     {
 
         private readonly VerseCraftDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public PoemsController(VerseCraftDbContext context)
+        public PoemsController(VerseCraftDbContext context, IWebHostEnvironment hostEnvironment)
         {
-            _context = context;
+            _hostEnvironment = hostEnvironment; // 👈 For file uploads
+            _context = context; 
         }
 
-        // ================================================================
-        // 📖 READ: Display all poems
-        // GET: /Admin/Poem/DisplayPoem
-        // ================================================================
-        public IActionResult DisplayPoem()
+        /* ===========================      Display Poem        =========================== */       
+        public IActionResult DisplayPoems()
         {
-            var poems = _context.Poems
-                .Select(p => new PoemFormViewModel
-                {
-                    Id = p.Id,
-                    Title = p.Title,
-                    Genre = p.Genre,
-                    IsPublic = p.IsPublic,
-                    IsApproved = p.IsApproved,
-                    IsFeatured = p.IsFeatured,
-                    Author = p.Author
-                })
-                .ToList();
+            var poems = _context.Poems.Select(p => new Poem
+            {
+                Id = p.Id,
+                Title = p.Title
+            }).ToList();
+
+            ViewBag.TotalPoems = poems.Count;
 
             return View(poems);
         }
-
-
-        // ================================================================
-        // ➕ CREATE: Show form to add a new poem
-        // GET: /Admin/Poem/AddPoem
-        // ================================================================
-        public IActionResult AddPoem()
+        /* ===========================      Create Poem        =========================== */
+        [HttpGet]
+        public IActionResult CreatePoem()
         {
             return View(new PoemFormViewModel());
         }
 
-        // ================================================================
-        // 💾 CREATE: Submit new poem
-        // POST: /Admin/Poem/AddPoem
-        // ================================================================
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddPoem(PoemFormViewModel model)
+        public async Task<IActionResult> CreatePoem(PoemFormViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Check if UserId exists in the database
-                if (model.UserId != null && !_context.Users.Any(u => u.Id == model.UserId))
-                {
-                    ModelState.AddModelError("UserId", "The specified user does not exist.");
-                    return View(model);
-                }
-
-                // Check if AnthologyId exists in the database
-                if (model.AnthologyId != null && !_context.Anthologies.Any(a => a.Id == model.AnthologyId))
-                {
-                    ModelState.AddModelError("AnthologyId", "The specified anthology does not exist.");
-                    return View(model);
-                }
-
-                var poem = new Poem
-                {
-                    Title = model.Title,
-                    Content = model.Content,
-                    Summary = model.Summary,
-                    Genre = model.Genre,
-                    Style = model.Style,
-                    Language = model.Language,
-                    Mood = model.Mood,
-                    IsPublic = model.IsPublic,
-                    IsApproved = model.IsApproved,
-                    IsFeatured = model.IsFeatured,
-                    Author = model.Author ?? "NotFound", // Default if no author provided
-                    UserId = model.UserId,  // Optional: only set if provided
-                    AnthologyId = model.AnthologyId // Optional: only set if provided
-                };
-
-                // Handle Cover Image Upload
-                if (model.CoverImageFile != null)
-                {
-                    // Generate a unique file name using GUID
-                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.CoverImageFile.FileName);
-
-                    // Create the directory if it doesn't exist
-                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "poems");
-                    if (!Directory.Exists(uploadDir))
-                    {
-                        Directory.CreateDirectory(uploadDir);
-                    }
-
-                    // Set the file path to save the image
-                    var filePath = Path.Combine(uploadDir, uniqueFileName);
-
-                    // Save the image file
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await model.CoverImageFile.CopyToAsync(stream);
-                    }
-
-                    // Set the relative path for the image (to save in the database)
-                    poem.CoverImagePath = $"/uploads/poems/{uniqueFileName}";   
-                }
-
-                // Add the poem to the database
-                _context.Poems.Add(poem);
-                await _context.SaveChangesAsync();
-
-                TempData["SUCCESS"] = "Poem added successfully!";
-
-                return RedirectToAction(nameof(DisplayPoem)); // Redirect to the list of poems
+                TempData["ERROR"] = "Please fix the error in the form";
+                return View(model); 
             }
-            TempData["ERROR"] = "Failed to add the poem. Please try again.";
-            return View(model);  // Return the model if validation fails
+
+            // 1. Handle the new cover image upload
+            string uniqueFileName = "";
+            if (model.NewCoverImagePath != null)
+            {
+                // generate GUID filename
+                uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(model.NewCoverImagePath.FileName)}";
+
+                // ensure uploads/poems folder exists
+                var uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "poems");
+                Directory.CreateDirectory(uploadsFolder);
+
+                // save file
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await model.NewCoverImagePath.CopyToAsync(stream);
+            }
+
+            // 2. Map ViewModel ➔ Poem entity
+            var poem = new Poem
+            {
+                Title = model.Title,
+                Content = model.Content,
+                Summary = model.Summary,
+                Genre = model.Genre,
+                Style = model.Style,
+                Theme = model.Theme,
+                Tags = model.Tags,
+                Language = model.Language,
+                Mood = model.Mood,
+                LicenseType = model.LicenseType,
+                CopyrightNotice = model.CopyrightNotice,
+                CoverImagePath = uniqueFileName,
+                AuthorName = model.AuthorName,
+                UserId = model.UserId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // 3. Persist and redirect
+            _context.Poems.Add(poem);
+            await _context.SaveChangesAsync();
+            TempData["SUCCESS"] = "User Added successfully";
+            return RedirectToAction(nameof(DisplayPoems));
+
+         
         }
 
-
-
-        // ================================================================
-        // 📝 UPDATE: Show edit form for existing poem
-        // GET: /Admin/Poem/EditPoem/{id}
-        // ================================================================
+        /* ===========================      Edit Poem        =========================== */
+        /* ===========================      Edit Poem        =========================== */
         [HttpGet]
-        public IActionResult EditPoem(int id)
+        public async Task<IActionResult> EditPoem(int? id)
         {
-            // Fetch the existing poem details
-            var poem = _context.Poems
-                .Where(p => p.Id == id)
-                .Select(p => new PoemFormViewModel
+            if (id == null) return NotFound();
+
+            var poem = await _context.Poems.FindAsync(id);
+            if (poem == null) return NotFound();
+
+            var model = new PoemFormViewModel
+            {
+                Id = poem.Id,
+                Title = poem.Title,
+                Content = poem.Content,
+                Summary = poem.Summary,
+                Genre = poem.Genre,
+                Style = poem.Style,
+                Theme = poem.Theme,
+                Tags = poem.Tags,
+                Language = poem.Language,
+                Mood = poem.Mood,
+                LicenseType = poem.LicenseType,
+                CopyrightNotice = poem.CopyrightNotice,
+                CoverImagePath = poem.CoverImagePath,
+                AuthorName = poem.AuthorName,
+                UserId = poem.UserId,
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPoem(PoemFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (model.Id == null)
+                return BadRequest();
+
+            var poem = await _context.Poems.FindAsync(model.Id.Value);
+            if (poem == null)
+                return NotFound();
+
+            // Handle new cover upload
+            if (model.NewCoverImagePath != null)
+            {
+                // Delete old file
+                if (!string.IsNullOrEmpty(poem.CoverImagePath))
                 {
-                    Id = p.Id,
-                    Title = p.Title,
-                    Content = p.Content,
-                    Summary = p.Summary,
-                    Genre = p.Genre,
-                    Style = p.Style,
-                    Language = p.Language,
-                    Mood = p.Mood,
-                    IsPublic = p.IsPublic,
-                    IsApproved = p.IsApproved,
-                    IsFeatured = p.IsFeatured,
-                    Author = p.Author,
-                    ExistingCoverImagePath = p.CoverImagePath, // Pass existing image path
-                    UserId = p.UserId,
-                    AnthologyId = p.AnthologyId
-                })
-                .FirstOrDefault();
+                    var oldPath = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "poems", poem.CoverImagePath);
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
+
+                // Save new file
+                var uniqueName = $"{Guid.NewGuid()}{Path.GetExtension(model.NewCoverImagePath.FileName)}";
+                var uploadFolder = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "poems");
+                Directory.CreateDirectory(uploadFolder);
+                var filePath = Path.Combine(uploadFolder, uniqueName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await model.NewCoverImagePath.CopyToAsync(stream);
+
+                poem.CoverImagePath = uniqueName;
+            }
+
+            // Update properties
+            poem.Title = model.Title;
+            poem.Content = model.Content;
+            poem.Summary = model.Summary;
+            poem.Genre = model.Genre;
+            poem.Style = model.Style;
+            poem.Theme = model.Theme;
+            poem.Tags = model.Tags;
+            poem.Language = model.Language;
+            poem.Mood = model.Mood;
+            poem.LicenseType = model.LicenseType;
+            poem.CopyrightNotice = model.CopyrightNotice;
+            poem.AuthorName = model.AuthorName;
+            poem.UserId = model.UserId;
+            poem.UpdatedAt = DateTime.UtcNow;
+
+            _context.Poems.Update(poem);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(DisplayPoems));
+        }
+
+        /* ===========================      Delete Poem        =========================== */
+        [HttpPost]
+        public async Task<IActionResult> DeletePoem(int id)
+        {
+            // 1. Find the poem
+            var poem = await _context.Poems.FindAsync(id);
+            if (poem == null)
+            {
+                TempData["ERROR"] = "Poem not found";   
+                return View();
+            }
+
+            // 2. Delete the cover image file if it exists
+            if (!string.IsNullOrEmpty(poem.CoverImagePath))
+            {
+                var filePath = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "poems", poem.CoverImagePath);
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+
+            // 3. Remove from database
+            _context.Poems.Remove(poem);
+            await _context.SaveChangesAsync();
+            TempData["SUCCESS"] = "Successfully delete the poem";
+
+            // 4. Redirect back to the list
+            return RedirectToAction(nameof(DisplayPoems));
+        }
+
+        /* ===========================      Display Specific Poem      =========================== */
+        [HttpGet]
+        public async Task<IActionResult> DisplaySpecificPoem(int id)
+        {
+            var poem = await _context.Poems
+                                     .FirstOrDefaultAsync(p => p.Id == id);
 
             if (poem == null)
             {
-                return NotFound();
+                TempData["ERROR"] = "Poem not found.";
+                return RedirectToAction(nameof(DisplayPoems));
             }
 
             return View(poem);
         }
 
-
-        // ================================================================
-        // 💾 UPDATE: Submit changes to poem
-        // POST: /Admin/Poem/EditPoem/{id}
-        // ================================================================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPoem(int id, PoemFormViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var poem = await _context.Poems.FindAsync(id);
-
-                if (poem == null)
-                {
-                    return NotFound();
-                }
-
-                // Check if a new image is uploaded
-                if (model.CoverImageFile != null)
-                {
-                    // Delete the existing cover image if a new one is uploaded
-                    if (!string.IsNullOrEmpty(poem.CoverImagePath))
-                    {
-                        var existingFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", poem.CoverImagePath.TrimStart('/'));
-                        if (System.IO.File.Exists(existingFilePath))
-                        {
-                            System.IO.File.Delete(existingFilePath);
-                        }
-                    }
-
-                    // Upload the new cover image
-                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.CoverImageFile.FileName);
-                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "poems");
-                    if (!Directory.Exists(uploadDir))
-                    {
-                        Directory.CreateDirectory(uploadDir);
-                    }
-
-                    var filePath = Path.Combine(uploadDir, uniqueFileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await model.CoverImageFile.CopyToAsync(stream);
-                    }
-
-                    poem.CoverImagePath = $"/uploads/poems/{uniqueFileName}";
-                }
-
-                // Update the poem details
-                poem.Title = model.Title;
-                poem.Content = model.Content;
-                poem.Summary = model.Summary;
-                poem.Genre = model.Genre;
-                poem.Style = model.Style;
-                poem.Language = model.Language;
-                poem.Mood = model.Mood;
-                poem.IsPublic = model.IsPublic;
-                poem.IsApproved = model.IsApproved;
-                poem.IsFeatured = model.IsFeatured;
-                poem.Author = model.Author ?? poem.Author; // Keep the existing author if not provided
-                poem.UserId = model.UserId;
-                poem.AnthologyId = model.AnthologyId;
-
-                // Save changes to the database
-                _context.Poems.Update(poem);
-                await _context.SaveChangesAsync();
-
-                TempData["SUCCESS"] = "Poem updated successfully!";
-                return RedirectToAction(nameof(DisplayPoem)); // Redirect to the list of poems
-            }
-
-            TempData["ERROR"] = "Failed to update the poem. Please try again.";
-            return View(model);  // Return the model if validation fails
-        }
-
-        // ================================================================
-        // ❌ DELETE: Remove a poem
-        // POST: /Admin/Poem/DeletePoem/{id}
-        // ================================================================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeletePoem(int id)
-        {
-            var poem = _context.Poems.FirstOrDefault(p => p.Id == id);
-            if (poem == null)
-            {
-                TempData["ERROR"] = "Failed to delete the poem. Please try again.";
-                return NotFound();
-            }
-
-            // Delete the cover image from wwwroot (if it exists)
-            if (!string.IsNullOrEmpty(poem.CoverImagePath))
-            {
-                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", poem.CoverImagePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
-                if (System.IO.File.Exists(imagePath))
-                {
-                    System.IO.File.Delete(imagePath);
-                }
-            }
-
-            // Remove the poem from the database
-            _context.Poems.Remove(poem);
-            _context.SaveChanges();
-
-            TempData["SUCCESS"] = "Poem deleted successfully!";
-            return RedirectToAction("DisplayPoem");
-        }
-     
     }
 }

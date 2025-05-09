@@ -1,0 +1,28 @@
+﻿@model VerseCraft.Areas.admin.ViewModels.AddPoemToAnthologyViewModel
+
+@{
+    ViewData["Title"] = "Search Poems";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Displaying all the poems -->
+<div class="row">
+    @foreach (var poem in Model.Poems)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@poem.Title</h5>
+                    <p class="card-text">@poem.AuthorName</p>
+
+                    <!-- Button to add the poem to the anthology -->
+                    <form asp-action="AddPoemToAnthology" asp-route-anthologyId="@Model.AnthologyId" asp-route-poemId="@poem.Id" method="post">
+                        <button type="submit" class="btn btn-primary">Add to Anthology</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>

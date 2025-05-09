@@ -1,0 +1,69 @@
+﻿@model VerseCraft.Areas.admin.ViewModels.AnthologyFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Anthology";
+}
+
+<h2 class="mb-4">Edit Anthology</h2>
+
+<form asp-action="EditAnthology" method="post" enctype="multipart/form-data" class="shadow p-4 rounded bg-dark">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ExistingImagePath" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="AuthorName" class="form-label"></label>
+        <input asp-for="AuthorName" class="form-control" />
+        <span asp-validation-for="AuthorName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="LicenseType" class="form-label"></label>
+        <input asp-for="LicenseType" class="form-control" />
+        <span asp-validation-for="LicenseType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CopyrightNotice" class="form-label"></label>
+        <input asp-for="CopyrightNotice" class="form-control" />
+        <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Current Cover Image</label><br />
+        @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+        {
+            <img src="~/uploads/anthologies/@Model.ExistingImagePath" alt="Cover Image" style="max-height: 150px;" class="mb-2 rounded shadow" />
+        }
+        else
+        {
+            <p class="text-muted fst-italic">No cover image uploaded.</p>
+        }
+    </div>
+
+    <div class="form-group mb-4">
+        <label asp-for="CoverImage" class="form-label">Upload New Cover Image (optional)</label>
+        <input asp-for="CoverImage" type="file" class="form-control" />
+        <span asp-validation-for="CoverImage" class="text-danger"></span>
+    </div>
+
+    <div class="form-group d-flex justify-content-between">
+        <a asp-action="DisplayAnthologies" class="btn btn-secondary">Back to List</a>
+        <button type="submit" class="btn btn-success">Update Anthology</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

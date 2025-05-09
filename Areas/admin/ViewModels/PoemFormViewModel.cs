@@ -1,19 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace VerseCraft.Areas.admin.ViewModels
 {
     public class PoemFormViewModel
     {
-        public int? Id { get; set; }
+        public int? Id { get; set; } // Null for create, set for edit
 
-        [Required(ErrorMessage = "Title is required")]
-        [StringLength(200, ErrorMessage = "Title must be less than 200 characters")]
+        [Required, StringLength(200)]
         public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Content is required")]
+        [Required]
         public string Content { get; set; } = string.Empty;
 
-        [StringLength(500, ErrorMessage = "Summary can't exceed 500 characters")]
+        [StringLength(500)]
         public string? Summary { get; set; }
 
         [StringLength(100)]
@@ -22,31 +22,35 @@ namespace VerseCraft.Areas.admin.ViewModels
         [StringLength(100)]
         public string? Style { get; set; }
 
+        [StringLength(50)]
+        public string? Theme { get; set; }
+
+        [StringLength(500)]
+        public string? Tags { get; set; }
+
         [StringLength(100)]
         public string? Language { get; set; }
 
         [StringLength(100)]
         public string? Mood { get; set; }
 
-        public bool IsPublic { get; set; } = true;
-        public bool IsApproved { get; set; } = false;
-        public bool IsFeatured { get; set; } = false;
-
-        [Display(Name = "Cover Image")]
-        public IFormFile? CoverImageFile { get; set; }
-
-        // New property to store the existing image path (for edit operations)
-        [Display(Name = "Existing Cover Image")]
-        public string? ExistingCoverImagePath { get; set; }
-
-        [Display(Name = "Author (if not linked to user)")]
         [StringLength(100)]
-        public string? Author { get; set; }
+        public string? LicenseType { get; set; }
 
-        [Display(Name = "User")]
+        [StringLength(500)]
+        public string? CopyrightNotice { get; set; }
+
+        // this is for existing
+        [StringLength(200)]
+        public string? CoverImagePath { get; set; } 
+
+        // Allows uploading a new cover image file
+        [Display(Name = "New Cover Image")]
+        public IFormFile? NewCoverImagePath { get; set; }
+
+        [Required, StringLength(100)]
+        public string AuthorName { get; set; } = string.Empty;
+
         public int? UserId { get; set; }
-
-        [Display(Name = "Anthology")]
-        public int? AnthologyId { get; set; }
     }
 }

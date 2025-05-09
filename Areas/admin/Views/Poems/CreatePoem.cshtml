@@ -1,49 +1,50 @@
 ﻿@model VerseCraft.Areas.admin.ViewModels.PoemFormViewModel
 
 @{
-    ViewData["Title"] = "Edit Poem";
+    ViewData["Title"] = "Create Poem";
 }
 
-<h2 class="mb-4">Edit Poem</h2>
+<h2 class="mb-4">Create Poem</h2>
 
-<form asp-action="EditPoem" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+<form asp-action="CreatePoem" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
     <div class="row">
         <div class="col-md-8">
             <!-- Title -->
             <div class="mb-3">
-                <label asp-for="Title" class="form-label"></label>
+                <label asp-for="Title" class="form-label">Title</label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
             <!-- Content -->
             <div class="mb-3">
-                <label asp-for="Content" class="form-label"></label>
+                <label asp-for="Content" class="form-label">Content</label>
                 <textarea asp-for="Content" class="form-control" rows="6"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
             <!-- Summary -->
             <div class="mb-3">
-                <label asp-for="Summary" class="form-label"></label>
+                <label asp-for="Summary" class="form-label">Summary</label>
                 <textarea asp-for="Summary" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Summary" class="text-danger"></span>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
+                    <!-- Genre -->
                     <div class="mb-3">
-                        <label asp-for="Genre" class="form-label"></label>
+                        <label asp-for="Genre" class="form-label">Genre</label>
                         <input asp-for="Genre" class="form-control" />
                         <span asp-validation-for="Genre" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
+                    <!-- Style -->
                     <div class="mb-3">
-                        <label asp-for="Style" class="form-label"></label>
+                        <label asp-for="Style" class="form-label">Style</label>
                         <input asp-for="Style" class="form-control" />
                         <span asp-validation-for="Style" class="text-danger"></span>
                     </div>
@@ -52,16 +53,18 @@
 
             <div class="row">
                 <div class="col-md-6">
+                    <!-- Theme -->
                     <div class="mb-3">
-                        <label asp-for="Theme" class="form-label"></label>
+                        <label asp-for="Theme" class="form-label">Theme</label>
                         <input asp-for="Theme" class="form-control" />
                         <span asp-validation-for="Theme" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
+                    <!-- Tags -->
                     <div class="mb-3">
-                        <label asp-for="Tags" class="form-label"></label>
-                        <input asp-for="Tags" class="form-control" />
+                        <label asp-for="Tags" class="form-label">Tags</label>
+                        <input asp-for="Tags" class="form-control" placeholder="comma-separated" />
                         <span asp-validation-for="Tags" class="text-danger"></span>
                     </div>
                 </div>
@@ -69,53 +72,49 @@
 
             <div class="row">
                 <div class="col-md-4">
+                    <!-- Language -->
                     <div class="mb-3">
-                        <label asp-for="Language" class="form-label"></label>
+                        <label asp-for="Language" class="form-label">Language</label>
                         <input asp-for="Language" class="form-control" />
                         <span asp-validation-for="Language" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
+                    <!-- Mood -->
                     <div class="mb-3">
-                        <label asp-for="Mood" class="form-label"></label>
+                        <label asp-for="Mood" class="form-label">Mood</label>
                         <input asp-for="Mood" class="form-control" />
                         <span asp-validation-for="Mood" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
+                    <!-- Author Name -->
                     <div class="mb-3">
-                        <label asp-for="AuthorName" class="form-label"></label>
+                        <label asp-for="AuthorName" class="form-label">Author Name</label>
                         <input asp-for="AuthorName" class="form-control" />
                         <span asp-validation-for="AuthorName" class="text-danger"></span>
                     </div>
                 </div>
             </div>
 
+            <!-- License & Copyright -->
             <div class="mb-3">
-                <label asp-for="LicenseType" class="form-label"></label>
-                <input asp-for="LicenseType" class="form-control" />
+                <label asp-for="LicenseType" class="form-label">License Type</label>
+                <input asp-for="LicenseType" class="form-control" placeholder="e.g., Creative Commons" />
                 <span asp-validation-for="LicenseType" class="text-danger"></span>
             </div>
-
             <div class="mb-3">
-                <label asp-for="CopyrightNotice" class="form-label"></label>
-                <textarea asp-for="CopyrightNotice" class="form-control" rows="2"></textarea>
+                <label asp-for="CopyrightNotice" class="form-label">Copyright Notice</label>
+                <textarea asp-for="CopyrightNotice" class="form-control" rows="2" placeholder="© 2025 Jane Doe"></textarea>
                 <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
             </div>
         </div>
 
         <div class="col-md-4">
-            @if (!string.IsNullOrEmpty(Model.CoverImagePath))
-            {
-                <div class="mb-3">
-                    <label class="form-label">Current Cover Image</label>
-                    <img src="~/uploads/poems/@Model.CoverImagePath" asp-append-version="true" class="img-fluid rounded mb-2 border" />
-                </div>
-            }
-
+            <!-- New Cover Image Upload -->
             <div class="mb-3">
-                <label asp-for="NewCoverImagePath" class="form-label">Upload New Cover</label>
-                <input asp-for="NewCoverImagePath" type="file" class="form-control" />
+                <label asp-for="NewCoverImagePath" class="form-label">Cover Image</label>
+                <input asp-for="NewCoverImagePath" class="form-control" type="file" />
                 <span asp-validation-for="NewCoverImagePath" class="text-danger"></span>
             </div>
         </div>
@@ -123,7 +122,7 @@
 
     <div class="mt-4">
         <button type="submit" class="btn btn-success">
-            <i class="bi bi-save"></i> Save Changes
+            <i class="bi bi-save"></i> Save Poem
         </button>
         <a asp-action="DisplayPoems" class="btn btn-secondary ms-2">
             <i class="bi bi-arrow-left"></i> Cancel

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<VerseCraft.Models.Anthology>
+
+@{
+    ViewData["Title"] = "Manage Anthologies";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Anthologies</h2>
+        <div class="d-flex">
+            <form method="get" asp-action="DisplayAnthologies" class="d-flex me-2">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search by title..." />
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+            <a asp-action="CreateAnthology" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Create Anthology
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th style="width: 240px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>
+                        <a asp-action="EditAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a asp-action="ViewAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info me-1" title="View">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a asp-action="SearchPoem" asp-route-anthologyId="@item.Id" class="btn btn-sm btn-outline-success me-1" title="Add Poem">
+                            <i class="bi bi-plus-square"></i>
+                        </a>
+                        <form asp-action="DeleteAnthology" asp-route-id="@item.Id" method="post" class="d-inline delete-form">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+    <script>
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault(); // Stop normal post
+                const currentForm = this;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This will permanently delete the anthology!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        currentForm.submit(); // Submit if confirmed
+                    }
+                });
+            });
+        });
+    </script>

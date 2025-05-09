@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VerseCraft.Data;
 
@@ -10,9 +11,11 @@ using VerseCraft.Data;
 namespace VerseCraft.Migrations
 {
     [DbContext(typeof(VerseCraftDbContext))]
-    partial class VerseCraftDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250509131941_Fix 2.0 Database")]
+    partial class Fix20Database
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
