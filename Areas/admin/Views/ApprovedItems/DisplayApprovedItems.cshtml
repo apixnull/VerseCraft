@@ -1,0 +1,71 @@
+﻿@model List<VerseCraft.Models.ApprovedItem>
+
+@{
+    ViewData["Title"] = "Approved Items";
+}
+
+<h2 class="mb-4 text-white">Approved Items</h2>
+
+<!-- 📜 Approved Poems -->
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h3>📜 Approved Poems</h3>
+    <a asp-action="SearchItemToApprove" asp-route-type="Poem" class="btn btn-sm btn-success">Add Approved Poem</a>
+</div>
+
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Summary</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(ai => ai.WorkType == WorkType.Poem))
+        {
+            <tr>
+                <td>@item.Poem!.Title</td>
+                <td>@item.Poem.AuthorName</td>
+                <td>@item.Poem.Summary</td>
+                <td>
+                    <form method="post" asp-action="RemoveApprovedItem" asp-route-id="@item.Id">
+                        <button class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- 📚 Approved Anthologies -->
+<div class="d-flex justify-content-between align-items-center mb-2 mt-5">
+    <h3>📚 Approved Anthologies</h3>
+    <a asp-action="SearchItemToApprove" asp-route-type="Anthology" class="btn btn-sm btn-success">Add Approved Anthology</a>
+</div>
+
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Where(ai => ai.WorkType == WorkType.Anthology))
+        {
+            <tr>
+                <td>@item.Anthology!.Title</td>
+                <td>@item.Anthology.AuthorName</td>
+                <td>@item.Anthology.Description</td>
+                <td>
+                    <form method="post" asp-action="RemoveApprovedItem" asp-route-id="@item.Id">
+                        <button class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

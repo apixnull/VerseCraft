@@ -52,23 +52,18 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Settings" asp-action="Index">
-                            <i class="bi bi-gear"></i> Settings
+                        <a class="nav-link" asp-area="admin" asp-controller="Featured" asp-action="FeaturedItems">
+                            <i class="bi bi-stars"></i> Featured a Items
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Settings" asp-action="Index">
-                            <i class="bi bi-gear"></i> Featured
+                        <a class="nav-link" asp-controller="PublicItems" asp-action="AddPublic">
+                            <i class="bi bi-globe2"></i> Publish Publicly
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Settings" asp-action="Index">
-                            <i class="bi bi-gear"></i> Public
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Settings" asp-action="Index">
-                            <i class="bi bi-gear"></i> Need Approval
+                        <a class="nav-link" asp-area="admin" asp-controller="ApprovedItems" asp-action="DisplayApprovedItems">
+                            <i class="bi bi-shield-check"></i> Pending Approvals
                         </a>
                     </li>
                 </ul>

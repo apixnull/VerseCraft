@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // ✅ Skip delete forms to let SweetAlert handle them
         if (form.classList.contains('delete-form')) return;
 
+
+        // ✅ Skip delete forms to let SweetAlert handle them
+        if (form.classList.contains('remove-feature')) return;
+
         form.addEventListener('submit', function (e) {
             const submitButton = form.querySelector('button[type="submit"]');
             if (submitButton) {

@@ -1,0 +1,64 @@
+﻿@model IEnumerable<object>
+@{
+    string type = ViewData["WorkType"] as string ?? "";
+    ViewData["Title"] = "Approve " + type;
+}
+
+<h2 class="mb-4 text-white">Approve a @type</h2>
+
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    @if (type == "Poem")
+    {
+        var poems = Model.Cast<VerseCraft.Models.Poem>();
+        foreach (var poem in poems)
+        {
+            <div class="col">
+                <div class="card h-100 bg-dark text-white border-light">
+                    @if (!string.IsNullOrEmpty(poem.CoverImagePath))
+                    {
+                        <img src="@poem.CoverImagePath" class="card-img-top" style="height: 180px; object-fit: cover;" alt="@poem.Title" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@poem.Title</h5>
+                        <h6 class="card-subtitle text-muted">By @poem.AuthorName</h6>
+                        <p class="card-text">@poem.Summary ?? "No summary provided."</p>
+                        <form method="post" asp-action="AddApprovedItem">
+                            <input type="hidden" name="type" value="Poem" />
+                            <input type="hidden" name="id" value="@poem.Id" />
+                            <button class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else if (type == "Anthology")
+    {
+        var anthologies = Model.Cast<VerseCraft.Models.Anthology>();
+        foreach (var anthology in anthologies)
+        {
+            <div class="col">
+                <div class="card h-100 bg-dark text-white border-light">
+                    @if (!string.IsNullOrEmpty(anthology.ImagePath))
+                    {
+                        <img src="@anthology.ImagePath" class="card-img-top" style="height: 180px; object-fit: cover;" alt="@anthology.Title" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@anthology.Title</h5>
+                        <h6 class="card-subtitle text-muted">By @anthology.AuthorName</h6>
+                        <p class="card-text">@anthology.Description.Substring(0, Math.Min(120, anthology.Description.Length))...</p>
+                        <form method="post" asp-action="AddApprovedItem">
+                            <input type="hidden" name="type" value="Anthology" />
+                            <input type="hidden" name="id" value="@anthology.Id" />
+                            <button class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-danger">Invalid type specified.</p>
+    }
+</div>

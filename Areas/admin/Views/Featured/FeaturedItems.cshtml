@@ -1,0 +1,106 @@
+﻿@model List<VerseCraft.Models.FeaturedItem>
+@using VerseCraft.Models
+
+@{
+    ViewData["Title"] = "Featured Items";
+    var featuredPoems = Model.Where(f => f.WorkType == WorkType.Poem && f.Poem != null);
+    var featuredAnthologies = Model.Where(f => f.WorkType == WorkType.Anthology && f.Anthology != null);
+}
+
+<!-- 📜 Featured Poems -->
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h2>📜 Featured Poems</h2>
+    <div class="d-flex">
+        <form class="d-flex me-2" method="get" asp-action="SearchPoems">
+            <input name="query" class="form-control me-2" placeholder="Search Poems..." />
+            <button class="btn btn-sm btn-outline-light" type="submit">Search</button>
+        </form>
+        <a asp-action="SearchItemToAdd" asp-route-type="Poem" class="btn btn-sm btn-primary">Add Feature</a>
+    </div>
+</div>
+
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Summary</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in featuredPoems)
+        {
+            <tr>
+                <td>@item.Poem!.Title</td>
+                <td>@item.Poem.AuthorName</td>
+                <td>@item.Poem.Summary</td>
+                <td>
+                    <form method="post" asp-action="RemoveFeature" asp-route-id="@item.Id" onsubmit="event.preventDefault(); confirmRemove(this);" class="remove-feature" asp-route-type="Poem">
+                        <input type="hidden" name="type" value="Poem" />
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- 📚 Featured Anthologies -->
+<div class="d-flex justify-content-between align-items-center mb-2 mt-5">
+    <h2>📚 Featured Anthologies</h2>
+    <div class="d-flex">
+        <form class="d-flex me-2" method="get" asp-action="SearchAnthologies">
+            <input name="query" class="form-control me-2" placeholder="Search Anthologies..." />
+            <button class="btn btn-sm btn-outline-light" type="submit">Search</button>
+        </form>
+        <a asp-action="SearchItemToAdd" asp-route-type="Anthology" class="btn btn-sm btn-primary">Add Feature</a>
+    </div>
+</div>
+
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in featuredAnthologies)
+        {
+            <tr>
+                <td>@item.Anthology!.Title</td>
+                <td>@item.Anthology.AuthorName</td>
+                <td>@item.Anthology.Description</td>
+                <td>
+                    <form method="post" asp-action="RemoveFeature" asp-route-id="@item.Id" onsubmit="event.preventDefault(); confirmRemove(this);" class="remove-feature" asp-route-type="Anthology">
+                        <input type="hidden" name="type" value="Poem" />
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+    <script>
+        // Handle form submission with SweetAlert confirmation
+        function confirmRemove(form) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This item will be removed from featured items.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, remove it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    </script>

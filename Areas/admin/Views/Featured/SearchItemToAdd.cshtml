@@ -1,0 +1,66 @@
+﻿@model IEnumerable<object>
+@{
+    ViewData["Title"] = "Add Feature";
+    string type = ViewData["WorkType"] as string ?? "";
+}
+
+<h2 class="mb-4 text-white">Add a Featured @type</h2>
+
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    @if (type == "Poem")
+    {
+        var poems = Model.Cast<VerseCraft.Models.Poem>();
+        foreach (var poem in poems)
+        {
+            <div class="col">
+                <div class="card h-100 bg-dark text-white border-light">
+                    @if (!string.IsNullOrEmpty(poem.CoverImagePath))
+                    {
+                        <img src="@poem.CoverImagePath" class="card-img-top" style="object-fit: cover; height: 180px;" alt="@poem.Title" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@poem.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">By @poem.AuthorName</h6>
+                        <p class="card-text">@poem.Summary ?? "No summary provided."</p>
+                        <p><small class="text-info">Style: @poem.Style ?? "N/A"</small></p>
+                        <p><small class="text-secondary">Tags: @poem.Tags ?? "None"</small></p>
+                        <form method="post" asp-action="AddFeature">
+                            <input type="hidden" name="type" value="Poem" />
+                            <input type="hidden" name="id" value="@poem.Id" />
+                            <button class="btn btn-success btn-sm">Feature</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else if (type == "Anthology")
+    {
+        var anthologies = Model.Cast<VerseCraft.Models.Anthology>();
+        foreach (var anthology in anthologies)
+        {
+            <div class="col">
+                <div class="card h-100 bg-dark text-white border-light">
+                    @if (!string.IsNullOrEmpty(anthology.ImagePath))
+                    {
+                        <img src="@anthology.ImagePath" class="card-img-top" style="object-fit: cover; height: 180px;" alt="@anthology.Title" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@anthology.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">By @anthology.AuthorName</h6>
+                        <p class="card-text">@anthology.Description.Substring(0, Math.Min(120, anthology.Description.Length))...</p>
+                        <form method="post" asp-action="AddFeature">
+                            <input type="hidden" name="type" value="Anthology" />
+                            <input type="hidden" name="id" value="@anthology.Id" />
+                            <button class="btn btn-success btn-sm">Feature</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-danger">Invalid type specified.</p>
+    }
+</div>
