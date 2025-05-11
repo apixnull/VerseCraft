@@ -1,0 +1,321 @@
+﻿@model VerseCraft.Models.Poem
+@{
+    ViewData["Title"] = "View Poem";
+}
+
+<!-- Add these to your layout or include in the head section -->
+<style>
+    :root {
+        --light-pink: #ffd6e0;
+        --medium-pink: #ffb6c1;
+        --light-blue: #c1e3ff;
+        --medium-blue: #a6d5fa;
+    }
+
+    .poem-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .poem-header {
+        position: relative;
+        border-radius: 15px 15px 0 0;
+        overflow: hidden;
+        height: 140px;
+    }
+
+    .poem-header-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, var(--light-pink), var(--light-blue));
+        opacity: 0.8;
+    }
+
+    .poem-title-area {
+        position: relative;
+        z-index: 1;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .poem-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #444;
+        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
+    }
+
+    .poem-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        overflow: hidden;
+    }
+
+    .poem-cover {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+    }
+
+    .poem-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--medium-pink), var(--medium-blue));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .poem-content {
+        position: relative;
+        background-color: #f9f9f9;
+        padding: 2rem;
+        border-radius: 12px;
+        white-space: pre-wrap;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin: 1.5rem 0;
+    }
+
+        .poem-content::before {
+            content: """; position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 5rem;
+            color: var(--medium-pink);
+            opacity: 0.3;
+            line-height: 1;
+        }
+
+        .poem-content::after {
+            content: """; position: absolute;
+            bottom: -60px;
+            right: 10px;
+            font-size: 5rem;
+            color: var(--medium-blue);
+            opacity: 0.3;
+            line-height: 1;
+        }
+
+    .badge.badge-genre {
+        background-color: var(--medium-pink);
+        color: #fff;
+    }
+
+    .badge.badge-style {
+        background-color: var(--medium-blue);
+        color: #fff;
+    }
+
+    .badge.badge-theme {
+        background: linear-gradient(90deg, var(--medium-pink), var(--medium-blue));
+        color: #fff;
+    }
+
+    .poem-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .poem-tag {
+        background-color: #f0f0f0;
+        color: #666;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+
+    .poem-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #888;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #444;
+    }
+
+    .copyright-notice {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: linear-gradient(90deg, rgba(255, 214, 224, 0.3), rgba(193, 227, 255, 0.3));
+        border-radius: 8px;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .dates-info {
+        font-size: 0.85rem;
+        color: #888;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .date-item {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+        .date-item i {
+            font-size: 0.9rem;
+        }
+</style>
+
+<div class="container poem-container my-5">
+    <div class="poem-card">
+        <!-- Header with Gradient Background -->
+        <div class="poem-header">
+            <div class="poem-header-gradient"></div>
+            <div class="poem-title-area">
+                <h1 class="poem-title">@Model.Title</h1>
+            </div>
+        </div>
+
+        <!-- Cover Image (if exists) -->
+        @if (!string.IsNullOrEmpty(Model.CoverImagePath))
+        {
+            <img src="~/uploads/poems/@Model.CoverImagePath" class="poem-cover" alt="Poem Cover" />
+        }
+
+        <div class="p-4 p-md-5">
+            <!-- Author and Dates -->
+            <div class="poem-meta">
+                <div class="author-avatar">
+                    @(Model.AuthorName.Length > 0 ? Model.AuthorName[0].ToString().ToUpper() : "A")
+                </div>
+                <div>
+                    <div class="fs-5 fw-bold">@Model.AuthorName</div>
+                    <div class="dates-info mt-1">
+                        <span class="date-item">
+                            <i class="bi bi-calendar"></i>
+                            Created: @Model.CreatedAt.ToString("MMM dd, yyyy")
+                        </span>
+                        @if (Model.UpdatedAt.HasValue)
+                        {
+                            <span class="date-item">
+                                <i class="bi bi-pencil"></i>
+                                Updated: @Model.UpdatedAt.Value.ToString("MMM dd, yyyy")
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary (if exists) -->
+            @if (!string.IsNullOrEmpty(Model.Summary))
+            {
+                <div class="mt-4 p-3" style="background: linear-gradient(90deg, rgba(255, 214, 224, 0.2), rgba(193, 227, 255, 0.2)); border-radius: 10px;">
+                    <p class="mb-0"><em>@Model.Summary</em></p>
+                </div>
+            }
+
+            <!-- Poem Content -->
+            <div class="poem-content">@Model.Content</div>
+
+            <!-- Badges for Genre, Style, Theme -->
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                @if (!string.IsNullOrEmpty(Model.Genre))
+                {
+                    <span class="badge badge-genre">@Model.Genre</span>
+                }
+                @if (!string.IsNullOrEmpty(Model.Style))
+                {
+                    <span class="badge badge-style">@Model.Style</span>
+                }
+                @if (!string.IsNullOrEmpty(Model.Theme))
+                {
+                    <span class="badge badge-theme">@Model.Theme</span>
+                }
+            </div>
+
+            <!-- Tags -->
+            @if (!string.IsNullOrEmpty(Model.Tags))
+            {
+                <div class="mt-3">
+                    <strong>Tags:</strong>
+                    <div class="poem-tags">
+                        @foreach (var tag in Model.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            <span class="poem-tag">@tag.Trim()</span>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Additional Details -->
+            <div class="poem-details">
+                @if (!string.IsNullOrEmpty(Model.Language))
+                {
+                    <div class="detail-item">
+                        <span class="detail-label">Language</span>
+                        <span class="detail-value">@Model.Language</span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Mood))
+                {
+                    <div class="detail-item">
+                        <span class="detail-label">Mood</span>
+                        <span class="detail-value">@Model.Mood</span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.LicenseType))
+                {
+                    <div class="detail-item">
+                        <span class="detail-label">License</span>
+                        <span class="detail-value">@Model.LicenseType</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Copyright Notice -->
+            @if (!string.IsNullOrEmpty(Model.CopyrightNotice))
+            {
+                <div class="copyright-notice">
+                    <i class="bi bi-c-circle me-2"></i>@Model.CopyrightNotice
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Add Bootstrap Icons for the icons used above -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">

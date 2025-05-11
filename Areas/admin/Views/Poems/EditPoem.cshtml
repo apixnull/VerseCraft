@@ -102,6 +102,13 @@
                 <textarea asp-for="CopyrightNotice" class="form-control" rows="2"></textarea>
                 <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
             </div>
+
+            <!-- Visibility -->
+            <div class="form-check mb-3">
+                <input asp-for="IsPublic" class="form-check-input" type="checkbox" id="IsPublicCheckbox" />
+                <label asp-for="IsPublic" class="form-check-label">Make this poem public</label>
+            </div>
+
         </div>
 
         <div class="col-md-4">

@@ -31,5 +31,7 @@ namespace VerseCraft.Areas.admin.ViewModels
         public string? CopyrightNotice { get; set; }
 
         public int? UserId { get; set; }  // Set internally for authenticated users
+
+        public bool IsPublic { get; set; } 
     }
 }

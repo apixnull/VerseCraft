@@ -62,6 +62,12 @@
         <a asp-action="DisplayAnthologies" class="btn btn-secondary">Back to List</a>
         <button type="submit" class="btn btn-success">Update Anthology</button>
     </div>
+
+    <div class="form-check form-switch mb-4">
+        <input asp-for="IsPublic" class="form-check-input" type="checkbox" role="switch" id="IsPublicSwitch" />
+        <label asp-for="IsPublic" class="form-check-label">Make this anthology public</label>
+    </div>
+
 </form>
 
 @section Scripts {

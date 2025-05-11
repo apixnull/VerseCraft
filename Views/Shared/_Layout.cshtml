@@ -15,10 +15,26 @@
     <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
-   
+   <style>
+        .soft-dropdown {
+            border: 1px solid #ffc0cb;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(255, 192, 203, 0.2);
+            background-color: #fff;
+        }
+
+            .soft-dropdown .dropdown-item:hover {
+                background-color: #ffe4ec;
+                color: #d63384;
+            }
+
+        .text-pink {
+            color: #ff69b4;
+        }
+   </style>
 </head>
 <body>
-    <header>
+    <header style="z-index: 999">
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">VerseCraft</a>
@@ -33,13 +49,13 @@
                             <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Poems" asp-action="Feed">Poems</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="DisplayAnthology">Anthology</a>
+                            <a class="nav-link" asp-controller="Poems" asp-action="Feed">Explore Poems</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="DisplayAnthology">Explore Anthology</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
@@ -49,17 +65,24 @@
                     <ul class="navbar-nav align-items-center mb-2 mb-lg-0">
                         @if (isAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Collection" asp-action="MainDashboard">My Collections</a>
+                            <li class="nav-item dropdown user-dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="/images/profile.png" alt="Profile" class="rounded-circle me-2" style="width: 36px; height: 36px; border: 2px solid #ffc0cb;">
+                                    <span class="fw-semibold" style="color: #333;">@userDisplayName</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end soft-dropdown" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item fw-semibold" asp-controller="Profile" asp-action="Index"><i class="bi bi-person-circle me-2 text-pink"></i>Profile</a></li>
+                                    <li><a class="dropdown-item fw-semibold" asp-controller="MyCollection" asp-action="DisplayCollections"><i class="bi bi-heart-fill me-2 text-pink"></i>My Collections</a></li>
+                                    <li><a class="dropdown-item fw-semibold" asp-controller="SavedItems" asp-action="DisplaySavedItems"><i class="bi bi-bookmark-heart me-2 text-pink"></i>Saved Items</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Auth" asp-action="Logout" method="post" class="dropdown-item p-0">
+                                            <button type="submit" class="btn w-100 text-start text-danger fw-bold"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
-                            <li class="nav-item me-2">
-                                <span class="nav-link text-muted">@userDisplayName</span>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-primary btn-sm">Logout</button>
-                                </form>
-                            </li>
+
                         }
                         else
                         {

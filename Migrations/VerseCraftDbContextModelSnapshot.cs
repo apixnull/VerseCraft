@@ -45,6 +45,12 @@ namespace VerseCraft.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LicenseType")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
@@ -188,6 +194,12 @@ namespace VerseCraft.Migrations
                     b.Property<string>("Genre")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Language")
                         .HasMaxLength(100)

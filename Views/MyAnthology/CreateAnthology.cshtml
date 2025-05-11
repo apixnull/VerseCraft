@@ -1,0 +1,209 @@
+﻿@model VerseCraft.Areas.admin.ViewModels.AnthologyFormViewModel
+@{
+    ViewData["Title"] = "Create Anthology";
+}
+
+<style>
+    /* Custom CSS for modern look with pink and blue theme */
+    .anthology-header {
+        background: linear-gradient(135deg, #ff6b9d 0%, #6b9dff 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .anthology-form {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #ff6b9d;
+        box-shadow: 0 0 0 0.25rem rgba(255, 107, 157, 0.25);
+    }
+
+    .form-check-input:checked {
+        background-color: #ff6b9d;
+        border-color: #ff6b9d;
+    }
+
+    .btn-anthology-primary {
+        background: linear-gradient(135deg, #ff6b9d 0%, #6b9dff 100%);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-anthology-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(107, 157, 255, 0.4);
+        }
+
+    .form-label {
+        font-weight: 500;
+        color: #555;
+    }
+
+    .input-group-text {
+        background: linear-gradient(135deg, #ff6b9d 0%, #6b9dff 100%);
+        color: white;
+        border: none;
+    }
+
+    .file-upload-wrapper {
+        position: relative;
+        margin-bottom: 10px;
+    }
+
+    .file-upload-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(107, 157, 255, 0.1) 100%);
+        border: 2px dashed #ff6b9d;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .file-upload-label:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.2) 0%, rgba(107, 157, 255, 0.2) 100%);
+        }
+
+    .file-upload-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .section-divider {
+        height: 1px;
+        background: linear-gradient(90deg, rgba(255, 107, 157, 0.3), rgba(107, 157, 255, 0.3), rgba(255, 107, 157, 0.3));
+        margin: 25px 0;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="anthology-header text-center">
+                <h1 class="display-5 fw-bold"><i class="bi bi-journal-plus me-2"></i>Create New Anthology</h1>
+                <p class="lead">Bring your collection of poems and verses to life</p>
+            </div>
+
+            <div class="anthology-form">
+                <form asp-controller="MyAnthology" asp-action="CreateAnthology" method="post" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label asp-for="Title" class="form-label">Anthology Title</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-pencil-fill"></i></span>
+                            <input asp-for="Title" class="form-control" placeholder="Enter a captivating title" />
+                        </div>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your anthology..."></textarea>
+                        </div>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="AuthorName" class="form-label">Author Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <input asp-for="AuthorName" class="form-control" placeholder="Your name or pen name" />
+                        </div>
+                        <span asp-validation-for="AuthorName" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="LicenseType" class="form-label">License Type</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-shield-fill"></i></span>
+                                <select asp-for="LicenseType" class="form-select">
+                                    <option value="">-- Select License --</option>
+                                    <option>Creative Commons</option>
+                                    <option>Public Domain</option>
+                                    <option>All Rights Reserved</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="LicenseType" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label asp-for="CopyrightNotice" class="form-label">Copyright Notice</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-c-circle-fill"></i></span>
+                                <select asp-for="CopyrightNotice" class="form-select">
+                                    <option value="">-- Select Copyright Notice --</option>
+                                    <option>© 2025 by Author</option>
+                                    <option>© VerseCraft</option>
+                                    <option>No Copyright</option>
+                                </select>
+                            </div>
+                            <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="CoverImage" class="form-label">Cover Image</label>
+                        <div class="file-upload-wrapper">
+                            <label class="file-upload-label w-100">
+                                <i class="bi bi-cloud-arrow-up fs-3 me-2"></i>
+                                <span id="file-chosen">Choose a cover image</span>
+                                <input asp-for="CoverImage" type="file" class="file-upload-input" id="cover-image-input" accept="image/*" />
+                            </label>
+                        </div>
+                        <span asp-validation-for="CoverImage" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4 form-check form-switch">
+                        <input asp-for="IsPublic" type="checkbox" class="form-check-input" id="isPublicSwitch" />
+                        <label class="form-check-label" for="isPublicSwitch">Make this anthology public</label>
+                        <span asp-validation-for="IsPublic" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-controller="MyCollection" asp-action="DisplayCollections" class="btn btn-outline-secondary me-md-2">
+                            <i class="bi bi-arrow-left me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-anthology-primary">
+                            <i class="bi bi-check-circle me-1"></i> Save Anthology
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Script to show the file name when selected
+        document.getElementById('cover-image-input').addEventListener('change', function() {
+            var fileName = this.files[0]?.name || 'Choose a cover image';
+            document.getElementById('file-chosen').textContent = fileName;
+        });
+    </script>
+}

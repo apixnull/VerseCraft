@@ -1,0 +1,551 @@
+﻿@model VerseCraft.ViewModels.DisplayCollectionsViewModel
+
+@{
+    ViewData["Title"] = "My Collections";
+}
+
+<style>
+    /* Custom CSS for modern look with pink and blue theme */
+    body {
+        background-color: #f9fafc;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #ff6b9d 0%, #6b9dff 100%);
+        color: white;
+        padding: 40px 0 50px;
+        margin-bottom: -30px;
+        position: relative;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+        .page-header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, #ff6b9d, #6b9dff, #ff6b9d);
+            opacity: 0.5;
+            border-radius: 0 0 20px 20px;
+        }
+
+    .collections-container {
+        background-color: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        margin-top: 20px;
+    }
+
+    .nav-tabs {
+        border-bottom: none;
+        margin-bottom: 20px;
+    }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin-right: 10px;
+            color: #555;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .nav-tabs .nav-link.active {
+                background: linear-gradient(135deg, #ff6b9d 0%, #6b9dff 100%);
+                color: white;
+                box-shadow: 0 4px 10px rgba(107, 157, 255, 0.4);
+            }
+
+            .nav-tabs .nav-link:hover:not(.active) {
+                background: rgba(107, 157, 255, 0.1);
+            }
+
+    .search-bar {
+        border-radius: 50px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+        .search-bar input {
+            border: none;
+            padding-left: 20px;
+        }
+
+        .search-bar .btn {
+            border-radius: 0 50px 50px 0;
+            background: linear-gradient(135deg, #ff6b9d 0%, #6b9dff 100%);
+            border: none;
+            padding: 10px 20px;
+        }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(107, 157, 255, 0.2);
+        }
+
+    .card-img-overlay {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
+        border-radius: 15px 15px 0 0;
+    }
+
+        .card-img-overlay h4 {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: 700;
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-footer {
+        background-color: white;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 15px 20px;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-weight: 500;
+    }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A) !important;
+        }
+
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, #9E9E9E, #607D8B) !important;
+        }
+
+        .badge.bg-info {
+            background: linear-gradient(135deg, #03A9F4, #00BCD4) !important;
+            color: white !important;
+        }
+
+        .badge.bg-warning {
+            background: linear-gradient(135deg, #FFC107, #FF9800) !important;
+        }
+
+    .btn-create {
+        background: linear-gradient(135deg, #ff6b9d 0%, #6b9dff 100%);
+        border: none;
+        border-radius: 50px;
+        padding: 8px 20px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(107, 157, 255, 0.4);
+            color: white;
+        }
+
+    .btn-view {
+        background: transparent;
+        border: 2px solid #6b9dff;
+        border-radius: 50px;
+        padding: 5px 15px;
+        color: #6b9dff;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-view:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(107, 157, 255, 0.1) 100%);
+            color: #ff6b9d;
+            border-color: #ff6b9d;
+        }
+
+    .create-card {
+        background: linear-gradient(135deg, rgba(255, 107, 157, 0.05) 0%, rgba(107, 157, 255, 0.05) 100%);
+        border: 2px dashed rgba(107, 157, 255, 0.4);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .create-card:hover {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(107, 157, 255, 0.1) 100%);
+            border-color: #ff6b9d;
+        }
+
+        .create-card i {
+            background: linear-gradient(135deg, #ff6b9d, #6b9dff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3.5rem;
+        }
+
+    .anthology-count {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50px;
+        padding: 3px 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6b9dff;
+    }
+
+    .poem-card-title {
+        color: #333;
+        font-weight: 600;
+        background: linear-gradient(135deg, #ff6b9d, #6b9dff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .author-info {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(107, 157, 255, 0.1) 100%);
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+    }
+
+        .author-info i {
+            margin-right: 5px;
+            color: #6b9dff;
+        }
+
+    .no-content-placeholder {
+        padding: 40px;
+        text-align: center;
+        border-radius: 15px;
+        background: linear-gradient(135deg, rgba(255, 107, 157, 0.05) 0%, rgba(107, 157, 255, 0.05) 100%);
+    }
+
+        .no-content-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff6b9d, #6b9dff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+    .poem-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+
+    .date-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #777;
+    }
+
+        .date-badge i {
+            margin-right: 5px;
+            color: #6b9dff;
+        }
+
+    .tab-content {
+        min-height: 400px;
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-7">
+                <h1 class="display-4 fw-bold">Your Poetry Universe</h1>
+                <p class="lead">Curate your personal anthology of beloved poems, organize them by themes, and revisit your favorites anytime.</p>
+            </div>
+            <div class="col-md-5 text-end d-none d-md-block">
+                <i class="bi bi-journal-richtext" style="font-size: 5rem; opacity: 0.7;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="collections-container">
+        <!-- Tabs for navigation -->
+        <ul class="nav nav-tabs" id="collectionTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="my-collections-tab" data-bs-toggle="tab" data-bs-target="#my-collections" type="button" role="tab" aria-controls="my-collections" aria-selected="true">
+                    <i class="bi bi-collection me-2"></i> My Anthologies
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="my-poems-tab" data-bs-toggle="tab" data-bs-target="#my-poems" type="button" role="tab" aria-controls="my-poems" aria-selected="false">
+                    <i class="bi bi-bookmark-heart me-2"></i> My Poems
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="collectionTabContent">
+            <!-- My Anthologies Tab -->
+            <div class="tab-pane fade show active" id="my-collections" role="tabpanel" aria-labelledby="my-collections-tab">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <!-- Search bar -->
+                        <div class="input-group search-bar">
+                            <input type="text" class="form-control" placeholder="Search your anthologies...">
+                            <button class="btn" type="button"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <a asp-controller="MyAnthology" asp-action="CreateAnthology" class="btn btn-create">
+                            <i class="bi bi-plus-circle me-2"></i> New Anthology
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Display Anthologies -->
+                    @if (Model.Anthologies != null && Model.Anthologies.Any())
+                    {
+                        @foreach (var anthology in Model.Anthologies)
+                        {
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-img-top position-relative" style="background-image: url('/uploads/anthologies/@anthology.ImagePath'); height: 180px; background-size: cover; background-position: center;">
+                                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                            <h4 class="mb-0">@anthology.Title</h4>
+                                        </div>
+                                        <div class="anthology-count">
+                                            <i class="bi bi-journals me-1"></i> @anthology.AnthologyPoems.Count poems
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text text-muted">@(anthology.Description.Length > 120 ? anthology.Description.Substring(0, 120) + "..." : anthology.Description)</p>
+                                        <div class="author-info">
+                                            <i class="bi bi-person-circle"></i> @anthology.AuthorName
+                                        </div>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-between align-items-center">
+                                        <div class="date-badge">
+                                            <i class="bi bi-calendar3"></i> @anthology.UpdatedAt.ToString("MMM dd, yyyy")
+                                        </div>
+                                        <div>
+                                            @if (anthology.IsPublic)
+                                            {
+                                                <span class="badge bg-success me-2"><i class="bi bi-eye"></i> Public</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary me-2"><i class="bi bi-lock"></i> Private</span>
+                                            }
+                                            <a asp-controller="MyAnthology" asp-action="ViewAnthology" asp-route-id="@anthology.Id" class="btn btn-view">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- "Create New Collection" Card -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card create-card h-100">
+                                <a asp-controller="MyAnthology" asp-action="CreateAnthology" class="stretched-link"></a>
+                                <div class="card-body text-center d-flex flex-column justify-content-center align-items-center p-4">
+                                    <i class="bi bi-plus-circle mb-3"></i>
+                                    <h5 class="mb-3">Create New Anthology</h5>
+                                    <p class="text-muted">Start a new themed collection of your favorite poems.</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="no-content-placeholder">
+                                <i class="bi bi-journal-plus"></i>
+                                <h4>No Anthologies Yet</h4>
+                                <p class="text-muted mb-4">Create your first anthology to start organizing your poems.</p>
+                                <a asp-controller="MyAnthology" asp-action="CreateAnthology" class="btn btn-create">
+                                    <i class="bi bi-plus-circle me-2"></i> Create First Anthology
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- My Poems Tab -->
+            <div class="tab-pane fade" id="my-poems" role="tabpanel" aria-labelledby="my-poems-tab">
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <!-- Search bar -->
+                        <div class="input-group search-bar">
+                            <input type="text" class="form-control" placeholder="Search your poems...">
+                            <button class="btn" type="button"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <a asp-action="CreatePoem" asp-controller="MyPoem" class="btn btn-create">
+                            <i class="bi bi-feather me-2"></i> New Poem
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Display Poems -->
+                    @if (Model.Poems != null && Model.Poems.Any())
+                    {
+                        @foreach (var poem in Model.Poems)
+                        {
+                            <div class="col-md-6 col-lg-4 mb-4">
+                                <div class="card h-100">
+                                    @if (!string.IsNullOrEmpty(poem.CoverImagePath))
+                                    {
+                                        <div class="position-relative">
+                                            <img src="~/uploads/poems/@poem.CoverImagePath" class="card-img-top" alt="@poem.Title" style="height: 160px; object-fit: cover;" />
+                                            @if (poem.IsPublic)
+                                            {
+                                                <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                                                    <i class="bi bi-eye"></i> Public
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="position-absolute top-0 end-0 m-2 badge bg-secondary">
+                                                    <i class="bi bi-lock"></i> Private
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-top d-flex justify-content-center align-items-center" style="height: 160px; background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(107, 157, 255, 0.1) 100%);">
+                                            <i class="bi bi-file-earmark-text" style="font-size: 3rem; color: #6b9dff;"></i>
+                                            @if (poem.IsPublic)
+                                            {
+                                                <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                                                    <i class="bi bi-eye"></i> Public
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="position-absolute top-0 end-0 m-2 badge bg-secondary">
+                                                    <i class="bi bi-lock"></i> Private
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+
+                                    <div class="card-body">
+                                        <h5 class="card-title poem-card-title">@poem.Title</h5>
+
+                                        @if (!string.IsNullOrEmpty(poem.Summary))
+                                        {
+                                            <p class="card-text text-muted">@(poem.Summary.Length > 100 ? poem.Summary.Substring(0, 100) + "..." : poem.Summary)</p>
+                                        }
+
+                                        <div class="poem-tags">
+                                            @if (!string.IsNullOrEmpty(poem.Genre))
+                                            {
+                                                <span class="badge bg-secondary"><i class="bi bi-bookmark-fill me-1"></i>@poem.Genre</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poem.Style))
+                                            {
+                                                <span class="badge bg-info"><i class="bi bi-brush me-1"></i>@poem.Style</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(poem.Theme))
+                                            {
+                                                <span class="badge bg-warning"><i class="bi bi-lightbulb me-1"></i>@poem.Theme</span>
+                                            }
+                                        </div>
+
+                                        <div class="author-info">
+                                            <i class="bi bi-person-circle"></i> @poem.AuthorName
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer d-flex justify-content-between align-items-center">
+                                        <div class="date-badge">
+                                            <i class="bi bi-calendar3"></i> @(poem.UpdatedAt?.ToString("MMM dd, yyyy") ?? poem.CreatedAt.ToString("MMM dd, yyyy"))
+                                        </div>
+                                        <a asp-action="ViewPoem" asp-controller="MyPoem" asp-route-id="@poem.Id" class="btn btn-view">
+                                            <i class="bi bi-eye me-1"></i> View
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="no-content-placeholder">
+                                <i class="bi bi-feather"></i>
+                                <h4>No Poems Yet</h4>
+                                <p class="text-muted mb-4">Create your first poem to start building your collection.</p>
+                                <a asp-action="CreatePoem" asp-controller="MyPoem" class="btn btn-create">
+                                    <i class="bi bi-plus-circle me-2"></i> Write First Poem
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle search functionality
+            const anthologySearch = document.querySelector('#my-collections input[type="text"]');
+            const poemSearch = document.querySelector('#my-poems input[type="text"]');
+
+            anthologySearch?.addEventListener('input', function(e) {
+                const searchText = e.target.value.toLowerCase();
+                const anthologyCards = document.querySelectorAll('#my-collections .card:not(.create-card)');
+
+                anthologyCards.forEach(card => {
+                    const title = card.querySelector('h4')?.textContent.toLowerCase() || '';
+                    const description = card.querySelector('.card-text')?.textContent.toLowerCase() || '';
+                    const author = card.querySelector('.author-info')?.textContent.toLowerCase() || '';
+
+                    if (title.includes(searchText) || description.includes(searchText) || author.includes(searchText)) {
+                        card.closest('.col-md-6').style.display = '';
+                    } else {
+                        card.closest('.col-md-6').style.display = 'none';
+                    }
+                });
+            });
+
+            poemSearch?.addEventListener('input', function(e) {
+                const searchText = e.target.value.toLowerCase();
+                const poemCards = document.querySelectorAll('#my-poems .card');
+
+                poemCards.forEach(card => {
+                    const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+                    const summary = card.querySelector('.card-text')?.textContent.toLowerCase() || '';
+                    const author = card.querySelector('.author-info')?.textContent.toLowerCase() || '';
+                    const tags = Array.from(card.querySelectorAll('.badge')).map(badge => badge.textContent.toLowerCase()).join(' ');
+
+                    if (title.includes(searchText) || summary.includes(searchText) || author.includes(searchText) || tags.includes(searchText)) {
+                        card.closest('.col-md-6').style.display = '';
+                    } else {
+                        card.closest('.col-md-6').style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+}

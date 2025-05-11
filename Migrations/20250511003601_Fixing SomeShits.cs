@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VerseCraft.Migrations
 {
     /// <inheritdoc />
-    public partial class FixDatabase : Migration
+    public partial class FixingSomeShits : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,7 +43,9 @@ namespace VerseCraft.Migrations
                     CopyrightNotice = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsApproved = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,18 +101,13 @@ namespace VerseCraft.Migrations
                     AuthorName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: true),
-                    AnthologyId = table.Column<int>(type: "INTEGER", nullable: true)
+                    IsApproved = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsPublic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Poems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Poems_Anthologies_AnthologyId",
-                        column: x => x.AnthologyId,
-                        principalTable: "Anthologies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Poems_Users_UserId",
                         column: x => x.UserId,
@@ -141,6 +138,30 @@ namespace VerseCraft.Migrations
                         name: "FK_SavedAnthologies_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnthologyPoems",
+                columns: table => new
+                {
+                    AnthologyId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PoemId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnthologyPoems", x => new { x.AnthologyId, x.PoemId });
+                    table.ForeignKey(
+                        name: "FK_AnthologyPoems_Anthologies_AnthologyId",
+                        column: x => x.AnthologyId,
+                        principalTable: "Anthologies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnthologyPoems_Poems_PoemId",
+                        column: x => x.PoemId,
+                        principalTable: "Poems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -258,6 +279,11 @@ namespace VerseCraft.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AnthologyPoems_PoemId",
+                table: "AnthologyPoems",
+                column: "PoemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ApprovedItems_AnthologyId",
                 table: "ApprovedItems",
                 column: "AnthologyId");
@@ -281,11 +307,6 @@ namespace VerseCraft.Migrations
                 name: "IX_OTPTokens_UserId",
                 table: "OTPTokens",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Poems_AnthologyId",
-                table: "Poems",
-                column: "AnthologyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Poems_UserId",
@@ -323,6 +344,9 @@ namespace VerseCraft.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AnthologyPoems");
+
+            migrationBuilder.DropTable(
                 name: "ApprovedItems");
 
             migrationBuilder.DropTable(
@@ -341,10 +365,10 @@ namespace VerseCraft.Migrations
                 name: "SavedPoems");
 
             migrationBuilder.DropTable(
-                name: "Poems");
+                name: "Anthologies");
 
             migrationBuilder.DropTable(
-                name: "Anthologies");
+                name: "Poems");
 
             migrationBuilder.DropTable(
                 name: "Users");

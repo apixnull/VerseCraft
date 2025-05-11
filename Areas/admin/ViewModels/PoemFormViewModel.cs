@@ -52,5 +52,9 @@ namespace VerseCraft.Areas.admin.ViewModels
         public string AuthorName { get; set; } = string.Empty;
 
         public int? UserId { get; set; }
+
+        public bool IsPublic { get; set; }
+
+        public int? AnthologyId { get; set; }
     }
 }

@@ -84,7 +84,8 @@ namespace VerseCraft.Areas.admin.Controllers
                 CoverImagePath = uniqueFileName,
                 AuthorName = model.AuthorName,
                 UserId = model.UserId,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                IsPublic = model.IsPublic,  
             };
 
             // 3. Persist and redirect
@@ -96,7 +97,7 @@ namespace VerseCraft.Areas.admin.Controllers
          
         }
 
-        /* ===========================      Edit Poem        =========================== */
+        
         /* ===========================      Edit Poem        =========================== */
         [HttpGet]
         public async Task<IActionResult> EditPoem(int? id)
@@ -123,6 +124,7 @@ namespace VerseCraft.Areas.admin.Controllers
                 CoverImagePath = poem.CoverImagePath,
                 AuthorName = poem.AuthorName,
                 UserId = poem.UserId,
+                IsPublic = poem.IsPublic
             };
 
             return View(model);
@@ -179,6 +181,7 @@ namespace VerseCraft.Areas.admin.Controllers
             poem.AuthorName = model.AuthorName;
             poem.UserId = model.UserId;
             poem.UpdatedAt = DateTime.UtcNow;
+            poem.IsPublic = model.IsPublic;
 
             _context.Poems.Update(poem);
             await _context.SaveChangesAsync();

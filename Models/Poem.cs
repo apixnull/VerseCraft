@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace VerseCraft.Models
@@ -10,7 +10,7 @@ namespace VerseCraft.Models
         public int Id { get; set; }
 
         // ============================
-        // Main Information
+        // 📘 Main Information
         // ============================
 
         // The title of the poem (required, max 200 chars).
@@ -66,17 +66,27 @@ namespace VerseCraft.Models
         public string AuthorName { get; set; } = string.Empty;
 
         // ============================
-        // Metadata
+        // 📅 Metadata
         // ============================
 
         // The date and time the poem was created (UTC).
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // The date and time the poem was last updated (UTC, optional).
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
 
         // ============================
-        // Relationships
+        // 📜 Approval & Visibility
+        // ============================
+
+        // Whether the poem is approved (default is false).
+        public bool IsApproved { get; set; } = false;
+
+        // Whether the poem is public (default is false).
+        public bool IsPublic { get; set; } = false;
+
+        // ============================
+        // 📚 Relationships
         // ============================
 
         // The ID of the user who authored the poem (optional).
@@ -85,8 +95,7 @@ namespace VerseCraft.Models
         // The user who authored the poem (optional).
         public virtual User? User { get; set; }
 
-
-        // The anthology this poem belongs to (optional
-        public virtual ICollection<AnthologyPoem> AnthologyPoems { get; set; } = new List<AnthologyPoem>(); 
+        // The anthology this poem belongs to (optional).
+        public virtual ICollection<AnthologyPoem> AnthologyPoems { get; set; } = new List<AnthologyPoem>();
     }
 }

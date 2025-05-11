@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace VerseCraft.Models
 {
@@ -58,10 +56,15 @@ namespace VerseCraft.Models
         // The date and time the anthology was last updated (UTC).
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        // Whether the anthology is public (default is false).
+        public bool IsPublic { get; set; } = false;
+
+        // Whether the anthology is approved (default is false).
+        public bool IsApproved { get; set; } = false;
+
         // ============================
         // 📚 Relationships
         // ============================
         public virtual ICollection<AnthologyPoem> AnthologyPoems { get; set; } = new List<AnthologyPoem>();
-
     }
 }

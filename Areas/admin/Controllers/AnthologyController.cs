@@ -83,7 +83,8 @@ namespace VerseCraft.Areas.admin.Controllers
                     ImagePath = uniqueFileName, // Save the file name (path relative to wwwroot/uploads/anthologies)
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
-                    UserId = model.UserId // Optional, based on logged-in user
+                    UserId = model.UserId, // Optional, based on logged-in user
+                    IsPublic = model.IsPublic
                 };
 
                 // 3. Add the anthology to the database and save changes
@@ -150,7 +151,8 @@ namespace VerseCraft.Areas.admin.Controllers
                 LicenseType = anthology.LicenseType,
                 CopyrightNotice = anthology.CopyrightNotice,
                 ExistingImagePath = anthology.ImagePath,
-                UserId = anthology.UserId
+                UserId = anthology.UserId,
+                IsPublic = anthology.IsPublic
             };
 
             return View(viewModel);
@@ -171,6 +173,7 @@ namespace VerseCraft.Areas.admin.Controllers
             anthology.LicenseType = model.LicenseType;
             anthology.CopyrightNotice = model.CopyrightNotice;
             anthology.UpdatedAt = DateTime.UtcNow;
+            anthology.IsPublic = model.IsPublic;
 
             // ================== Image Handling ==================
             if (model.CoverImage != null)
