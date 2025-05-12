@@ -4,92 +4,333 @@
     ViewData["Title"] = "Manage Poems";
 }
 
-<div class="container my-4">
+<style>
+    .poem-card {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden;
+        height: 100%;
+        border: none;
+    }
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="input-group" style="max-width: 400px;">
-            <input id="poemSearch" type="text" class="form-control" placeholder="Search by ID or Title…">
+        .poem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+    .poem-header {
+        padding: 15px 20px;
+        background: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
+        color: #3a3a3a;
+    }
+
+    .poem-body {
+        padding: 20px;
+    }
+
+    .poem-footer {
+        padding: 12px 20px;
+        background-color: #f9f9f9;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .metadata-item {
+        display: flex;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .metadata-label {
+        color: #6c757d;
+        width: 80px;
+        flex-shrink: 0;
+    }
+
+    .metadata-value {
+        color: #3a3a3a;
+        font-weight: 500;
+    }
+
+    .poem-content {
+        max-height: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        margin-bottom: 15px;
+        color: #555;
+        font-style: italic;
+        border-left: 3px solid #bbdefb;
+        padding-left: 15px;
+        background-color: rgba(187, 222, 251, 0.1);
+    }
+
+    .poem-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #3a3a3a;
+        font-size: 1.1rem;
+    }
+
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 20px;
+        margin-right: 5px;
+    }
+
+    .badge-approved {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        border: 1px solid rgba(40, 167, 69, 0.2);
+    }
+
+    .badge-pending {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+        border: 1px solid rgba(255, 193, 7, 0.2);
+    }
+
+    .badge-public {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: #17a2b8;
+        border: 1px solid rgba(23, 162, 184, 0.2);
+    }
+
+    .badge-private {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+        border: 1px solid rgba(108, 117, 125, 0.2);
+    }
+
+    .search-container {
+        position: relative;
+        max-width: 400px;
+    }
+
+    .filter-bar {
+        background: white;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .create-btn {
+        background: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
+        border: none;
+        box-shadow: 0 4px 10px rgba(248, 187, 208, 0.3);
+        color: #3a3a3a;
+        font-weight: 600;
+    }
+
+        .create-btn:hover {
+            box-shadow: 0 6px 15px rgba(248, 187, 208, 0.4);
+            transform: translateY(-2px);
+        }
+
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        margin-right: 5px;
+        transition: all 0.2s;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    #noResults {
+        text-align: center;
+        padding: 40px 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        display: none;
+    }
+
+    .poem-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+    }
+
+    /* media (max-width: 768px) { */
+    /*     .poem-grid */
+
+    /* { */
+    /*     grid-template-columns: 1fr; */
+    /* } */
+
+    /* } */
+</style>
+
+<div class="container-fluid">
+    <div class="filter-bar d-flex flex-wrap justify-content-between align-items-center">
+        <div class="input-group search-container mb-2 mb-md-0">
+            <input id="poemSearch" type="text" class="form-control" placeholder="Search by ID, title, theme...">
             <button id="searchBtn" class="btn btn-outline-secondary" type="button">
                 <i class="bi bi-search"></i>
             </button>
         </div>
-        <a asp-action="CreatePoem" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Create New Poem
-        </a>
+        <div class="d-flex">
+            <a asp-action="CreatePoem" class="btn create-btn">
+                <i class="bi bi-plus-lg me-1"></i> Create New Poem
+            </a>
+        </div>
     </div>
 
-    <table class="table table-hover" id="poemsTable">
-        <thead class="table-light">
-            <tr>
-                <th style="width: 80px;">ID</th>
-                <th>Title</th>
-                <th style="width: 140px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var poem in Model)
-            {
-                <tr data-id="@poem.Id" data-title="@poem.Title.ToLower()">
-                    <td>@poem.Id</td>
-                    <td>@poem.Title</td>
-                    <td>
-                        <a asp-action="EditPoem" asp-route-id="@poem.Id" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <a asp-action="DisplaySpecificPoem" asp-route-id="@poem.Id" class="btn btn-sm btn-outline-info"
-                           title="View details">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <form asp-action="DeletePoem" asp-route-id="@poem.Id"
-                              method="post" class="d-inline delete-form">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div id="noResults" class="my-4">
+        <i class="bi bi-search" style="font-size: 3rem; color: #bbdefb;"></i>
+        <h4 class="mt-3">No poems found</h4>
+        <p class="text-muted">Try adjusting your search criteria</p>
+    </div>
+
+    <div class="poem-grid" id="poemContainer">
+        @foreach (var poem in Model)
+        {
+            <div class="poem-card" data-id="@poem.Id" data-title="@poem.Title.ToLower()"
+                 data-theme="@(poem.Theme?.ToLower() ?? "")" data-genre="@(poem.Genre?.ToLower() ?? "")"
+                 data-author="@poem.AuthorName.ToLower()">
+                <div class="poem-header d-flex justify-content-between align-items-center">
+                    <h5 class="m-0">#@poem.Id</h5>
+                    <div>
+                        <span class="status-badge @(poem.IsApproved ? "badge-approved" : "badge-pending")">
+                            @(poem.IsApproved ? "Approved" : "Pending")
+                        </span>
+                        <span class="status-badge @(poem.IsPublic ? "badge-public" : "badge-private")">
+                            @(poem.IsPublic ? "Public" : "Private")
+                        </span>
+                    </div>
+                </div>
+                <div class="poem-body">
+                    <h5 class="poem-title">@poem.Title</h5>
+                    <div class="poem-content">@poem.Content</div>
+
+                    <div class="metadata">
+                        @if (!string.IsNullOrEmpty(poem.Theme))
+                        {
+                            <div class="metadata-item">
+                                <div class="metadata-label">Theme:</div>
+                                <div class="metadata-value">@poem.Theme</div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(poem.Genre))
+                        {
+                            <div class="metadata-item">
+                                <div class="metadata-label">Genre:</div>
+                                <div class="metadata-value">@poem.Genre</div>
+                            </div>
+                        }
+                        <div class="metadata-item">
+                            <div class="metadata-label">Author:</div>
+                            <div class="metadata-value">@poem.AuthorName</div>
+                        </div>
+                        <div class="metadata-item">
+                            <div class="metadata-label">Created:</div>
+                            <div class="metadata-value">@poem.CreatedAt.ToString("MMM dd, yyyy")</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="poem-footer d-flex justify-content-end">
+                    <a asp-action="EditPoem" asp-route-id="@poem.Id" class="btn btn-outline-primary action-btn" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a asp-action="DisplaySpecificPoem" asp-route-id="@poem.Id" class="btn btn-outline-info action-btn" title="View details">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <form asp-action="DeletePoem" asp-route-id="@poem.Id"
+                          method="post" class="d-inline delete-form">
+                        <button type="submit" class="btn btn-outline-danger action-btn" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Search
+            // Enhanced search
             const searchInput = document.getElementById('poemSearch');
             const searchBtn = document.getElementById('searchBtn');
-            const rows = document.querySelectorAll('#poemsTable tbody tr');
+            const poemCards = document.querySelectorAll('.poem-card');
+            const noResults = document.getElementById('noResults');
+            const poemContainer = document.getElementById('poemContainer');
 
-            function filterTable() {
+            function filterPoems() {
                 const term = searchInput.value.trim().toLowerCase();
-                rows.forEach(row => {
-                    const id = row.dataset.id;
-                    const title = row.dataset.title;
-                    row.style.display = (!term || id.includes(term) || title.includes(term)) ? '' : 'none';
+                let matchCount = 0;
+
+                poemCards.forEach(card => {
+                    const id = card.dataset.id;
+                    const title = card.dataset.title;
+                    const theme = card.dataset.theme;
+                    const genre = card.dataset.genre;
+                    const author = card.dataset.author;
+
+                    const matches = !term ||
+                        id.includes(term) ||
+                        title.includes(term) ||
+                        theme.includes(term) ||
+                        genre.includes(term) ||
+                        author.includes(term);
+
+                    card.style.display = matches ? '' : 'none';
+                    if (matches) matchCount++;
                 });
+
+                // Show/hide no results message
+                noResults.style.display = matchCount === 0 ? 'block' : 'none';
+                poemContainer.style.display = matchCount === 0 ? 'none' : 'grid';
             }
 
-            searchInput.addEventListener('keyup', e => { if (e.key === 'Enter') filterTable(); });
-            searchBtn.addEventListener('click', filterTable);
+            searchInput.addEventListener('keyup', e => {
+                if (e.key === 'Enter') filterPoems();
+                // Auto-search after a brief pause in typing
+                clearTimeout(searchInput.timer);
+                searchInput.timer = setTimeout(filterPoems, 300);
+            });
 
-            // Delete confirmation
+            searchBtn.addEventListener('click', filterPoems);
+
+            // Delete confirmation with SweetAlert2
             document.querySelectorAll('.delete-form').forEach(form => {
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
                     const currentForm = this;
+                    const poemCard = currentForm.closest('.poem-card');
+                    const poemTitle = poemCard.querySelector('.poem-title').textContent;
 
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "This will permanently delete the poem!",
+                        title: 'Delete Poem?',
+                        text: `Are you sure you want to delete "${poemTitle}"? This action cannot be undone.`,
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
+                        confirmButtonColor: '#dc3545',
+                        cancelButtonColor: '#6c757d',
                         confirmButtonText: 'Yes, delete it',
-                        cancelButtonText: 'Cancel'
+                        cancelButtonText: 'Cancel',
+                        customClass: {
+                            confirmButton: 'btn btn-danger',
+                            cancelButton: 'btn btn-secondary'
+                        },
+                        buttonsStyling: false
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            // Show loading indicator
+                            showLoading();
                             currentForm.submit();
                         }
                     });

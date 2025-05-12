@@ -103,7 +103,10 @@ namespace VerseCraft.Controllers
             {
                 TempData["ERROR"] = "Anthology not Found";
                 return RedirectToAction("Index", "Home"); // Redirect to a different page if not found
+
             }
+
+            TempData["CurrentAnthologyId"] = id;
 
             return View(anthology); // Pass the anthology and associated poems to the view
         }
@@ -118,7 +121,132 @@ namespace VerseCraft.Controllers
                 return NotFound();
             }
 
+            TempData.Keep("CurrentAnthologyId");
+
             return View(poem);
+        }
+
+        // GET: MyAnthology/EditAnthology/5
+        [HttpGet]
+        public async Task<IActionResult> EditAnthology(int id)
+        {
+            var anthology = await _context.Anthologies.FindAsync(id);
+            if (anthology == null)
+                return NotFound();
+
+            var vm = new AnthologyFormViewModel
+            {
+                Id = anthology.Id,
+                Title = anthology.Title,
+                Description = anthology.Description,
+                ExistingImagePath = anthology.ImagePath,
+                AuthorName = anthology.AuthorName,
+                LicenseType = anthology.LicenseType,
+                CopyrightNotice = anthology.CopyrightNotice,
+                IsPublic = anthology.IsPublic
+            };
+            return View(vm);
+        }
+
+        // POST: MyAnthology/EditAnthology
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAnthology(AnthologyFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var anthology = await _context.Anthologies.FindAsync(model.Id);
+            if (anthology == null)
+                return NotFound();
+
+            // Handle new image
+            if (model.CoverImage != null)
+            {
+                // delete old file
+                if (!string.IsNullOrEmpty(anthology.ImagePath))
+                {
+                    var oldPath = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "anthologies", anthology.ImagePath);
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
+
+                // save new file
+                var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(model.CoverImage.FileName)}";
+                var uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "anthologies");
+                Directory.CreateDirectory(uploadsFolder);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await model.CoverImage.CopyToAsync(stream);
+                anthology.ImagePath = uniqueFileName;
+            }
+
+            // Update other fields
+            anthology.Title = model.Title;
+            anthology.Description = model.Description;
+            anthology.AuthorName = model.AuthorName;
+            anthology.LicenseType = model.LicenseType;
+            anthology.CopyrightNotice = model.CopyrightNotice;
+            anthology.IsPublic = model.IsPublic;
+            anthology.UpdatedAt = DateTime.UtcNow;
+
+            _context.Anthologies.Update(anthology);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("ViewAnthology", new { id = model.Id});
+        }
+
+        // create the delet here in post , make sure to handle image deletioon as well, 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAnthology(int id)
+        {
+            var anthology = await _context.Anthologies.FindAsync(id);
+            if (anthology == null) return NotFound();
+
+            // 1. Delete the cover‐image file if it exists
+            if (!string.IsNullOrEmpty(anthology.ImagePath))
+            {
+                var file = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "anthologies", anthology.ImagePath);
+                if (System.IO.File.Exists(file))
+                    System.IO.File.Delete(file);
+            }
+
+            // 2. Remove the anthology record
+            _context.Anthologies.Remove(anthology);
+            await _context.SaveChangesAsync();
+
+            TempData["SUCCESS"] = "Anthology deleted successfully.";
+            return RedirectToAction("DisplayCollections", "MyCollection");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePoem(int id)
+        {
+
+            var poem = await _context.Poems.FindAsync(id);
+            if (poem == null) return NotFound();
+
+            // If there’s a cover file, delete it
+            if (!string.IsNullOrEmpty(poem.CoverImagePath))
+            {
+                var fullPath = Path.Combine(_hostEnvironment.WebRootPath, poem.CoverImagePath);
+                if (System.IO.File.Exists(fullPath))
+                    System.IO.File.Delete(fullPath);
+            }
+
+            _context.Poems.Remove(poem);
+            await _context.SaveChangesAsync();
+            TempData["SUCCESS"] = "Poem deleted successfully.";
+
+            // Retrieve anthology ID from TempData
+            if (TempData["CurrentAnthologyId"] != null && int.TryParse(TempData["CurrentAnthologyId"]!.ToString(), out int anthologyId))
+            {
+                return RedirectToAction("ViewAnthology", new { id = anthologyId });
+            }
+
+            return RedirectToAction("ViewAnthology"); // i want after deleting the poem to redirect to view anthology but the problem is view anthology will need an id to be passed
         }
     }
 }

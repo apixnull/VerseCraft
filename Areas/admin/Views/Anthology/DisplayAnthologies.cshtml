@@ -4,78 +4,215 @@
     ViewData["Title"] = "Manage Anthologies";
 }
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Anthologies</h2>
-        <div class="d-flex">
-            <form method="get" asp-action="DisplayAnthologies" class="d-flex me-2">
-                <input type="text" name="search" class="form-control me-2" placeholder="Search by title..." />
-                <button type="submit" class="btn btn-outline-primary">
-                    <i class="bi bi-search"></i>
-                </button>
-            </form>
-            <a asp-action="CreateAnthology" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> Create Anthology
-            </a>
-        </div>
-    </div>
+<style>
+    .container {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
 
-    <table class="table table-bordered table-hover table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th style="width: 240px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Title</td>
-                    <td>
-                        <a asp-action="EditAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <a asp-action="ViewAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info me-1" title="View">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <a asp-action="SearchPoem" asp-route-anthologyId="@item.Id" class="btn btn-sm btn-outline-success me-1" title="Add Poem">
-                            <i class="bi bi-plus-square"></i>
-                        </a>
-                        <form asp-action="DeleteAnthology" asp-route-id="@item.Id" method="post" class="d-inline delete-form">
-                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
+    .card {
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        border-radius: 25px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .search-container {
+        max-width: 400px;
+    }
+
+    .input-group-text {
+        background-color: #e9ecef;
+        border: none;
+        border-radius: 10px 0 0 10px;
+        color: #6c757d;
+    }
+
+    .form-control {
+        background-color: #e9ecef;
+        color: #495057;
+        border: none;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .btn-outline-secondary {
+        border-color: #e9ecef;
+        color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+    .table {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        width: 100%;
+    }
+
+        .table thead {
+            background: rgba(179, 229, 252, 0.7);
+            color: #0077c2;
+        }
+
+            .table thead th {
+                padding: 1rem;
+                text-align: left;
+                font-weight: 600;
             }
-        </tbody>
-    </table>
+
+        .table tbody tr {
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+            .table tbody tr:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                background-color: rgba(255, 255, 255, 1);
+            }
+
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+    .btn-sm {
+        margin-right: 0.5rem;
+    }
+
+    .btn-outline-primary {
+        color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+    .btn-outline-info {
+        color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+    .btn-outline-success {
+        color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+    .btn-outline-danger {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+    .action-buttons {
+        white-space: nowrap;
+        width: 240px;
+    }
+</style>
+
+<div class="container">
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Anthologies</h2>
+            <div class="d-flex">
+                <form method="get" asp-action="DisplayAnthologies" class="d-flex me-2">
+                    <input type="text" name="search" class="form-control me-2" placeholder="Search by title..." />
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <a asp-action="CreateAnthology" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Create Anthology
+                </a>
+            </div>
+        </div>
+
+        <table class="table table-hover" id="anthologiesTable">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th style="width: 240px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Title</td>
+                        <td class="action-buttons">
+                            <a asp-action="EditAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="ViewAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info me-1" title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="SearchPoem" asp-route-anthologyId="@item.Id" class="btn btn-sm btn-outline-success me-1" title="Add Poem">
+                                <i class="bi bi-plus-square"></i>
+                            </a>
+                            <form asp-action="DeleteAnthology" asp-route-id="@item.Id" method="post" class="d-inline delete-form">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
-
-    <script>
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function (e) {
-                e.preventDefault(); // Stop normal post
-                const currentForm = this;
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This will permanently delete the anthology!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        currentForm.submit(); // Submit if confirmed
-                    }
-                });
+<script>
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Stop normal post
+            const currentForm = this;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete the anthology!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentForm.submit(); // Submit if confirmed
+                }
             });
         });
-    </script>
+    });
+</script>

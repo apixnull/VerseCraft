@@ -4,138 +4,210 @@
     ViewData["Title"] = "Create Poem";
 }
 
-<h2 class="mb-4">Create Poem</h2>
-
-<form asp-action="CreatePoem" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-    <div class="row">
-        <div class="col-md-8">
-            <!-- Title -->
-            <div class="mb-3">
-                <label asp-for="Title" class="form-label">Title</label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-
-            <!-- Content -->
-            <div class="mb-3">
-                <label asp-for="Content" class="form-label">Content</label>
-                <textarea asp-for="Content" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-
-            <!-- Summary -->
-            <div class="mb-3">
-                <label asp-for="Summary" class="form-label">Summary</label>
-                <textarea asp-for="Summary" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Summary" class="text-danger"></span>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <!-- Genre -->
-                    <div class="mb-3">
-                        <label asp-for="Genre" class="form-label">Genre</label>
-                        <input asp-for="Genre" class="form-control" />
-                        <span asp-validation-for="Genre" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <!-- Style -->
-                    <div class="mb-3">
-                        <label asp-for="Style" class="form-label">Style</label>
-                        <input asp-for="Style" class="form-control" />
-                        <span asp-validation-for="Style" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <!-- Theme -->
-                    <div class="mb-3">
-                        <label asp-for="Theme" class="form-label">Theme</label>
-                        <input asp-for="Theme" class="form-control" />
-                        <span asp-validation-for="Theme" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <!-- Tags -->
-                    <div class="mb-3">
-                        <label asp-for="Tags" class="form-label">Tags</label>
-                        <input asp-for="Tags" class="form-control" placeholder="comma-separated" />
-                        <span asp-validation-for="Tags" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <!-- Language -->
-                    <div class="mb-3">
-                        <label asp-for="Language" class="form-label">Language</label>
-                        <input asp-for="Language" class="form-control" />
-                        <span asp-validation-for="Language" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <!-- Mood -->
-                    <div class="mb-3">
-                        <label asp-for="Mood" class="form-label">Mood</label>
-                        <input asp-for="Mood" class="form-control" />
-                        <span asp-validation-for="Mood" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <!-- Author Name -->
-                    <div class="mb-3">
-                        <label asp-for="AuthorName" class="form-label">Author Name</label>
-                        <input asp-for="AuthorName" class="form-control" />
-                        <span asp-validation-for="AuthorName" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- License & Copyright -->
-            <div class="mb-3">
-                <label asp-for="LicenseType" class="form-label">License Type</label>
-                <input asp-for="LicenseType" class="form-control" placeholder="e.g., Creative Commons" />
-                <span asp-validation-for="LicenseType" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="CopyrightNotice" class="form-label">Copyright Notice</label>
-                <textarea asp-for="CopyrightNotice" class="form-control" rows="2" placeholder="© 2025 Jane Doe"></textarea>
-                <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
-            </div>
-
-            <!-- Visibility -->
-            <div class="form-check mb-3">
-                <input asp-for="IsPublic" class="form-check-input" type="checkbox" id="IsPublicCheckbox" />
-                <label asp-for="IsPublic" class="form-check-label">Make this poem public</label>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <!-- New Cover Image Upload -->
-            <div class="mb-3">
-                <label asp-for="NewCoverImagePath" class="form-label">Cover Image</label>
-                <input asp-for="NewCoverImagePath" class="form-control" type="file" />
-                <span asp-validation-for="NewCoverImagePath" class="text-danger"></span>
-            </div>
-        </div>
+<div class="page-header">
+    <h2 class="page-title"></h2>
+    <div class="breadcrumb-wrapper">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/admin/poems">Poems</a></li>
+                <li class="breadcrumb-item active">Create</li>
+            </ol>
+        </nav>
     </div>
+</div>
 
-    <div class="mt-4">
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-save"></i> Save Poem
-        </button>
-        <a asp-action="DisplayPoems" class="btn btn-secondary ms-2">
-            <i class="bi bi-arrow-left"></i> Cancel
-        </a>
+<div class="content-area">
+    <div class="content-card">
+        <form asp-action="CreatePoem" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3" role="alert"></div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="content-card mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-pencil-square fs-4 me-2" style="color: var(--pink-light);"></i>
+                            <h5 class="mb-0">Poem Details</h5>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Title" class="form-control" id="title" placeholder="Title" style="border-radius: var(--border-radius);" />
+                            <label asp-for="Title">Title</label>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="mb-3">
+                            <label asp-for="Content" class="form-label fw-medium">Content</label>
+                            <textarea asp-for="Content" class="form-control" rows="8" style="border-radius: var(--border-radius); font-family: 'Georgia', serif;"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                            <div class="form-text">Express yourself with beautiful verses</div>
+                        </div>
+
+                        <!-- Summary -->
+                        <div class="mb-3">
+                            <label asp-for="Summary" class="form-label fw-medium">Summary</label>
+                            <textarea asp-for="Summary" class="form-control" rows="3" style="border-radius: var(--border-radius);"></textarea>
+                            <span asp-validation-for="Summary" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="content-card mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-tags fs-4 me-2" style="color: var(--blue-light);"></i>
+                            <h5 class="mb-0">Classification</h5>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Genre -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Genre" class="form-control" id="genre" placeholder="Genre" style="border-radius: var(--border-radius);" />
+                                    <label asp-for="Genre">Genre</label>
+                                    <span asp-validation-for="Genre" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Style -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Style" class="form-control" id="style" placeholder="Style" style="border-radius: var(--border-radius);" />
+                                    <label asp-for="Style">Style</label>
+                                    <span asp-validation-for="Style" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Theme -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Theme" class="form-control" id="theme" placeholder="Theme" style="border-radius: var(--border-radius);" />
+                                    <label asp-for="Theme">Theme</label>
+                                    <span asp-validation-for="Theme" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Tags -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Tags" class="form-control" id="tags" placeholder="Tags" style="border-radius: var(--border-radius);" />
+                                    <label asp-for="Tags">Tags (comma-separated)</label>
+                                    <span asp-validation-for="Tags" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <!-- Language -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Language" class="form-control" id="language" placeholder="Language" style="border-radius: var(--border-radius);" />
+                                    <label asp-for="Language">Language</label>
+                                    <span asp-validation-for="Language" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Mood -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Mood" class="form-control" id="mood" placeholder="Mood" style="border-radius: var(--border-radius);" />
+                                    <label asp-for="Mood">Mood</label>
+                                    <span asp-validation-for="Mood" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Author Name -->
+                                <div class="form-floating mb-3">
+                                    <input asp-for="AuthorName" class="form-control" id="authorName" placeholder="Author Name" style="border-radius: var(--border-radius);" />
+                                    <label asp-for="AuthorName">Author Name</label>
+                                    <span asp-validation-for="AuthorName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-shield-lock fs-4 me-2" style="color: var(--pink-light);"></i>
+                            <h5 class="mb-0">Rights & Publication</h5>
+                        </div>
+
+                        <!-- License & Copyright -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="LicenseType" class="form-control" id="licenseType" placeholder="License Type" style="border-radius: var(--border-radius);" />
+                            <label asp-for="LicenseType">License Type</label>
+                            <span asp-validation-for="LicenseType" class="text-danger"></span>
+                            <div class="form-text">e.g., Creative Commons, All Rights Reserved</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CopyrightNotice" class="form-label fw-medium">Copyright Notice</label>
+                            <textarea asp-for="CopyrightNotice" class="form-control" rows="2" style="border-radius: var(--border-radius);" placeholder="© 2025 Jane Doe"></textarea>
+                            <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
+                        </div>
+
+                        <!-- Visibility -->
+                        <div class="form-check form-switch mb-3">
+                            <input asp-for="IsPublic" class="form-check-input" type="checkbox" id="IsPublicCheckbox" />
+                            <label asp-for="IsPublic" class="form-check-label">Make this poem public</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="content-card mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-image fs-4 me-2" style="color: var(--blue-light);"></i>
+                            <h5 class="mb-0">Cover Image</h5>
+                        </div>
+
+                        <div class="cover-image-preview mb-3 text-center">
+                            <div id="imagePreview" class="position-relative" style="min-height: 200px; border: 2px dashed var(--blue-light); border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; background-color: rgba(187, 222, 251, 0.1);">
+                                <div id="noImageText">
+                                    <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+                                    <p class="mb-0">Drag & drop or click to upload</p>
+                                </div>
+                                <img id="coverPreview" class="img-fluid rounded d-none" style="max-height: 300px; max-width: 100%;" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NewCoverImagePath" class="form-label fw-medium">Cover Image</label>
+                            <input asp-for="NewCoverImagePath" class="form-control" type="file" id="coverImageUpload" style="border-radius: var(--border-radius);" />
+                            <span asp-validation-for="NewCoverImagePath" class="text-danger"></span>
+                            <div class="form-text">Recommended size: 1200 x 800 pixels</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary" style="background: var(--primary-gradient); border: none;">
+                    <i class="bi bi-save me-1"></i> Save Poem
+                </button>
+                <a asp-action="DisplayPoems" class="btn btn-light" style="border-radius: var(--border-radius);">
+                    <i class="bi bi-arrow-left me-1"></i> Cancel
+                </a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Image preview functionality
+        document.getElementById('coverImageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('coverPreview');
+                    preview.src = e.target.result;
+                    preview.classList.remove('d-none');
+                    document.getElementById('noImageText').classList.add('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 }

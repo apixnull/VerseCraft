@@ -24,11 +24,7 @@ namespace VerseCraft.Areas.admin.Controllers
         /* ===========================      Display Poem        =========================== */       
         public IActionResult DisplayPoems()
         {
-            var poems = _context.Poems.Select(p => new Poem
-            {
-                Id = p.Id,
-                Title = p.Title
-            }).ToList();
+            var poems = _context.Poems.ToList();
 
             ViewBag.TotalPoems = poems.Count;
 

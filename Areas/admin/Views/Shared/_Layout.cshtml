@@ -2,111 +2,220 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@ViewData["Title"] - Admin Panel</title>
+    <title>VerseCraft Admin Panel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="stylesheet" href="~/css/adminLayout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" /> 
+     <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" /> 
     <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/adminLayout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <style>
+        
+    </style>
 </head>
 <body>
-
-    <!-- Toast container (untouched) -->
+    <!-- Toast container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Top Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="bi bi-gem me-2" style="color:#00d4ff;"></i> VerseCraft Admin
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <!-- Sidebar Overlay (for mobile) -->
+    <div class="sidebar-overlay"></div>
 
-            <div class="collapse navbar-collapse" id="adminNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-brand">
+                    <i class="bi bi-gem"></i>
+                    VerseCraft
+                </a>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-title">Main Navigation</div>
+                <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" asp-area="admin" asp-controller="Dashboard" asp-action="Main">
-                            <i class="bi bi-speedometer2"></i> Dashboard
+                            <i class="bi bi-speedometer2"></i>
+                            Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Users" asp-action="DisplayUser">
-                            <i class="bi bi-people"></i> Users
+                            <i class="bi bi-people"></i>
+                            Users
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Poems" asp-action="DisplayPoems">
-                            <i class="bi bi-journal-text"></i> Poems
+                            <i class="bi bi-journal-text"></i>
+                            Poems
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="admin" asp-controller="Anthology" asp-action="DisplayAnthologies">
-                            <i class="bi bi-collection"></i> Anthology
+                            <i class="bi bi-collection"></i>
+                            Anthology
                         </a>
                     </li>
+                </ul>
+
+                <div class="nav-title">Content Management</div>
+                <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" asp-area="admin" asp-controller="Featured" asp-action="FeaturedItems">
-                            <i class="bi bi-stars"></i> Featured a Items
+                            <i class="bi bi-stars"></i>
+                            Featured Items
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="PublicItems" asp-action="AddPublic">
-                            <i class="bi bi-globe2"></i> Publish Publicly
+                            <i class="bi bi-globe2"></i>
+                            Publish Publicly
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="admin" asp-controller="ApprovedItems" asp-action="DisplayApprovedItems">
-                            <i class="bi bi-shield-check"></i> Pending Approvals
+                            <i class="bi bi-shield-check"></i>
+                            Pending Approvals
                         </a>
                     </li>
                 </ul>
-                <div class="d-flex align-items-center gap-2">
-                    <span class="text-white fw-semibold d-none d-md-inline">Admin Apix</span>
-                    <img src="~/images/admin_pic.png" alt="Admin" class="admin-avatar ms-2 me-2">
-                    <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="mb-0">
-                        <button type="submit" class="btn btn-sm btn-outline-light">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </form>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="top-bar">
+                <div class="brand-section">
+                    <button class="menu-toggle" id="toggleSidebar">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h4 class="ms-3">VerseCraft Poetry Administration</h4>
+                </div>
+
+                <div class="user-section">
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search..." class="form-control">
+                    </div>
+
+                    <div class="admin-profile" id="profileDropdown">
+                        <div class="admin-info">
+                            <p class="admin-name">Admin Apix</p>
+                            <p class="admin-role">Administrator</p>
+                        </div>
+                        <img src="/images/admin_pic.png" alt="Admin" class="admin-avatar">
+                        <i class="bi bi-chevron-down"></i>
+                       
+                        <!-- Profile Dropdown -->
+                        <div class="profile-dropdown">
+                             @* <a href="#" class="dropdown-item">  *@
+                             @*     <i class="bi bi-gear"></i> Settings  *@
+                             @* </a>  *@
+                            <div class="dropdown-divider"></div>
+                            <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="mb-0">
+                                <button type="submit" class="logout-btn">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-header">
+                <h4 class="page-title">@ViewData["Title"]</h4>
+                <div class="breadcrumb-wrapper">
+                    <!-- Breadcrumb can be added here if needed -->
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="content-card">
+                    @RenderBody()
                 </div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <section class="container mt-4">
-        <h4 class="mb-3">@ViewData["Title"]</h4>
-        <div class="admin-body">
-            @RenderBody()
-        </div>
-    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle sidebar
+            const toggleBtn = document.getElementById('toggleSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
 
-    <script src="~/js/loading.js" asp-append-version="true"></script>
-    <script src="~/js/toast.js" asp-append-version="true"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            toggleBtn.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            });
 
+            // Close sidebar when clicking on overlay
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            });
+
+            // Profile dropdown toggle
+            const profileDropdown = document.getElementById('profileDropdown');
+            const dropdownMenu = document.querySelector('.profile-dropdown');
+
+            profileDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                dropdownMenu.classList.remove('show');
+            });
+
+            // Set active menu item based on current URL
+            const currentLocation = window.location.href;
+            const menuItems = document.querySelectorAll('.nav-link');
+
+            menuItems.forEach(item => {
+                if (item.getAttribute('href') && currentLocation.includes(item.getAttribute('href'))) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Close sidebar on window resize if in mobile view
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 991) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+       
+    </script>
+    <script src="~/js/loading.js" asp-append-version="true"></script> 
+    <script src="~/js/toast.js" asp-append-version="true"></script> 
+
+    <!-- Handle toast messages from TempData -->
     @if (TempData["SUCCESS"] != null)
     {
-        <script> showToast('success', '@TempData["SUCCESS"]'); </script>
+        <script>showToast('success', '@TempData["SUCCESS"]');</script>
     }
     @if (TempData["ERROR"] != null)
     {
-        <script> showToast('error', '@TempData["ERROR"]'); </script>
+        <script>showToast('error', '@TempData["ERROR"]');</script>
     }
     @if (TempData["INFO"] != null)
     {
-        <script> showToast('info', '@TempData["INFO"]'); </script>
+        <script>showToast('info', '@TempData["INFO"]');</script>
     }
     @if (TempData["WARNING"] != null)
     {
-        <script> showToast('warning', '@TempData["WARNING"]'); </script>
+        <script>showToast('warning', '@TempData["WARNING"]');</script>
     }
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

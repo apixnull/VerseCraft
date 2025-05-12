@@ -3,70 +3,436 @@
     ViewData["Title"] = "User Management";
 }
 
-<link rel="stylesheet" href="~/css/displayUser.css" asp-append-version="true" />
+<style>
+    .user-grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem 0;
+    }
 
-<div class="card border-0 shadow-lg admin-body p-0">
-    <!-- Header -->
-    <div class="card-header d-flex flex-wrap justify-content-between align-items-center bg-transparent border-bottom-0 px-4 pt-4 pb-2">
-        <h5 class="mb-2 mb-sm-0 fw-bold" style="color:#00d4ff;">
-            <i class="bi bi-people-fill me-2"></i> User List
-        </h5>
-        <div class="input-group mt-2 mt-sm-0" style="max-width: 270px;">
-            <span class="input-group-text bg-dark border-0 text-white">
-                <i class="bi bi-search"></i>
-            </span>
-            <input type="text" id="searchInput" placeholder="Search users..."
-                   class="form-control form-control-sm bg-dark text-white border-0 shadow-none"
-                   style="border-radius: 0 8px 8px 0;" />
+    .user-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, rgba(248, 187, 208, 0.9) 0%, rgba(187, 222, 251, 0.9) 100%);
+        border-radius: 15px;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+    .stat-icon {
+        background: white;
+        border-radius: 12px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-info {
+        flex: 1;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.875rem;
+        margin: 0.25rem 0 0;
+        font-weight: 500;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+    .user-card-header {
+        background: linear-gradient(135deg, rgba(248, 187, 208, 0.5) 0%, rgba(187, 222, 251, 0.5) 100%);
+        padding: 1.5rem;
+        position: relative;
+        text-align: center;
+    }
+
+    .user-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        color: white;
+        font-size: 1.75rem;
+        font-weight: 700;
+    }
+
+    .user-card-body {
+        padding: 1.5rem;
+    }
+
+    .user-name {
+        margin: 0.75rem 0 0.25rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-align: center;
+    }
+
+    .user-email {
+        margin: 0 0 1.25rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        text-align: center;
+        word-break: break-all;
+    }
+
+    .user-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-right: 0.5rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .user-status {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .badge-verified {
+        background: linear-gradient(135deg, #81c784, #4caf50);
+        color: white;
+    }
+
+    .badge-unverified {
+        background: linear-gradient(135deg, #ef9a9a, #f44336);
+        color: white;
+    }
+
+    .badge-admin {
+        background: linear-gradient(135deg, #90caf9, #2196f3);
+        color: white;
+    }
+
+    .badge-user {
+        background: linear-gradient(135deg, #e0e0e0, #9e9e9e);
+        color: white;
+    }
+
+    .search-container {
+        position: relative;
+        max-width: 350px;
+        margin-left: auto;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-input {
+        width: 100%;
+        border-radius: 50px;
+        border: none;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+        .search-input:focus {
+            box-shadow: 0 4px 20px rgba(187, 222, 251, 0.3);
+            outline: none;
+        }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+    }
+
+    .filters-container {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-chip {
+        background: white;
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+        .filter-chip.active {
+            border-color: #f8bbd0;
+            background: rgba(248, 187, 208, 0.1);
+            color: #f06292;
+            font-weight: 500;
+        }
+
+        .filter-chip:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+
+    .no-results {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 15px;
+        color: var(--text-secondary);
+    }
+
+    .section-heading {
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+        font-weight: 600;
+    }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 4px;
+            background: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
+            border-radius: 2px;
+        }
+
+    /* media (max-width: 768px) { */
+    /*     .user-grid-container */
+
+    /* { */
+    /*     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); */
+    /* } */
+
+    /* .search-container { */
+    /*     max-width: 100%; */
+    /* } */
+
+    /* .user-stats { */
+    /*     grid-template-columns: repeat(2, 1fr); */
+    /* } */
+
+    /* } */
+
+    /* media (max-width: 576px) { */
+    /*     .user-stats */
+
+    /* { */
+    /*     grid-template-columns: 1fr; */
+    /* } */
+
+    /* } */
+</style>
+
+<div class="mb-4">
+    <h4 class="section-heading">User Management</h4>
+</div>
+
+<!-- Stats Cards -->
+<div class="user-stats">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="bi bi-people text-primary"></i>
+        </div>
+        <div class="stat-info">
+            <p class="stat-value">@Model.Count</p>
+            <p class="stat-label">Total Users</p>
         </div>
     </div>
-
-    <!-- Table -->
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table id="userTable" class="table table-dark table-hover table-sm align-middle mb-0" style="border-radius: 0 0 18px 18px; overflow: hidden; min-width: 600px;">
-                <thead style="background: rgba(0,212,255,0.12); color: #00d4ff;">
-                    <tr>
-                        <th style="min-width:40px;">#</th>
-                        <th style="min-width:120px;">Name</th>
-                        <th style="min-width:180px;">Email</th>
-                        <th style="min-width:80px;">Verified</th>
-                        <th style="min-width:80px;">Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < Model.Count; i++)
-                    {
-                        <tr>
-                            <td>@Model[i].Id</td>
-                            <td class="text-start">@Model[i].Name</td>
-                            <td class="text-start">@Model[i].Email</td>
-                            <td>
-                                <span class="badge rounded-pill bg-@(Model[i].IsVerified ? "success" : "danger") px-3 py-2">
-                                    @(Model[i].IsVerified ? "Yes" : "No")
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge rounded-pill bg-@(Model[i].IsAdmin ? "primary" : "secondary") px-3 py-2">
-                                    @(Model[i].IsAdmin ? "Admin" : "User")
-                                </span>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="bi bi-shield-check text-success"></i>
+        </div>
+        <div class="stat-info">
+            <p class="stat-value">@Model.Count(u => u.IsVerified)</p>
+            <p class="stat-label">Verified Users</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="bi bi-person-badge text-info"></i>
+        </div>
+        <div class="stat-info">
+            <p class="stat-value">@Model.Count(u => u.IsAdmin)</p>
+            <p class="stat-label">Admins</p>
         </div>
     </div>
 </div>
 
+<!-- Search and Filters -->
+<div class="d-flex flex-wrap justify-content-between align-items-center">
+    <div class="filters-container">
+        <div class="filter-chip active" data-filter="all">All Users</div>
+        <div class="filter-chip" data-filter="admin">Admins</div>
+        <div class="filter-chip" data-filter="verified">Verified</div>
+        <div class="filter-chip" data-filter="unverified">Unverified</div>
+    </div>
+
+    <div class="search-container">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Search users..." class="search-input">
+    </div>
+</div>
+
+<!-- User Cards Grid -->
+<div class="user-grid-container" id="userGrid">
+    @foreach (var user in Model)
+    {
+        <div class="user-card"
+             data-name="@user.Name?.ToLower()"
+             data-email="@user.Email.ToLower()"
+             data-admin="@user.IsAdmin.ToString().ToLower()"
+             data-verified="@user.IsVerified.ToString().ToLower()">
+            <div class="user-card-header">
+                <div class="user-avatar">
+                    @(string.IsNullOrEmpty(user.Name) ? user.Email.Substring(0, 1).ToUpper() : user.Name.Substring(0, 1).ToUpper())
+                </div>
+            </div>
+            <div class="user-card-body">
+                <h5 class="user-name">@(string.IsNullOrEmpty(user.Name) ? "Unnamed User" : user.Name)</h5>
+                <p class="user-email">@user.Email</p>
+
+                <div class="user-status">
+                    <span class="user-badge @(user.IsVerified ? "badge-verified" : "badge-unverified")">
+                        <i class="bi @(user.IsVerified ? "bi-check-circle" : "bi-x-circle") me-1"></i>
+                        @(user.IsVerified ? "Verified" : "Unverified")
+                    </span>
+                    <span class="user-badge @(user.IsAdmin ? "badge-admin" : "badge-user")">
+                        <i class="bi @(user.IsAdmin ? "bi-shield-shaded" : "bi-person") me-1"></i>
+                        @(user.IsAdmin ? "Admin" : "User")
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="no-results" style="display: none;">
+        <i class="bi bi-emoji-frown fs-1 mb-3 d-block"></i>
+        <h5>No users found</h5>
+        <p class="text-muted">Try adjusting your search or filters</p>
+    </div>
+</div>
 
 @section Scripts {
     <script>
-        document.getElementById("searchInput").addEventListener("input", function () {
-            const val = this.value.toLowerCase();
-            document.querySelectorAll("#userTable tbody tr").forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(val) ? "" : "none";
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const userGrid = document.getElementById('userGrid');
+            const userCards = document.querySelectorAll('.user-card');
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const noResults = document.querySelector('.no-results');
+
+            let activeFilter = 'all';
+
+            // Filter functionality
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    // Remove active class from all chips
+                    filterChips.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked chip
+                    this.classList.add('active');
+
+                    // Set active filter
+                    activeFilter = this.getAttribute('data-filter');
+
+                    // Apply filters and search
+                    applyFiltersAndSearch();
+                });
             });
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                applyFiltersAndSearch();
+            });
+
+            function applyFiltersAndSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                let visibleCount = 0;
+
+                userCards.forEach(card => {
+                    const name = card.getAttribute('data-name') || '';
+                    const email = card.getAttribute('data-email');
+                    const isAdmin = card.getAttribute('data-admin');
+                    const isVerified = card.getAttribute('data-verified');
+
+                    // Check if card matches search term
+                    const matchesSearch = name.includes(searchTerm) ||
+                                         email.includes(searchTerm);
+
+                    // Check if card matches active filter
+                    let matchesFilter = true;
+                    if (activeFilter === 'admin') {
+                        matchesFilter = isAdmin === 'true';
+                    } else if (activeFilter === 'verified') {
+                        matchesFilter = isVerified === 'true';
+                    } else if (activeFilter === 'unverified') {
+                        matchesFilter = isVerified === 'false';
+                    }
+
+                    // Show/hide card based on search and filter
+                    if (matchesSearch && matchesFilter) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                if (visibleCount === 0) {
+                    noResults.style.display = 'block';
+                } else {
+                    noResults.style.display = 'none';
+                }
+            }
         });
     </script>
 }

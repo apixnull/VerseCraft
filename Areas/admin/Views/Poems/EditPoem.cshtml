@@ -4,140 +4,658 @@
     ViewData["Title"] = "Edit Poem";
 }
 
-<h2 class="mb-4">Edit Poem</h2>
-
-<form asp-action="EditPoem" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-    <div class="row">
-        <div class="col-md-8">
-            <!-- Title -->
-            <div class="mb-3">
-                <label asp-for="Title" class="form-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-
-            <!-- Content -->
-            <div class="mb-3">
-                <label asp-for="Content" class="form-label"></label>
-                <textarea asp-for="Content" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-
-            <!-- Summary -->
-            <div class="mb-3">
-                <label asp-for="Summary" class="form-label"></label>
-                <textarea asp-for="Summary" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Summary" class="text-danger"></span>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label asp-for="Genre" class="form-label"></label>
-                        <input asp-for="Genre" class="form-control" />
-                        <span asp-validation-for="Genre" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label asp-for="Style" class="form-label"></label>
-                        <input asp-for="Style" class="form-control" />
-                        <span asp-validation-for="Style" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label asp-for="Theme" class="form-label"></label>
-                        <input asp-for="Theme" class="form-control" />
-                        <span asp-validation-for="Theme" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label asp-for="Tags" class="form-label"></label>
-                        <input asp-for="Tags" class="form-control" />
-                        <span asp-validation-for="Tags" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label asp-for="Language" class="form-label"></label>
-                        <input asp-for="Language" class="form-control" />
-                        <span asp-validation-for="Language" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label asp-for="Mood" class="form-label"></label>
-                        <input asp-for="Mood" class="form-control" />
-                        <span asp-validation-for="Mood" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label asp-for="AuthorName" class="form-label"></label>
-                        <input asp-for="AuthorName" class="form-control" />
-                        <span asp-validation-for="AuthorName" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="LicenseType" class="form-label"></label>
-                <input asp-for="LicenseType" class="form-control" />
-                <span asp-validation-for="LicenseType" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="CopyrightNotice" class="form-label"></label>
-                <textarea asp-for="CopyrightNotice" class="form-control" rows="2"></textarea>
-                <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
-            </div>
-
-            <!-- Visibility -->
-            <div class="form-check mb-3">
-                <input asp-for="IsPublic" class="form-check-input" type="checkbox" id="IsPublicCheckbox" />
-                <label asp-for="IsPublic" class="form-check-label">Make this poem public</label>
-            </div>
-
+<div class="poem-editor">
+    <div class="page-header">
+        <h2 class="page-title">Edit Poem</h2>
+        <div class="breadcrumb-wrapper">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/poems">Poems</a></li>
+                    <li class="breadcrumb-item active">Edit Poem</li>
+                </ol>
+            </nav>
         </div>
+    </div>
 
-        <div class="col-md-4">
-            @if (!string.IsNullOrEmpty(Model.CoverImagePath))
-            {
-                <div class="mb-3">
-                    <label class="form-label">Current Cover Image</label>
-                    <img src="~/uploads/poems/@Model.CoverImagePath" asp-append-version="true" class="img-fluid rounded mb-2 border" />
+    <div class="content-card poem-form-container">
+        <form asp-action="EditPoem" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="bi bi-pencil-square"></i>
+                            <h3>Basic Information</h3>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="form-floating mb-4">
+                            <input asp-for="Title" class="form-control custom-input" id="titleInput" placeholder="Title" />
+                            <label asp-for="Title" for="titleInput">Title</label>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="poem-content-wrapper mb-4">
+                            <label asp-for="Content" class="form-label">Poem Content</label>
+                            <textarea asp-for="Content" class="form-control poem-content" rows="8" placeholder="Write your poem here..."></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <!-- Summary -->
+                        <div class="form-floating mb-4">
+                            <textarea asp-for="Summary" class="form-control custom-input" id="summaryInput" style="height: 100px" placeholder="Summary"></textarea>
+                            <label asp-for="Summary" for="summaryInput">Summary</label>
+                            <span asp-validation-for="Summary" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="bi bi-tags"></i>
+                            <h3>Classification</h3>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input asp-for="Genre" class="form-control custom-input" id="genreInput" placeholder="Genre" />
+                                    <label asp-for="Genre" for="genreInput">Genre</label>
+                                    <span asp-validation-for="Genre" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input asp-for="Style" class="form-control custom-input" id="styleInput" placeholder="Style" />
+                                    <label asp-for="Style" for="styleInput">Style</label>
+                                    <span asp-validation-for="Style" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input asp-for="Theme" class="form-control custom-input" id="themeInput" placeholder="Theme" />
+                                    <label asp-for="Theme" for="themeInput">Theme</label>
+                                    <span asp-validation-for="Theme" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-4">
+                                    <input asp-for="Tags" class="form-control custom-input" id="tagsInput" placeholder="Tags (comma separated)" />
+                                    <label asp-for="Tags" for="tagsInput">Tags</label>
+                                    <span asp-validation-for="Tags" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-floating mb-4">
+                                    <input asp-for="Language" class="form-control custom-input" id="languageInput" placeholder="Language" />
+                                    <label asp-for="Language" for="languageInput">Language</label>
+                                    <span asp-validation-for="Language" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-4">
+                                    <input asp-for="Mood" class="form-control custom-input" id="moodInput" placeholder="Mood" />
+                                    <label asp-for="Mood" for="moodInput">Mood</label>
+                                    <span asp-validation-for="Mood" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-4">
+                                    <input asp-for="AuthorName" class="form-control custom-input" id="authorInput" placeholder="Author Name" />
+                                    <label asp-for="AuthorName" for="authorInput">Author Name</label>
+                                    <span asp-validation-for="AuthorName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="bi bi-shield-check"></i>
+                            <h3>Rights & Publication</h3>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input asp-for="LicenseType" class="form-control custom-input" id="licenseInput" placeholder="License Type" />
+                            <label asp-for="LicenseType" for="licenseInput">License Type</label>
+                            <span asp-validation-for="LicenseType" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <textarea asp-for="CopyrightNotice" class="form-control custom-input" id="copyrightInput" style="height: 80px" placeholder="Copyright Notice"></textarea>
+                            <label asp-for="CopyrightNotice" for="copyrightInput">Copyright Notice</label>
+                            <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
+                        </div>
+
+                        <!-- Visibility -->
+                        <div class="form-switch visibility-toggle mb-4">
+                            <input asp-for="IsPublic" class="form-check-input" type="checkbox" id="IsPublicCheckbox" />
+                            <label asp-for="IsPublic" class="form-check-label" for="IsPublicCheckbox">
+                                <span class="toggle-status">@(Model.IsPublic ? "Public" : "Private")</span>
+                            </label>
+                            <small class="text-muted d-block mt-1">@(Model.IsPublic ? "This poem is visible to everyone" : "Only you can see this poem")</small>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="col-lg-4">
+                    <div class="form-section poem-cover-section">
+                        <div class="section-header">
+                            <i class="bi bi-image"></i>
+                            <h3>Cover Image</h3>
+                        </div>
+
+                        <div class="cover-preview-container mb-3">
+                            @if (!string.IsNullOrEmpty(Model.CoverImagePath))
+                            {
+                                <div class="current-cover">
+                                    <img src="~/uploads/poems/@Model.CoverImagePath" asp-append-version="true" class="img-fluid poem-cover-img" alt="Poem cover image" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="no-cover">
+                                    <i class="bi bi-image"></i>
+                                    <p>No cover image</p>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="custom-file-upload">
+                            <label for="coverImageUpload" class="file-upload-label">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                                <span>Choose new cover image</span>
+                            </label>
+                            <input asp-for="NewCoverImagePath" type="file" id="coverImageUpload" class="form-control" hidden />
+                            <span asp-validation-for="NewCoverImagePath" class="text-danger"></span>
+                            <div id="file-name" class="selected-file mt-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-section poem-stats">
+                        <div class="section-header">
+                            <i class="bi bi-bar-chart"></i>
+                            <h3>Poem Statistics</h3>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="bi bi-calendar3"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Created</div>
+                                <div class="stat-value">May 8, 2025</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="bi bi-eye"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Views</div>
+                                <div class="stat-value">245</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="bi bi-heart"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Likes</div>
+                                <div class="stat-value">42</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="bi bi-chat-dots"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-label">Comments</div>
+                                <div class="stat-value">15</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary action-btn save-btn">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+                <a asp-action="DisplayPoems" class="btn btn-secondary action-btn cancel-btn">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+                <button type="button" class="btn btn-outline-danger action-btn delete-btn ms-auto">
+                    <i class="bi bi-trash"></i> Delete Poem
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Poem Editor Styling */
+    .poem-editor {
+        padding-bottom: 30px;
+    }
+
+    .poem-form-container {
+        position: relative;
+    }
+
+    /* Form Sections */
+    .form-section {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 25px;
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+        .section-header i {
+            font-size: 20px;
+            margin-right: 10px;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .section-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+    /* Custom Input Styling */
+    .custom-input {
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
+        padding: 12px 15px;
+        transition: var(--transition);
+    }
+
+        .custom-input:focus {
+            box-shadow: 0 0 0 3px rgba(187, 222, 251, 0.25);
+            border-color: var(--blue-light);
+            outline: none;
+        }
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: var(--blue-light);
+        opacity: 0.8;
+    }
+
+    .form-floating > .form-control {
+        padding-top: 1.625rem;
+        padding-bottom: 0.625rem;
+    }
+
+    /* Poem Content Editor */
+    .poem-content-wrapper {
+        position: relative;
+    }
+
+    .poem-content {
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
+        padding: 15px;
+        font-family: 'Georgia', serif;
+        line-height: 1.8;
+        background-color: #fcfcfc;
+        resize: vertical;
+        min-height: 200px;
+        transition: var(--transition);
+    }
+
+        .poem-content:focus {
+            box-shadow: 0 0 0 3px rgba(248, 187, 208, 0.25);
+            border-color: var(--pink-light);
+            outline: none;
+            background-color: white;
+        }
+
+    /* Cover Image Section */
+    .poem-cover-section {
+        height: auto;
+    }
+
+    .cover-preview-container {
+        width: 100%;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .current-cover {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
+    }
+
+    .poem-cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+        .poem-cover-img:hover {
+            transform: scale(1.05);
+        }
+
+    .no-cover {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f4f8;
+        border: 2px dashed #d1d9e6;
+        border-radius: 8px;
+        color: #a0aec0;
+    }
+
+        .no-cover i {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .no-cover p {
+            margin: 0;
+        }
+
+    /* Custom File Upload */
+    .custom-file-upload {
+        margin-top: 15px;
+    }
+
+    .file-upload-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(248,187,208,0.1) 0%, rgba(187,222,251,0.1) 100%);
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%;
+    }
+
+        .file-upload-label:hover {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .file-upload-label i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+    .selected-file {
+        font-size: 13px;
+        color: var(--text-secondary);
+        text-align: center;
+        word-break: break-all;
+    }
+
+    /* Poem Stats */
+    .poem-stats {
+        padding: 20px;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+    .stat-icon {
+        background: linear-gradient(135deg, rgba(248,187,208,0.15) 0%, rgba(187,222,251,0.15) 100%);
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+
+        .stat-icon i {
+            font-size: 18px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+    .stat-info {
+        flex: 1;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .stat-value {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    /* Visibility Toggle */
+    .visibility-toggle {
+        display: flex;
+        align-items: center;
+    }
+
+        .visibility-toggle .form-check-input {
+            width: 48px;
+            height: 24px;
+            margin-top: 0;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+            .visibility-toggle .form-check-input:checked {
+                background-color: #bbdefb;
+                border-color: #bbdefb;
             }
 
-            <div class="mb-3">
-                <label asp-for="NewCoverImagePath" class="form-label">Upload New Cover</label>
-                <input asp-for="NewCoverImagePath" type="file" class="form-control" />
-                <span asp-validation-for="NewCoverImagePath" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
+    .toggle-status {
+        font-weight: 600;
+    }
 
-    <div class="mt-4">
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-save"></i> Save Changes
-        </button>
-        <a asp-action="DisplayPoems" class="btn btn-secondary ms-2">
-            <i class="bi bi-arrow-left"></i> Cancel
-        </a>
-    </div>
-</form>
+    .form-switch .form-check-input:focus {
+        box-shadow: 0 0 0 0.2rem rgba(187, 222, 251, 0.25);
+    }
+
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+        padding: 20px;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        align-items: center;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+        .action-btn i {
+            margin-right: 8px;
+        }
+
+    .save-btn {
+        background: var(--primary-gradient);
+        border: none;
+        box-shadow: 0 4px 10px rgba(248, 187, 208, 0.3);
+    }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(248, 187, 208, 0.4);
+        }
+
+    .cancel-btn {
+        background: #f0f4f8;
+        color: var(--text-secondary);
+        border: none;
+    }
+
+        .cancel-btn:hover {
+            background: #e1e7ef;
+            color: var(--text-primary);
+        }
+
+    .delete-btn {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+        .delete-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    /* Validation Styling */
+    .validation-summary {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #dc3545;
+    }
+
+    .text-danger {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    /* Responsive Adjustments */
+    /* media (max-width: 992px) { */
+    /*     .poem-stats */
+
+    /* { */
+    /*     display: grid; */
+    /*     grid-template-columns: 1fr 1fr; */
+    /*     gap: 15px; */
+    /* } */
+
+    /* .stat-item { */
+    /*     border-bottom: none; */
+    /*     padding: 10px; */
+    /* } */
+
+    /* } */
+
+    /* media (max-width: 768px) { */
+    /*     .form-actions */
+
+    /* { */
+    /*     flex-direction: column; */
+    /*     width: 100%; */
+    /* } */
+
+    /* .action-btn { */
+    /*     width: 100%; */
+    /*     justify-content: center; */
+    /* } */
+
+    /* .delete-btn { */
+    /*     margin-left: 0 !important; */
+    /*     margin-top: 10px; */
+    /* } */
+
+    /* } */
+
+    /* media (max-width: 576px) { */
+    /*     .form-section */
+
+    /* { */
+    /*     padding: 15px; */
+    /* } */
+
+    /* .section-header { */
+    /*     margin-bottom: 15px; */
+    /*     padding-bottom: 10px; */
+    /* } */
+
+    /* .poem-stats { */
+    /*     grid-template-columns: 1fr; */
+    /* } */
+
+    /* .current-cover { */
+    /*     height: 200px; */
+    /* } */
+
+    /* } */
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Update visibility toggle text
+        document.getElementById('IsPublicCheckbox').addEventListener('change', function() {
+            var toggleStatus = document.querySelector('.toggle-status');
+            var statusText = document.querySelector('.text-muted');
+
+            if (this.checked) {
+                toggleStatus.textContent = 'Public   -> ';
+                statusText.textContent = 'This poem is visible to everyone';
+            } else {
+                toggleStatus.textContent = 'Private   -> ';
+                statusText.textContent = 'Only you can see this poem';
+            }
+        });
+
+        // Display selected filename
+        document.getElementById('coverImageUpload').addEventListener('change', function() {
+            var fileName = this.files[0] ? this.files[0].name : 'No file selected';
+            document.getElementById('file-name').textContent = fileName;
+        });
+    </script>
 }
