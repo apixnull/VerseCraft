@@ -7,95 +7,293 @@
     var featuredAnthologies = Model.Where(f => f.WorkType == WorkType.Anthology && f.Anthology != null);
 }
 
-<!-- 📜 Featured Poems -->
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <h2>📜 Featured Poems</h2>
-    <div class="d-flex">
-        <form class="d-flex me-2" method="get" asp-action="SearchPoems">
-            <input name="query" class="form-control me-2" placeholder="Search Poems..." />
-            <button class="btn btn-sm btn-outline-light" type="submit">Search</button>
-        </form>
-        <a asp-action="SearchItemToAdd" asp-route-type="Poem" class="btn btn-sm btn-primary">Add Feature</a>
+<style>
+    /* Consistent with previous styling */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #f8e1e9 0%, #d4e5f7 100%);
+        --accent-pink: #e999c0;
+        --accent-blue: #89b9e6;
+        --text-dark: #333333;
+        --text-light: #666666;
+        --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
+    }
+
+    .featured-container {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+    }
+
+    .nav-tabs {
+        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: 1.5rem;
+    }
+
+    .nav-link {
+        border: none;
+        color: var(--text-light);
+        font-weight: 500;
+        padding: 1rem 2rem;
+        transition: all 0.3s ease;
+    }
+
+        .nav-link.active {
+            color: var(--accent-blue);
+            border-bottom: 3px solid var(--accent-blue);
+            background: transparent;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-pink);
+        }
+
+    .search-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-container {
+        position: relative;
+        max-width: 300px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+    }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
+            outline: none;
+        }
+
+    .search-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+    }
+
+    .add-feature-btn {
+        background: var(--accent-pink);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .add-feature-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+            color: white;
+        }
+
+    .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .featured-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        padding: 1.5rem;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-title {
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .card-author {
+        color: var(--accent-blue);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-description {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid #ff8a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .remove-btn:hover {
+            background: #ff8a8a;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+    .tab-pane {
+        display: none;
+    }
+
+        .tab-pane.active {
+            display: block;
+        }
+</style>
+
+<div class="featured-container">
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <button class="nav-link active" data-tab="poems">📜 Poems</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-tab="anthologies">📚 Anthologies</button>
+        </li>
+    </ul>
+
+    <!-- Poems Tab -->
+    <div id="poems" class="tab-pane active">
+        <div class="search-header">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search poems..." data-search-type="poems">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <a asp-action="SearchItemToAdd" asp-route-type="Poem" class="add-feature-btn">
+                <i class="fas fa-plus"></i> Add Poem
+            </a>
+        </div>
+
+        <div class="featured-grid" id="poems-grid">
+            @foreach (var item in featuredPoems)
+            {
+                <div class="featured-card" data-title="@item.Poem!.Title.ToLower()"
+                     data-author="@item.Poem.AuthorName.ToLower()" data-summary="@item.Poem.Summary?.ToLower()">
+                    <form method="post" asp-action="RemoveFeature" asp-route-id="@item.Id"
+                          onsubmit="event.preventDefault(); confirmRemove(this);" class="remove-feature">
+                        <input type="hidden" name="type" value="Poem" />
+                        <button type="button" class="remove-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </form>
+                    <h3 class="card-title">@item.Poem.Title</h3>
+                    <div class="card-author">By @item.Poem.AuthorName</div>
+                    <p class="card-description">@item.Poem.Summary</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Anthologies Tab -->
+    <div id="anthologies" class="tab-pane">
+        <div class="search-header">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search anthologies..." data-search-type="anthologies">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <a asp-action="SearchItemToAdd" asp-route-type="Anthology" class="add-feature-btn">
+                <i class="fas fa-plus"></i> Add Anthology
+            </a>
+        </div>
+
+        <div class="featured-grid" id="anthologies-grid">
+            @foreach (var item in featuredAnthologies)
+            {
+                <div class="featured-card" data-title="@item.Anthology!.Title.ToLower()"
+                     data-author="@item.Anthology.AuthorName.ToLower()" data-description="@item.Anthology.Description.ToLower()">
+                    <form method="post" asp-action="RemoveFeature" asp-route-id="@item.Id"
+                          onsubmit="event.preventDefault(); confirmRemove(this);" class="remove-feature">
+                        <input type="hidden" name="type" value="Anthology" />
+                        <button type="button" class="remove-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </form>
+                    <h3 class="card-title">@item.Anthology.Title</h3>
+                    <div class="card-author">By @item.Anthology.AuthorName</div>
+                    <p class="card-description">@item.Anthology.Description</p>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
-<table class="table table-dark table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Summary</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in featuredPoems)
-        {
-            <tr>
-                <td>@item.Poem!.Title</td>
-                <td>@item.Poem.AuthorName</td>
-                <td>@item.Poem.Summary</td>
-                <td>
-                    <form method="post" asp-action="RemoveFeature" asp-route-id="@item.Id" onsubmit="event.preventDefault(); confirmRemove(this);" class="remove-feature" asp-route-type="Poem">
-                        <input type="hidden" name="type" value="Poem" />
-                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<!-- 📚 Featured Anthologies -->
-<div class="d-flex justify-content-between align-items-center mb-2 mt-5">
-    <h2>📚 Featured Anthologies</h2>
-    <div class="d-flex">
-        <form class="d-flex me-2" method="get" asp-action="SearchAnthologies">
-            <input name="query" class="form-control me-2" placeholder="Search Anthologies..." />
-            <button class="btn btn-sm btn-outline-light" type="submit">Search</button>
-        </form>
-        <a asp-action="SearchItemToAdd" asp-route-type="Anthology" class="btn btn-sm btn-primary">Add Feature</a>
-    </div>
-</div>
-
-<table class="table table-dark table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Description</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in featuredAnthologies)
-        {
-            <tr>
-                <td>@item.Anthology!.Title</td>
-                <td>@item.Anthology.AuthorName</td>
-                <td>@item.Anthology.Description</td>
-                <td>
-                    <form method="post" asp-action="RemoveFeature" asp-route-id="@item.Id" onsubmit="event.preventDefault(); confirmRemove(this);" class="remove-feature" asp-route-type="Anthology">
-                        <input type="hidden" name="type" value="Poem" />
-                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-
+@section Scripts {
     <script>
-        // Handle form submission with SweetAlert confirmation
+        // Tab functionality
+        document.querySelectorAll('[data-tab]').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all tabs and buttons
+                document.querySelectorAll('.nav-link, .tab-pane').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                // Add active class to clicked tab
+                const tabId = this.dataset.tab;
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Client-side search functionality
+        document.querySelectorAll('.search-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const searchType = this.dataset.searchType;
+                const searchTerm = this.value.trim().toLowerCase();
+                const grid = document.getElementById(`${searchType}-grid`);
+
+                grid.querySelectorAll('.featured-card').forEach(card => {
+                    const title = card.dataset.title;
+                    const author = card.dataset.author;
+                    const content = card.dataset.description || card.dataset.summary;
+
+                    const matches = title.includes(searchTerm) ||
+                                  author.includes(searchTerm) ||
+                                  content.includes(searchTerm);
+
+                    card.style.display = matches ? 'block' : 'none';
+                });
+            });
+        });
+
+        // Remove confirmation
         function confirmRemove(form) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: 'This item will be removed from featured items.',
+                title: 'Remove Feature?',
+                text: 'This will remove the item from featured listings',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, remove it!',
+                confirmButtonColor: '#ff8a8a',
+                cancelButtonColor: '#89b9e6',
+                confirmButtonText: 'Remove',
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -104,3 +302,4 @@
             });
         }
     </script>
+}

@@ -4,65 +4,228 @@
     ViewData["Title"] = "Create Anthology";
 }
 
-<h2 class="text-center mb-4">Create New Anthology</h2>
+<style>
+    .creation-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 18px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
 
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <form asp-action="CreateAnthology" method="post" enctype="multipart/form-data">
-                    <div class="form-group mb-3">
-                        <label asp-for="Title" class="control-label fw-bold">Anthology Title</label>
-                        <input asp-for="Title" class="form-control" placeholder="Enter anthology title" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
-                    </div>
+    .creation-header {
+        color: #2d4059;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Description" class="control-label fw-bold">Description</label>
-                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Write a brief description of the anthology"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
+        .creation-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #f8bbd0 0%, #bbdefb 100%);
+            border-radius: 2px;
+        }
 
-                    <div class="form-group mb-3">
-                        <label asp-for="AuthorName" class="control-label fw-bold">Author Name</label>
-                        <input asp-for="AuthorName" class="form-control" placeholder="Enter author's name" />
-                        <span asp-validation-for="AuthorName" class="text-danger"></span>
-                    </div>
+    .form-label {
+        font-weight: 600;
+        color: #4a4a4a;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-                    <div class="form-group mb-3">
-                        <label asp-for="LicenseType" class="control-label fw-bold">License Type</label>
-                        <input asp-for="LicenseType" class="form-control" placeholder="Enter license type (optional)" />
-                        <span asp-validation-for="LicenseType" class="text-danger"></span>
-                    </div>
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1.25rem;
+        transition: all 0.3s ease;
+    }
 
-                    <div class="form-group mb-3">
-                        <label asp-for="CopyrightNotice" class="control-label fw-bold">Copyright Notice</label>
-                        <input asp-for="CopyrightNotice" class="form-control" placeholder="Enter copyright notice (optional)" />
-                        <span asp-validation-for="CopyrightNotice" class="text-danger"></span>
-                    </div>
+        .form-control:focus {
+            border-color: #bbdefb;
+            box-shadow: 0 0 0 3px rgba(187, 222, 251, 0.2);
+        }
 
-                    <div class="form-group mb-3">
-                        <label asp-for="CoverImage" class="control-label fw-bold">Cover Image</label>
-                        <input asp-for="CoverImage" type="file" class="form-control" />
-                        <span asp-validation-for="CoverImage" class="text-danger"></span>
-                    </div>
+    .image-upload {
+        border: 3px dashed #e0e0e0;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-                    <div class="form-check mb-3">
-                        <input asp-for="IsPublic" class="form-check-input" type="checkbox" id="IsPublicCheckbox" />
-                        <label asp-for="IsPublic" class="form-check-label fw-bold">Make this anthology public</label>
-                    </div>
+        .image-upload:hover {
+            border-color: #bbdefb;
+            background: rgba(187, 222, 251, 0.05);
+        }
 
+    .custom-switch .form-check-input:checked {
+        background-color: #f8bbd0;
+        border-color: #f8bbd0;
+    }
 
-                    <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary">Create Anthology</button>
-                        <a href="@Url.Action("DisplayAnthologies", "Anthology")" class="btn btn-secondary">Back to List</a>
-                    </div>
-                </form>
+    .btn-create {
+        background: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
+        border: none;
+        color: #2d4059;
+        padding: 0.75rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(248, 187, 208, 0.3);
+        }
+
+    .btn-back {
+        border: 2px solid #bbdefb;
+        color: #2d4059;
+        padding: 0.75rem 2rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background: rgba(187, 222, 251, 0.1);
+            border-color: #f8bbd0;
+        }
+
+    .section-divider {
+        border: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, #f8bbd0 50%, transparent 100%);
+        margin: 2rem 0;
+    }
+</style>
+
+<div class="creation-container">
+    <h2 class="creation-header">Craft New Anthology</h2>
+
+    <form asp-action="CreateAnthology" method="post" enctype="multipart/form-data">
+        <!-- Core Information Section -->
+        <div class="mb-4">
+            <label class="form-label">
+                <i class="fas fa-heading text-primary"></i>
+                Anthology Title
+            </label>
+            <input asp-for="Title" class="form-control" placeholder="Give your anthology a meaningful title" />
+            <span asp-validation-for="Title" class="text-danger small d-block mt-1"></span>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">
+                <i class="fas fa-align-left text-info"></i>
+                Description
+            </label>
+            <textarea asp-for="Description" class="form-control" rows="4"
+                      placeholder="Describe the essence of your anthology..."></textarea>
+            <span asp-validation-for="Description" class="text-danger small d-block mt-1"></span>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- Author & Legal Section -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <label class="form-label">
+                    <i class="fas fa-user-edit text-warning"></i>
+                    Author Name
+                </label>
+                <input asp-for="AuthorName" class="form-control" placeholder="Creator's display name" />
+                <span asp-validation-for="AuthorName" class="text-danger small d-block mt-1"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">
+                    <i class="fas fa-balance-scale text-success"></i>
+                    License Type
+                </label>
+                <input asp-for="LicenseType" class="form-control" placeholder="e.g., Creative Commons (optional)" />
+                <span asp-validation-for="LicenseType" class="text-danger small d-block mt-1"></span>
             </div>
         </div>
-    </div>
+
+        <div class="mb-4">
+            <label class="form-label">
+                <i class="fas fa-copyright text-secondary"></i>
+                Copyright Notice
+            </label>
+            <input asp-for="CopyrightNotice" class="form-control" placeholder="Copyright information (optional)" />
+            <span asp-validation-for="CopyrightNotice" class="text-danger small d-block mt-1"></span>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- Cover Image Section -->
+        <div class="mb-4">
+            <label class="form-label">
+                <i class="fas fa-image text-danger"></i>
+                Cover Image
+            </label>
+            <label class="image-upload">
+                <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
+                <div class="text-muted">Click to upload cover image</div>
+                <input asp-for="CoverImage" type="file" class="d-none" />
+            </label>
+            <span asp-validation-for="CoverImage" class="text-danger small d-block mt-1"></span>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- Visibility & Actions -->
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="form-check form-switch">
+                <input asp-for="IsPublic" class="form-check-input custom-switch" type="checkbox" />
+                <label asp-for="IsPublic" class="form-check-label">
+                    <i class="fas fa-globe me-2"></i>
+                    Public Visibility
+                </label>
+            </div>
+
+            <div class="d-flex gap-3">
+                <a href="@Url.Action("DisplayAnthologies", "Anthology")" class="btn btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to List
+                </a>
+                <button type="submit" class="btn btn-create">
+                    <i class="fas fa-magic me-2"></i>
+                    Create Anthology
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Style file input
+        document.querySelector('.image-upload').addEventListener('click', function() {
+            this.querySelector('input[type="file"]').click();
+        });
+
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            const label = this.closest('.image-upload');
+            if(this.files.length > 0) {
+                label.innerHTML = `
+                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                    <div class="text-success">${this.files[0].name}</div>
+                `;
+            }
+        });
+    </script>
 }

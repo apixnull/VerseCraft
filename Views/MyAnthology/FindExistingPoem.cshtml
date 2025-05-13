@@ -1,0 +1,238 @@
+﻿@model IEnumerable<VerseCraft.Models.Poem>
+@{
+    ViewData["Title"] = "Add Existing Poem";
+    var anthologyId = (int)ViewBag.AnthologyId;
+}
+
+<style>
+    /* reuse your card/grid/search styles from Manage Poems, tweaked for AddExistingPoem */
+    .poem-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+    }
+
+    .poem-card {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .poem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+    .poem-header {
+        padding: 15px 20px;
+        background: linear-gradient(135deg,#f8bbd0,#bbdefb);
+        color: #3a3a3a;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .poem-body {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .poem-footer {
+        padding: 12px 20px;
+        background: #f9f9f9;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        text-align: right;
+    }
+
+    .poem-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #3a3a3a;
+        font-size: 1.1rem;
+    }
+
+    .poem-content {
+        max-height: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        margin-bottom: 15px;
+        color: #555;
+        font-style: italic;
+        border-left: 3px solid #bbdefb;
+        padding-left: 15px;
+        background: rgba(187,222,251,0.1);
+    }
+
+    .metadata-item {
+        display: flex;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .metadata-label {
+        width: 80px;
+        color: #6c757d;
+        flex-shrink: 0;
+    }
+
+    .metadata-value {
+        color: #3a3a3a;
+        font-weight: 500;
+    }
+
+    .search-container {
+        max-width: 400px;
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    #noResults {
+        display: none;
+        text-align: center;
+        padding: 40px 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .add-btn {
+        background: linear-gradient(135deg,#40c4ff,#448aff);
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+</style>
+
+<div class="container-fluid">
+    <h2 class="mb-4"><i class="bi bi-bookmark-plus"></i> Add Existing Poem to Anthology</h2>
+
+    <div class="search-container mb-4">
+        <div class="input-group">
+            <input id="poemSearch" type="text" class="form-control" placeholder="Filter by ID, title, theme…">
+            <button id="searchBtn" class="btn btn-outline-secondary">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="noResults">
+        <i class="bi bi-emoji-frown" style="font-size:3rem; color:#bbdefb;"></i>
+        <h4 class="mt-3">No poems found</h4>
+        <p class="text-muted">You have no other poems to add.</p>
+        <a asp-action="CreatePoem" asp-controller="MyPoem" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Create New Poem
+        </a>
+    </div>
+
+    <div class="poem-grid" id="poemContainer">
+        @foreach (var poem in Model)
+        {
+            <div class="poem-card"
+                 data-id="@poem.Id"
+                 data-title="@poem.Title.ToLower()"
+                 data-theme="@(poem.Theme?.ToLower() ?? "")"
+                 data-genre="@(poem.Genre?.ToLower() ?? "")"
+                 data-author="@poem.AuthorName.ToLower()">
+
+                <div class="poem-header">
+                    <span>#@poem.Id</span>
+                    <span class="badge badge-sm @(poem.IsPublic ? "bg-info" : "bg-secondary")">
+                        @(poem.IsPublic ? "Public" : "Private")
+                    </span>
+                </div>
+
+                <div class="poem-body">
+                    <div class="poem-title">@poem.Title</div>
+                    <div class="poem-content">
+                        @(!string.IsNullOrEmpty(poem.Summary)
+                            ? poem.Summary
+                            : (poem.Content.Length > 150 ? poem.Content.Substring(0, 150) + "…" : poem.Content))
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Theme:</div>
+                        <div class="metadata-value">@poem.Theme</div>
+                    </div>
+                    <div class="metadata-item">
+                        <div class="metadata-label">Genre:</div>
+                        <div class="metadata-value">@poem.Genre</div>
+                    </div>
+                </div>
+
+                <div class="poem-footer">
+                    <form asp-action="AddExistingPoem"
+                          asp-route-anthologyId="@anthologyId"
+                          asp-route-poemId="@poem.Id"
+                          method="post"
+                          class="d-inline">
+                        <button type="submit" class="add-btn">
+                            <i class="bi bi-plus-circle me-1"></i>
+                            Add to Anthology
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('poemSearch');
+            const searchBtn   = document.getElementById('searchBtn');
+            const cards       = Array.from(document.querySelectorAll('.poem-card'));
+            const noResults   = document.getElementById('noResults');
+            const container   = document.getElementById('poemContainer');
+
+            function filter() {
+                const term = searchInput.value.trim().toLowerCase();
+                let shown = 0;
+
+                cards.forEach(card => {
+                    const matches = !term
+                        || card.dataset.id.includes(term)
+                        || card.dataset.title.includes(term)
+                        || card.dataset.theme.includes(term)
+                        || card.dataset.genre.includes(term)
+                        || card.dataset.author.includes(term);
+
+                    card.style.display = matches ? '' : 'none';
+                    if (matches) shown++;
+                });
+
+                if (shown === 0) {
+                    noResults.style.display = 'block';
+                    container.style.display = 'none';
+                } else {
+                    noResults.style.display = 'none';
+                    container.style.display = 'grid';
+                }
+            }
+
+            // Run once on load to handle empty Model or initial state
+            filter();
+
+            // Bind events
+            searchInput.addEventListener('keyup', e => {
+                if (e.key === 'Enter') filter();
+                clearTimeout(searchInput.timer);
+                searchInput.timer = setTimeout(filter, 300);
+            });
+            searchBtn.addEventListener('click', filter);
+        });
+    </script>
+}

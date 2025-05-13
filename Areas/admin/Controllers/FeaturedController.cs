@@ -36,11 +36,11 @@ namespace VerseCraft.Areas.admin.Controllers
                     .ToListAsync();
 
                 var poems = await _context.Poems
-                    .Where(p => !featuredPoemIds.Contains(p.Id))
+                    .Where(p => !featuredPoemIds.Contains(p.Id) && p.IsPublic) // Added IsPublic check
                     .ToListAsync();
 
                 ViewData["WorkType"] = "Poem";
-                return View("SearchItemToAdd", poems); // reuses a unified view
+                return View("SearchItemToAdd", poems);
             }
             else if (type == "Anthology")
             {
@@ -50,11 +50,11 @@ namespace VerseCraft.Areas.admin.Controllers
                     .ToListAsync();
 
                 var anthologies = await _context.Anthologies
-                    .Where(a => !featuredAnthologyIds.Contains(a.Id))
+                    .Where(a => !featuredAnthologyIds.Contains(a.Id) && a.IsPublic) // Added IsPublic check
                     .ToListAsync();
 
                 ViewData["WorkType"] = "Anthology";
-                return View("SearchItemToAdd", anthologies); // same view
+                return View("SearchItemToAdd", anthologies);
             }
 
             return NotFound();

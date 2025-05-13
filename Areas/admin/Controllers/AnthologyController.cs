@@ -25,11 +25,7 @@ namespace VerseCraft.Areas.admin.Controllers
         /* ===========================      Display Anthologies       =========================== */
         public IActionResult DisplayAnthologies()
         {
-            var anthologies = _context.Anthologies.Select(a => new Anthology
-            {
-                Id = a.Id,
-                Title = a.Title,
-            }).ToList();
+            var anthologies = _context.Anthologies.ToList();
 
             return View(anthologies);
         }

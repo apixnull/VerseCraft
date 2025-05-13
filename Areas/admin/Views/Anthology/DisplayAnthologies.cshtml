@@ -4,215 +4,367 @@
     ViewData["Title"] = "Manage Anthologies";
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-    .container {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
+    /* Consistent with poem display styling */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #f8e1e9 0%, #d4e5f7 100%);
+        --accent-pink: #e999c0;
+        --accent-blue: #89b9e6;
+        --text-dark: #333333;
+        --text-light: #666666;
+        --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
     }
 
-    .card {
-        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-        border-radius: 25px;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    .container-fluid {
         padding: 2rem;
     }
 
-    .search-container {
-        max-width: 400px;
+    /* Stats Cards */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
     }
 
-    .input-group-text {
-        background-color: #e9ecef;
-        border: none;
-        border-radius: 10px 0 0 10px;
-        color: #6c757d;
+    .stat-card {
+        background: linear-gradient(135deg, rgba(248, 187, 208, 0.9) 0%, rgba(187, 222, 251, 0.9) 100%);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--card-shadow);
     }
 
-    .form-control {
-        background-color: #e9ecef;
-        color: #495057;
-        border: none;
-        border-radius: 0 10px 10px 0;
+    .stat-icon {
+        background: white;
+        border-radius: 12px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
     }
 
-    .btn-outline-secondary {
-        border-color: #e9ecef;
-        color: #6c757d;
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-dark);
     }
 
-        .btn-outline-secondary:hover {
-            background-color: #e9ecef;
+    .stat-label {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    /* Anthology Cards */
+    .anthology-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .anthology-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .anthology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
-    .table {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-collapse: separate;
-        border-spacing: 0 10px;
-        width: 100%;
+    .anthology-header {
+        background: var(--primary-gradient);
+        padding: 1rem;
+        position: relative;
     }
 
-        .table thead {
-            background: rgba(179, 229, 252, 0.7);
-            color: #0077c2;
-        }
-
-            .table thead th {
-                padding: 1rem;
-                text-align: left;
-                font-weight: 600;
-            }
-
-        .table tbody tr {
-            background-color: rgba(255, 255, 255, 0.8);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-            .table tbody tr:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-                background-color: rgba(255, 255, 255, 1);
-            }
-
-        .table tbody td {
-            padding: 1rem;
-            vertical-align: middle;
-        }
-
-    .btn-sm {
-        margin-right: 0.5rem;
+    .anthology-id {
+        font-size: 0.9rem;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
     }
 
-    .btn-outline-primary {
-        color: #007bff;
-        border-color: #007bff;
+    .anthology-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
     }
 
-        .btn-outline-primary:hover {
-            background-color: #007bff;
-            color: white;
-        }
-
-    .btn-outline-info {
-        color: #17a2b8;
-        border-color: #17a2b8;
+    .anthology-body {
+        padding: 1.5rem;
     }
 
-        .btn-outline-info:hover {
-            background-color: #17a2b8;
-            color: white;
-        }
+    .anthology-description {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 
-    .btn-outline-success {
+    .metadata-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .metadata-label {
+        color: var(--text-light);
+    }
+
+    .metadata-value {
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 20px;
+        margin-left: 0.5rem;
+    }
+
+    .badge-approved {
+        background-color: rgba(40, 167, 69, 0.1);
         color: #28a745;
-        border-color: #28a745;
+        border: 1px solid rgba(40, 167, 69, 0.2);
     }
 
-        .btn-outline-success:hover {
-            background-color: #28a745;
-            color: white;
-        }
-
-    .btn-outline-danger {
-        color: #dc3545;
-        border-color: #dc3545;
+    .badge-pending {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #e9602d;
+        border: 1px solid #ed1a0a;
     }
 
-        .btn-outline-danger:hover {
-            background-color: #dc3545;
-            color: white;
-        }
-
-    .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
+    .badge-public {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: #17a2b8;
+        border: 1px solid rgba(23, 162, 184, 0.2);
     }
 
-        .btn-success:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-        }
+    .badge-private {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+        border: 1px solid rgba(108, 117, 125, 0.2);
+    }
 
     .action-buttons {
-        white-space: nowrap;
-        width: 240px;
+        display: flex;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
+
+    .delete-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+
+    .delete-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ff8a8a;
+        color: #ff8a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .delete-btn:hover {
+            background: #ff8a8a;
+            color: white;
+            transform: rotate(90deg);
+        }
 </style>
 
-<div class="container">
-    <div class="card">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Anthologies</h2>
-            <div class="d-flex">
-                <form method="get" asp-action="DisplayAnthologies" class="d-flex me-2">
-                    <input type="text" name="search" class="form-control me-2" placeholder="Search by title..." />
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
-                <a asp-action="CreateAnthology" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Create Anthology
-                </a>
+<div class="container-fluid">
+    <!-- Stats Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book text-primary"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.Count()</div>
+                <div class="stat-label">Total Anthologies</div>
             </div>
         </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.Count(a => a.IsApproved)</div>
+                <div class="stat-label">Approved</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-globe text-info"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.Count(a => a.IsPublic)</div>
+                <div class="stat-label">Public</div>
+            </div>
+        </div>
+    </div>
 
-        <table class="table table-hover" id="anthologiesTable">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th style="width: 240px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.Title</td>
-                        <td class="action-buttons">
-                            <a asp-action="EditAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <a asp-action="ViewAnthology" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info me-1" title="View">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <a asp-action="SearchPoem" asp-route-anthologyId="@item.Id" class="btn btn-sm btn-outline-success me-1" title="Add Poem">
-                                <i class="bi bi-plus-square"></i>
-                            </a>
-                            <form asp-action="DeleteAnthology" asp-route-id="@item.Id" method="post" class="d-inline delete-form">
-                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <!-- Search and Create -->
+    <div class="filter-bar d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="search-container" style="max-width: 400px;">
+            <div class="input-group">
+                <input id="anthologySearch" type="text" class="form-control" placeholder="Search anthologies...">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+        <a asp-action="CreateAnthology" class="btn create-btn">
+            <i class="bi bi-plus-lg me-1"></i> New Anthology
+        </a>
+    </div>
+
+    <!-- Anthology Cards Grid -->
+    <div class="anthology-grid" id="anthologyContainer">
+        @foreach (var anthology in Model)
+        {
+            <div class="anthology-card" data-id="@anthology.Id" data-title="@anthology.Title.ToLower()"
+                 data-author="@anthology.AuthorName.ToLower()" data-description="@anthology.Description.ToLower()">
+                <form asp-action="DeleteAnthology" asp-route-id="@anthology.Id"
+                      method="post" class="delete-form">
+                    <button type="button" class="delete-btn delete-anthology-btn" title="Delete">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </form>
+
+                <div class="anthology-header">
+                    <div class="anthology-id">#@anthology.Id</div>
+                    <h3 class="anthology-title">@anthology.Title</h3>
+                    <div class="status-group">
+                        <span class="status-badge @(anthology.IsApproved ? "badge-approved" : "badge-pending")">
+                            @(anthology.IsApproved ? "Approved" : "Pending")
+                        </span>
+                        <span class="status-badge @(anthology.IsPublic ? "badge-public" : "badge-private")">
+                            @(anthology.IsPublic ? "Public" : "Private")
+                        </span>
+                    </div>
+                </div>
+
+                <div class="anthology-body">
+                    <div class="anthology-description">@anthology.Description</div>
+
+                    <div class="metadata">
+                        <div class="metadata-item">
+                            <span class="metadata-label">Author:</span>
+                            <span class="metadata-value">@anthology.AuthorName</span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="metadata-label">Created:</span>
+                            <span class="metadata-value">@anthology.CreatedAt.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="metadata-label">Poems:</span>
+                            <span class="metadata-value">@anthology.AnthologyPoems.Count</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <a asp-action="EditAnthology" asp-route-id="@anthology.Id" class="btn btn-sm btn-outline-primary" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a asp-action="ViewAnthology" asp-route-id="@anthology.Id" class="btn btn-sm btn-outline-info" title="View">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a asp-action="SearchPoem" asp-route-anthologyId="@anthology.Id" class="btn btn-sm btn-outline-success" title="Add Poem">
+                        <i class="bi bi-plus-square"></i>
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="noResults" class="my-4" style="display: none;">
+        <i class="bi bi-search" style="font-size: 3rem; color: #bbdefb;"></i>
+        <h4 class="mt-3">No anthologies found</h4>
+        <p class="text-muted">Try adjusting your search criteria</p>
     </div>
 </div>
 
-<script>
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault(); // Stop normal post
-            const currentForm = this;
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This will permanently delete the anthology!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    currentForm.submit(); // Submit if confirmed
-                }
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Client-side search
+            const searchInput = document.getElementById('anthologySearch');
+            const anthologyCards = document.querySelectorAll('.anthology-card');
+            const noResults = document.getElementById('noResults');
+            const container = document.getElementById('anthologyContainer');
+
+            searchInput.addEventListener('input', function () {
+                const term = this.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                anthologyCards.forEach(card => {
+                    const title = card.dataset.title;
+                    const id = card.dataset.id;
+                    const author = card.dataset.author;
+                    const description = card.dataset.description;
+
+                    const matches = term === '' ||
+                        title.includes(term) ||
+                        id.includes(term) ||
+                        author.includes(term) ||
+                        description.includes(term);
+
+                    card.style.display = matches ? 'block' : 'none';
+                    if (matches) visibleCount++;
+                });
+
+                noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+                container.style.display = visibleCount === 0 ? 'none' : 'grid';
+            });
+
+            // Delete confirmation
+            document.querySelectorAll('.delete-anthology-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const form = this.closest('form');
+                    const title = this.closest('.anthology-card').querySelector('.anthology-title').textContent;
+
+                    Swal.fire({
+                        title: 'Delete Anthology?',
+                        text: `Are you sure you want to delete "${title}"?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ff8a8a',
+                        cancelButtonColor: '#89b9e6',
+                        confirmButtonText: 'Delete',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
             });
         });
-    });
-</script>
+    </script>
+}

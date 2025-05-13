@@ -90,8 +90,8 @@
 
     .badge-pending {
         background-color: rgba(255, 193, 7, 0.1);
-        color: #ffc107;
-        border: 1px solid rgba(255, 193, 7, 0.2);
+        color: #e9602d;
+        border: 1px solid #ed1a0a;
     }
 
     .badge-public {
@@ -163,6 +163,82 @@
         gap: 25px;
     }
 
+    /* Add stats cards styling */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, rgba(248, 187, 208, 0.9) 0%, rgba(187, 222, 251, 0.9) 100%);
+        border-radius: 15px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-icon {
+        background: white;
+        border-radius: 12px;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #3a3a3a;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* Enhanced delete button */
+    .delete-form {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+    }
+
+    .delete-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ff8a8a;
+        color: #ff8a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .delete-btn:hover {
+            background: #ff8a8a;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+    .poem-card {
+        position: relative; /* For absolute positioning of delete button */
+    }
+
+    .status-group {
+        display: flex;
+        gap: 8px;
+        position: relative;
+        z-index: 1; /* Ensure badges stay behind close button */
+    }
     /* media (max-width: 768px) { */
     /*     .poem-grid */
 
@@ -171,9 +247,40 @@
     /* } */
 
     /* } */
+
 </style>
 
 <div class="container-fluid">
+    <!-- Stats Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book-open text-primary"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.Count()</div>
+                <div class="stat-label">Total Poems</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.Count(p => p.IsApproved)</div>
+                <div class="stat-label">Approved Poems</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-globe text-info"></i>
+            </div>
+            <div>
+                <div class="stat-value">@Model.Count(p => p.IsPublic)</div>
+                <div class="stat-label">Public Poems</div>
+            </div>
+        </div>
+    </div>
     <div class="filter-bar d-flex flex-wrap justify-content-between align-items-center">
         <div class="input-group search-container mb-2 mb-md-0">
             <input id="poemSearch" type="text" class="form-control" placeholder="Search by ID, title, theme...">
@@ -200,9 +307,17 @@
             <div class="poem-card" data-id="@poem.Id" data-title="@poem.Title.ToLower()"
                  data-theme="@(poem.Theme?.ToLower() ?? "")" data-genre="@(poem.Genre?.ToLower() ?? "")"
                  data-author="@poem.AuthorName.ToLower()">
+                <form asp-action="DeletePoem" asp-route-id="@poem.Id"
+                      method="post" class="delete-form">
+                    <button type="button" class="delete-btn delete-poem-btn" title="Delete">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </form>
+
                 <div class="poem-header d-flex justify-content-between align-items-center">
                     <h5 class="m-0">#@poem.Id</h5>
-                    <div>
+                    <div class="status-group" style="margin-right: 30px;">
+                        <!-- Added margin-right -->
                         <span class="status-badge @(poem.IsApproved ? "badge-approved" : "badge-pending")">
                             @(poem.IsApproved ? "Approved" : "Pending")
                         </span>
@@ -211,6 +326,7 @@
                         </span>
                     </div>
                 </div>
+
                 <div class="poem-body">
                     <h5 class="poem-title">@poem.Title</h5>
                     <div class="poem-content">@poem.Content</div>
@@ -247,12 +363,7 @@
                     <a asp-action="DisplaySpecificPoem" asp-route-id="@poem.Id" class="btn btn-outline-info action-btn" title="View details">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <form asp-action="DeletePoem" asp-route-id="@poem.Id"
-                          method="post" class="d-inline delete-form">
-                        <button type="submit" class="btn btn-outline-danger action-btn" title="Delete">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </form>
+                    
                 </div>
             </div>
         }
@@ -304,36 +415,28 @@
             });
 
             searchBtn.addEventListener('click', filterPoems);
+        });
+    </script>
+    <script>
+        // Update delete confirmation script
+        document.querySelectorAll('.delete-poem-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const form = this.closest('form');
+                const poemTitle = this.closest('.poem-card').querySelector('.poem-title').textContent;
 
-            // Delete confirmation with SweetAlert2
-            document.querySelectorAll('.delete-form').forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    const currentForm = this;
-                    const poemCard = currentForm.closest('.poem-card');
-                    const poemTitle = poemCard.querySelector('.poem-title').textContent;
-
-                    Swal.fire({
-                        title: 'Delete Poem?',
-                        text: `Are you sure you want to delete "${poemTitle}"? This action cannot be undone.`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#dc3545',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Yes, delete it',
-                        cancelButtonText: 'Cancel',
-                        customClass: {
-                            confirmButton: 'btn btn-danger',
-                            cancelButton: 'btn btn-secondary'
-                        },
-                        buttonsStyling: false
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Show loading indicator
-                            showLoading();
-                            currentForm.submit();
-                        }
-                    });
+                Swal.fire({
+                    title: 'Delete Poem?',
+                    text: `Are you sure you want to delete "${poemTitle}"?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff8a8a',
+                    cancelButtonColor: '#89b9e6',
+                    confirmButtonText: 'Delete',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
                 });
             });
         });

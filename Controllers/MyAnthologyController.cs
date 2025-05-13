@@ -196,7 +196,6 @@ namespace VerseCraft.Controllers
             return RedirectToAction("ViewAnthology", new { id = model.Id});
         }
 
-        // create the delet here in post , make sure to handle image deletioon as well, 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAnthology(int id)
@@ -248,5 +247,117 @@ namespace VerseCraft.Controllers
 
             return RedirectToAction("ViewAnthology"); // i want after deleting the poem to redirect to view anthology but the problem is view anthology will need an id to be passed
         }
+
+
+        // CREATE THE AddExistingPoem here , in this part we will have a search functionality, seach funtionality will be server side,
+        // by default we will display at least 10 poems that is not associated with this anthology , take note only display poem that is own by this user
+        // in the view you will display each poem like a card ( i will send it to you later),
+        /*
+         * 
+         */
+
+        // first step first, lets create the get method for this . 
+        [HttpGet]
+        public async Task<IActionResult> AddExistingPoem(int anthologyId, string? search)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            var associatedPoemIds = await _context.AnthologyPoems
+                .Where(ap => ap.AnthologyId == anthologyId)
+                .Select(ap => ap.PoemId)
+                .ToListAsync();
+
+            var poemsQuery = _context.Poems
+                .Where(p => p.UserId == userId && !associatedPoemIds.Contains(p.Id));
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                poemsQuery = poemsQuery.Where(p => p.Title.Contains(search) || p.Tags!.Contains(search));
+            }
+
+            var poems = await poemsQuery
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(10)
+                .ToListAsync();
+
+            ViewBag.AnthologyId = anthologyId;
+            ViewBag.SearchTerm = search;
+
+            return View(poems);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FindExistingPoem(int anthologyId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return Unauthorized();
+            }
+
+            var associatedPoemIds = await _context.AnthologyPoems
+                .Where(ap => ap.AnthologyId == anthologyId)
+                .Select(ap => ap.PoemId)
+                .ToListAsync();
+
+            var poems = await _context.Poems
+                .Where(p => p.UserId == userId && !associatedPoemIds.Contains(p.Id))
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(10)
+                .ToListAsync();
+
+            ViewBag.AnthologyId = anthologyId;
+            return View(poems);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddExistingPoem(int anthologyId, int poemId)
+        {
+            // ensure both items exist
+            var anthology = await _context.Anthologies.FindAsync(anthologyId);
+            var poem = await _context.Poems.FindAsync(poemId);
+            if (anthology == null || poem == null)
+                return NotFound();
+
+            // avoid duplicates
+            bool already = await _context.AnthologyPoems
+                .AnyAsync(ap => ap.AnthologyId == anthologyId && ap.PoemId == poemId);
+            if (!already)
+            {
+                _context.AnthologyPoems.Add(new AnthologyPoem
+                {
+                    AnthologyId = anthologyId,
+                    PoemId = poemId
+                });
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["SUCCESS"] = "Poem added to anthology!";
+            return RedirectToAction("ViewAnthology", new { id = anthologyId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemovePoem(int id /*=poemId*/, int anthologyId)
+        {
+            // 1) Remove the AnthologyPoem join
+            var ap = await _context.AnthologyPoems
+                                  .FirstOrDefaultAsync(x => x.PoemId == id && x.AnthologyId == anthologyId);
+            if (ap != null)
+            {
+                _context.AnthologyPoems.Remove(ap);
+                await _context.SaveChangesAsync();
+            }
+
+            TempData["SUCCESS"] = "Poem removed from anthology.";
+
+            return RedirectToAction("ViewAnthology", new { id = anthologyId });
+        }
+
     }
 }

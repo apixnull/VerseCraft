@@ -1,42 +1,625 @@
 ﻿@model VerseCraft.Models.Anthology
 
 @{
-    ViewData["Title"] = "Anthology Details";
+    ViewData["Title"] = "View Specific Anthology";
 }
 
-<div class="container mt-4">
-    <div class="text-center">
-        <h2>@Model.Title</h2>
-        <p class="text-muted">@Model.AuthorName</p>
-        <img src="@Model.ImagePath" alt="Cover" class="img-fluid rounded mb-3" style="max-height: 300px;" />
-        <p>@Model.Description</p>
+<style>
+    /* Modern color scheme with gradients */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #f8e1e9 0%, #d4e5f7 100%);
+        --accent-pink: #e999c0;
+        --accent-blue: #89b9e6;
+        --text-dark: #333333;
+        --text-light: #666666;
+        --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
+    }
+
+    .anthology-container {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    /* Header Styles */
+    .anthology-header {
+        position: relative;
+        height: 350px;
+        overflow: hidden;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+    }
+
+        .anthology-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient);
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+    .cover-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .header-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 2rem;
+        z-index: 2;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        color: white;
+    }
+
+    .anthology-title {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .author-name {
+        font-size: 1.2rem;
+        font-style: italic;
+        margin-bottom: 1rem;
+    }
+
+    .anthology-status {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .status-public {
+        background-color: var(--accent-blue);
+        color: white;
+    }
+
+    .status-private {
+        background-color: #e0e0e0;
+        color: var(--text-dark);
+    }
+
+    .status-approved {
+        background-color: #a8e6cf;
+        color: #2d6a4f;
+    }
+
+    .status-pending {
+        background-color: #ffd3b6;
+        color: #805b36;
+    }
+
+    /* Action Toolbar */
+    .action-toolbar {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 2rem;
+        background-color: white;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 30px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-edit {
+        background-color: var(--accent-blue);
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #ff8a8a;
+        color: white;
+    }
+
+    .btn-add {
+        background-color: var(--accent-pink);
+        color: white;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Main Content */
+    .anthology-body {
+        padding: 2rem;
+    }
+
+    .description {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        color: var(--text-dark);
+        border-left: 4px solid var(--accent-pink);
+        padding-left: 1rem;
+    }
+
+    /* Metadata */
+    .metadata {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+        background: var(--primary-gradient);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+    }
+
+    .metadata-item {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 8px;
+    }
+
+    .metadata-label {
+        font-weight: 600;
+        color: var(--accent-blue);
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+
+    .metadata-value {
+        color: var(--text-dark);
+    }
+
+    /* Poems Section */
+    .poems-section {
+        margin-top: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        color: var(--text-dark);
+        text-align: center;
+        position: relative;
+    }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: var(--primary-gradient);
+            margin: 0.5rem auto 0;
+            border-radius: 2px;
+        }
+
+    .poems-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+        padding: 0;
+        list-style: none;
+    }
+
+    .poem-item {
+        height: 100%;
+    }
+
+    .poem-card {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        position: relative; /* Ensure relative positioning for absolute child */
+    }
+
+        .poem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+    .remove-poem-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+
+    .poem-card-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .poem-card-body {
+        padding: 1rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .remove-poem-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ff8a8a; /* Thicker border */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #ff8a8a; /* Controls icon color */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+    }
+
+
+        .remove-poem-btn:hover {
+            background-color: #ff8a8a;
+            transform: rotate(90deg); /* Keep this for the hover effect */
+        }
+
+        .remove-poem-btn i {
+            font-size: 16px; /* Larger icon size */
+        }
+
+    .poem-card-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .poem-card-summary {
+        color: var(--text-light);
+        margin-bottom: 1rem;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .poem-metadata {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .poem-tag {
+        background-color: #f0f0f0;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        color: var(--text-light);
+    }
+
+    .poem-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 0.5rem;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .poem-date {
+        font-size: 0.8rem;
+        color: var(--text-light);
+    }
+
+    .btn-view {
+        background-color: var(--accent-blue);
+        color: white;
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        background-color: #f8f9fa;
+        border-radius: var(--border-radius);
+        color: var(--text-light);
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d4d6d8;
+        }
+
+        .empty-state p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+    /* Responsive Adjustments */
+    /* media (max-width: 768px) { */
+    /*     .anthology-header */
+
+    /* { */
+    /*     height: 300px; */
+    /* } */
+
+    /* .anthology-title { */
+    /*     font-size: 2rem; */
+    /* } */
+
+    /* .action-toolbar { */
+    /*     justify-content: center; */
+    /* } */
+
+    /* .metadata { */
+    /*     grid-template-columns: 1fr; */
+    /* } */
+
+    /* } */
+
+
+
+</style>
+
+<div class="anthology-container">
+    <!-- Header with Cover Image -->
+    <div class="anthology-header">
+        <img src="/uploads/anthologies/@Model.ImagePath" alt="@Model.Title Cover" class="cover-image">
+        <div class="header-content">
+            <h1 class="anthology-title">@Model.Title</h1>
+            <div class="author-name">By @Model.AuthorName</div>
+            <div class="anthology-status">
+                @if (Model.IsPublic)
+                {
+                    <span class="status-badge status-public"><i class="fas fa-globe"></i> Public</span>
+                }
+                else
+                {
+                    <span class="status-badge status-private"><i class="fas fa-lock"></i> Private</span>
+                }
+
+                @if (Model.IsApproved)
+                {
+                    <span class="status-badge status-approved"><i class="fas fa-check-circle"></i> Approved</span>
+                }
+                else
+                {
+                    <span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending Approval</span>
+                }
+            </div>
+        </div>
     </div>
 
-    <hr />
-    <h4>Included Poems</h4>
-    <div class="row">
-        @foreach (var item in Model.AnthologyPoems)
-        {
-            var poem = item.Poem;
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="@poem.CoverImagePath" class="card-img-top" alt="Poem Image" style="height: 200px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@poem.Title</h5>
-                        <p class="card-subtitle text-muted">@poem.Style</p>
-                        <p class="card-text small">@poem.Summary</p>
-                        @if (!string.IsNullOrWhiteSpace(poem.Tags))
-                        {
-                            <div class="mt-2">
-                                @foreach (var tag in poem.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries))
-                                {
-                                    <span class="badge bg-secondary">@tag.Trim()</span>
-                                }
-                            </div>
-                        }
-                    </div>
+    <!-- Action Toolbar -->
+    <div class="action-toolbar">
+        <a href="@Url.Action("EditAnthology", "MyAnthology", new { id = Model.Id })" class="btn btn-edit">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <form id="delete-anthology-form" asp-action="DeleteAnthology" asp-controller="MyAnthology" asp-route-id="@Model.Id" method="post" style="display: inline;">
+            <button id="delete-anthology-btn" type="button" class="btn btn-delete">
+                <i class="fas fa-trash-alt"></i> Delete
+            </button>
+        </form>
+        <a asp-action="CreatePoem" asp-controller="MyPoem" asp-route-id="@Model.Id" class="btn btn-add">
+            <i class="fas fa-plus"></i> Add Poem
+        </a>
+        <a asp-action="FindExistingPoem" asp-controller="MyAnthology" asp-route-anthologyId="@Model.Id" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-plus-square"></i> Add Existing Poem
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="anthology-body">
+        <!-- Description -->
+        <div class="description">
+            @Model.Description
+        </div>
+
+        <!-- Metadata -->
+        <div class="metadata">
+            @if (!string.IsNullOrEmpty(Model.LicenseType))
+            {
+                <div class="metadata-item">
+                    <span class="metadata-label"><i class="fas fa-certificate"></i> License Type</span>
+                    <span class="metadata-value">@Model.LicenseType</span>
                 </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.CopyrightNotice))
+            {
+                <div class="metadata-item">
+                    <span class="metadata-label"><i class="fas fa-copyright"></i> Copyright</span>
+                    <span class="metadata-value">@Model.CopyrightNotice</span>
+                </div>
+            }
+            <div class="metadata-item">
+                <span class="metadata-label"><i class="fas fa-calendar-plus"></i> Created</span>
+                <span class="metadata-value">@Model.CreatedAt.ToString("MMMM d, yyyy")</span>
             </div>
-        }
+            <div class="metadata-item">
+                <span class="metadata-label"><i class="fas fa-calendar-day"></i> Updated</span>
+                <span class="metadata-value">@Model.UpdatedAt.ToString("MMMM d, yyyy")</span>
+            </div>
+            @if (Model.UserId.HasValue)
+            {
+                <div class="metadata-item">
+                    <span class="metadata-label"><i class="fas fa-user"></i> Creator ID</span>
+                    <span class="metadata-value">@Model.UserId</span>
+                </div>
+            }
+        </div>
+
+        <!-- Poems List -->
+        <div class="poems-section">
+            <h2 class="section-title">Poems in this Anthology</h2>
+
+            @if (Model.AnthologyPoems != null && Model.AnthologyPoems.Any())
+            {
+                <ul class="poems-list">
+                    @foreach (var anthologyPoem in Model.AnthologyPoems)
+                    {
+                        var poem = anthologyPoem.Poem;
+
+                        <li class="poem-item">
+                            <div class="poem-card">
+                                <form id="remove-@poem.Id-form"
+                                      asp-action="RemovePoem"
+                                      asp-controller="MyAnthology"
+                                      method="post"
+                                      class="remove-poem-form"
+                                      asp-route-id="@poem.Id"
+                                      asp-route-anthologyId="@Model.Id">
+                                    <button type="button"
+                                            data-poem-id="@poem.Id"
+                                            class="remove-poem-btn"
+                                            title="Remove from anthology">
+                                        <i class="fas fa-times"></i> <!-- Ensure this icon class is correct -->
+                                    </button>
+                                </form>
+
+                                @if (!string.IsNullOrEmpty(poem.CoverImagePath))
+                                {
+                                    <img src="~/uploads/poems/@poem.CoverImagePath" class="poem-card-img" alt="@poem.Title Cover">
+                                }
+                                else
+                                {
+                                    <div class="poem-card-img" style="background: var(--primary-gradient); display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-feather-alt" style="font-size: 3rem; color: white; opacity: 0.8;"></i>
+                                    </div>
+                                }
+
+                                <div class="poem-card-body">
+                                    <h3 class="poem-card-title">@poem.Title</h3>
+
+                                    @if (!string.IsNullOrEmpty(poem.Summary))
+                                    {
+                                        <p class="poem-card-summary">@poem.Summary</p>
+                                    }
+                                    else if (!string.IsNullOrEmpty(poem.Content))
+                                    {
+                                        <p class="poem-card-summary">@(poem.Content.Length > 150 ? poem.Content.Substring(0, 150) + "..." : poem.Content)</p>
+                                    }
+
+                                    <div class="poem-metadata">
+                                        @if (!string.IsNullOrEmpty(poem.Genre))
+                                        {
+                                            <span class="poem-tag"><i class="fas fa-bookmark"></i> @poem.Genre</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(poem.Style))
+                                        {
+                                            <span class="poem-tag"><i class="fas fa-paint-brush"></i> @poem.Style</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(poem.Theme))
+                                        {
+                                            <span class="poem-tag"><i class="fas fa-lightbulb"></i> @poem.Theme</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(poem.Mood))
+                                        {
+                                            <span class="poem-tag"><i class="fas fa-heart"></i> @poem.Mood</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(poem.Language))
+                                        {
+                                            <span class="poem-tag"><i class="fas fa-language"></i> @poem.Language</span>
+                                        }
+                                    </div>
+
+                                    <div class="poem-footer">
+                                        <span class="poem-date">@poem.CreatedAt.ToString("MMM d, yyyy")</span>
+                                        <a href="@Url.Action("ViewPoemInAntholoy", "MyAnthology", new { id = poem.Id})" class="btn btn-view">
+                                            View <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-book-open"></i>
+                    <p>No poems available in this anthology yet.</p>
+                    <a asp-action="CreatePoem" asp-controller="MyPoem" asp-route-id="@Model.Id" class="btn btn-add">
+                        <i class="fas fa-plus"></i> Add Your First Poem
+                    </a>
+                </div>
+            }
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('delete-anthology-btn').addEventListener('click', function() {
+          Swal.fire({
+            title: 'Are you sure?',
+            text: "This will permanently delete your anthology.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              document.getElementById('delete-anthology-form').submit();
+            }
+          });
+        });
+
+        document.querySelectorAll('.remove-poem-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const poemId = btn.getAttribute('data-poem-id');
+            Swal.fire({
+              title: 'Remove this poem?',
+              text: "It will be removed from your anthology.",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, remove it',
+              reverseButtons: true
+            }).then(result => {
+              if (result.isConfirmed) {
+                document.getElementById(`remove-${poemId}-form`).submit();
+              }
+            });
+          });
+        });
+    </script>
+}

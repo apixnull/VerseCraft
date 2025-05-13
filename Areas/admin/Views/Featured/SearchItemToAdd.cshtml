@@ -4,63 +4,243 @@
     string type = ViewData["WorkType"] as string ?? "";
 }
 
-<h2 class="mb-4 text-white">Add a Featured @type</h2>
+<style>
+    /* Consistent with previous theme styles */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #f8e1e9 0%, #d4e5f7 100%);
+        --accent-pink: #e999c0;
+        --accent-blue: #89b9e6;
+        --text-dark: #333333;
+        --text-light: #666666;
+        --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
+    }
 
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-    @if (type == "Poem")
-    {
-        var poems = Model.Cast<VerseCraft.Models.Poem>();
-        foreach (var poem in poems)
+    .search-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-container {
+        position: relative;
+        max-width: 300px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+    }
+
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem 0;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-image {
+        height: 200px;
+        background: var(--primary-gradient);
+        position: relative;
+    }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-author {
+        color: var(--accent-blue);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-description {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-feature {
+        background: var(--accent-pink);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn-feature:hover {
+            transform: scale(1.05);
+            box-shadow: var(--card-shadow);
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        background: rgba(248, 225, 233, 0.3);
+        border-radius: var(--border-radius);
+        grid-column: 1 / -1;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="search-header">
+        <h2 class="mb-0">Add Featured @type</h2>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search @(type.ToLower())s...">
+            <i class="fas fa-search position-absolute" style="right: 1rem; top: 50%; transform: translateY(-50%);"></i>
+        </div>
+    </div>
+
+    <div class="card-grid">
+        @if (type == "Poem")
         {
-            <div class="col">
-                <div class="card h-100 bg-dark text-white border-light">
-                    @if (!string.IsNullOrEmpty(poem.CoverImagePath))
-                    {
-                        <img src="@poem.CoverImagePath" class="card-img-top" style="object-fit: cover; height: 180px;" alt="@poem.Title" />
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">@poem.Title</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">By @poem.AuthorName</h6>
-                        <p class="card-text">@poem.Summary ?? "No summary provided."</p>
-                        <p><small class="text-info">Style: @poem.Style ?? "N/A"</small></p>
-                        <p><small class="text-secondary">Tags: @poem.Tags ?? "None"</small></p>
-                        <form method="post" asp-action="AddFeature">
-                            <input type="hidden" name="type" value="Poem" />
-                            <input type="hidden" name="id" value="@poem.Id" />
-                            <button class="btn btn-success btn-sm">Feature</button>
-                        </form>
-                    </div>
+            var poems = Model.Cast<VerseCraft.Models.Poem>().ToList();
+            if (!poems.Any())
+            {
+                <div class="empty-state">
+                    <i class="fas fa-book-open fa-3x mb-3" style="color: var(--accent-pink);"></i>
+                    <h4>No Poems Available</h4>
+                    <p class="text-muted">All public poems have been featured or none exist yet.</p>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
                 </div>
+            }
+            else
+            {
+                foreach (var poem in poems)
+                {
+                    <div class="feature-card" data-search="@(poem.Title.ToLower()) @(poem.AuthorName?.ToLower()) @(poem.Summary?.ToLower())">
+                        <div class="card-image">
+                            @if (!string.IsNullOrEmpty(poem.CoverImagePath))
+                            {
+                                <img src="~/uploads/poems/@poem.CoverImagePath" alt="@poem.Title">
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <i class="fas fa-feather-alt fa-3x text-white opacity-50"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">@poem.Title</h3>
+                            <div class="card-author">By @poem.AuthorName</div>
+                            <p class="card-description">@(poem.Summary ?? "No description provided")</p>
+                            <form method="post" asp-action="AddFeature" class="text-end">
+                                <input type="hidden" name="type" value="Poem" />
+                                <input type="hidden" name="id" value="@poem.Id" />
+                                <button type="submit" class="btn-feature">
+                                    <i class="fas fa-star mr-2"></i>Feature
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        else if (type == "Anthology")
+        {
+            var anthologies = Model.Cast<VerseCraft.Models.Anthology>().ToList();
+            if (!anthologies.Any())
+            {
+                <div class="empty-state">
+                    <i class="fas fa-book fa-3x mb-3" style="color: var(--accent-blue);"></i>
+                    <h4>No Anthologies Available</h4>
+                    <p class="text-muted">All public anthologies have been featured or none exist yet.</p>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            }
+            else
+            {
+                foreach (var anthology in anthologies)
+                {
+                    <div class="feature-card" data-search="@(anthology.Title.ToLower()) @(anthology.AuthorName?.ToLower()) @(anthology.Description?.ToLower())">
+                        <div class="card-image">
+                            @if (!string.IsNullOrEmpty(anthology.ImagePath))
+                            {
+                                <img src="~/uploads/anthologies/@anthology.ImagePath" alt="@anthology.Title">
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center h-100">
+                                    <i class="fas fa-book-open fa-3x text-white opacity-50"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">@anthology.Title</h3>
+                            <div class="card-author">By @anthology.AuthorName</div>
+                            <p class="card-description">@anthology.Description.Substring(0, Math.Min(120, anthology.Description.Length))...</p>
+                            <form method="post" asp-action="AddFeature" class="text-end">
+                                <input type="hidden" name="type" value="Anthology" />
+                                <input type="hidden" name="id" value="@anthology.Id" />
+                                <button type="submit" class="btn-feature">
+                                    <i class="fas fa-star mr-2"></i>Feature
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
+                <h4>Invalid Content Type</h4>
+                <p class="text-muted">Please specify a valid type to feature.</p>
+                <a href="@Url.Action("Manage", "Featured")" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Features
+                </a>
             </div>
         }
-    }
-    else if (type == "Anthology")
-    {
-        var anthologies = Model.Cast<VerseCraft.Models.Anthology>();
-        foreach (var anthology in anthologies)
-        {
-            <div class="col">
-                <div class="card h-100 bg-dark text-white border-light">
-                    @if (!string.IsNullOrEmpty(anthology.ImagePath))
-                    {
-                        <img src="@anthology.ImagePath" class="card-img-top" style="object-fit: cover; height: 180px;" alt="@anthology.Title" />
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">@anthology.Title</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">By @anthology.AuthorName</h6>
-                        <p class="card-text">@anthology.Description.Substring(0, Math.Min(120, anthology.Description.Length))...</p>
-                        <form method="post" asp-action="AddFeature">
-                            <input type="hidden" name="type" value="Anthology" />
-                            <input type="hidden" name="id" value="@anthology.Id" />
-                            <button class="btn btn-success btn-sm">Feature</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <p class="text-danger">Invalid type specified.</p>
-    }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Client-side search functionality
+        document.querySelector('.search-input').addEventListener('input', function() {
+            const searchTerm = this.value.trim().toLowerCase();
+            document.querySelectorAll('.feature-card').forEach(card => {
+                const searchData = card.dataset.search.toLowerCase();
+                card.style.display = searchData.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+    </script>
+}

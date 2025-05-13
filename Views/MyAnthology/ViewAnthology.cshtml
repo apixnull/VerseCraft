@@ -1,5 +1,9 @@
 ﻿@model VerseCraft.Models.Anthology
 
+@{
+    ViewData["Title"] = "View Specific Anthology";
+}
+
 <style>
     /* Modern color scheme with gradients */
     :root {
@@ -240,12 +244,20 @@
         display: flex;
         flex-direction: column;
         background-color: white;
+        position: relative; /* Ensure relative positioning for absolute child */
     }
 
         .poem-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
+
+    .remove-poem-form {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
 
     .poem-card-img {
         width: 100%;
@@ -258,6 +270,31 @@
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+    }
+
+    .remove-poem-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.95);
+        border: 2px solid #ff8a8a; /* Thicker border */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #ff8a8a; /* Controls icon color */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+}
+
+
+        .remove-poem-btn:hover {
+            background-color: #ff8a8a;
+            transform: rotate(90deg); /* Keep this for the hover effect */
+        }
+
+    .remove-poem-btn i {
+        font-size: 16px; /* Larger icon size */
     }
 
     .poem-card-title {
@@ -353,6 +390,9 @@
     /* } */
 
     /* } */
+
+
+
 </style>
 
 <div class="anthology-container">
@@ -396,6 +436,9 @@
         </form>
         <a asp-action="CreatePoem" asp-controller="MyPoem" asp-route-id="@Model.Id" class="btn btn-add">
             <i class="fas fa-plus"></i> Add Poem
+        </a>
+        <a asp-action="FindExistingPoem" asp-controller="MyAnthology" asp-route-anthologyId="@Model.Id" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-plus-square"></i> Add Existing Poem
         </a>
     </div>
 
@@ -452,6 +495,21 @@
 
                         <li class="poem-item">
                             <div class="poem-card">
+                                <form id="remove-@poem.Id-form"
+                                      asp-action="RemovePoem"
+                                      asp-controller="MyAnthology"
+                                      method="post"
+                                      class="remove-poem-form"
+                                      asp-route-id="@poem.Id"
+                                      asp-route-anthologyId="@Model.Id">
+                                    <button type="button"
+                                            data-poem-id="@poem.Id"
+                                            class="remove-poem-btn"
+                                            title="Remove from anthology">
+                                        <i class="fas fa-times"></i> <!-- Ensure this icon class is correct -->
+                                    </button>
+                                </form>
+
                                 @if (!string.IsNullOrEmpty(poem.CoverImagePath))
                                 {
                                     <img src="~/uploads/poems/@poem.CoverImagePath" class="poem-card-img" alt="@poem.Title Cover">
@@ -541,6 +599,26 @@
             if (result.isConfirmed) {
               document.getElementById('delete-anthology-form').submit();
             }
+          });
+        });
+
+        document.querySelectorAll('.remove-poem-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const poemId = btn.getAttribute('data-poem-id');
+            Swal.fire({
+              title: 'Remove this poem?',
+              text: "It will be removed from your anthology.",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, remove it',
+              reverseButtons: true
+            }).then(result => {
+              if (result.isConfirmed) {
+                document.getElementById(`remove-${poemId}-form`).submit();
+              }
+            });
           });
         });
     </script>
