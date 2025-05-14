@@ -193,6 +193,7 @@ namespace VerseCraft.Controllers
 
             await _context.SaveChangesAsync();
 
+            TempData["SUCCESS"] = "Poem Updated successfully.";
             // 4. Link to anthology if provided
             if (model.AnthologyId.HasValue)
             {

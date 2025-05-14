@@ -70,6 +70,33 @@
             background: rgba(187, 222, 251, 0.05);
         }
 
+        .image-upload img {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .image-upload .text-muted {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .image-upload .text-success,
+        .image-upload .text-danger {
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-upload .text-success {
+            color: #28a745;
+        }
+
+        .image-upload .text-danger {
+            color: #dc3545;
+        }
+
     .custom-switch .form-check-input:checked {
         background-color: #f8bbd0;
         border-color: #f8bbd0;
@@ -210,22 +237,36 @@
     </form>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Style file input
-        document.querySelector('.image-upload').addEventListener('click', function() {
-            this.querySelector('input[type="file"]').click();
-        });
+<script>
+    document.querySelector('.image-upload').addEventListener('click', function() {
+        this.querySelector('input[type="file"]').click();
+    });
 
-        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
-            const label = this.closest('.image-upload');
-            if(this.files.length > 0) {
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+        const label = this.closest('.image-upload');
+        const file = this.files[0];
+
+        // Allowed file types
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+
+        // Check if file is valid
+        if (file && allowedTypes.includes(file.type)) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
                 label.innerHTML = `
-                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
-                    <div class="text-success">${this.files[0].name}</div>
+                    <img src="${e.target.result}" alt="Image preview" />
+                    <div class="text-success">${file.name}</div>
                 `;
-            }
-        });
-    </script>
-}
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Show error message if file is invalid
+            label.innerHTML = `
+                <i class="fas fa-times-circle fa-2x text-danger mb-3"></i>
+                <div class="text-danger">Invalid file type. Please select a valid image (JPEG, PNG, GIF, SVG).</div>
+            `;
+            // Optionally, reset the file input
+            this.value = '';
+        }
+    });
+</script>

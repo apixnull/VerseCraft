@@ -87,7 +87,7 @@ namespace VerseCraft.Areas.admin.Controllers
             // 3. Persist and redirect
             _context.Poems.Add(poem);
             await _context.SaveChangesAsync();
-            TempData["SUCCESS"] = "User Added successfully";
+            TempData["SUCCESS"] = "Poem Created successfully";
             return RedirectToAction(nameof(DisplayPoems));
 
          
@@ -181,7 +181,7 @@ namespace VerseCraft.Areas.admin.Controllers
 
             _context.Poems.Update(poem);
             await _context.SaveChangesAsync();
-
+            TempData["SUCCESS"] = "Poem Updated successfully";
             return RedirectToAction(nameof(DisplayPoems));
         }
 

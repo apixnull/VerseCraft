@@ -1,4 +1,7 @@
-﻿:root {
+﻿/* ======================================
+   CSS Variables - Theme Settings
+====================================== */
+:root {
     --primary-gradient: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
     --sidebar-width: 260px;
     --sidebar-collapsed-width: 70px;
@@ -11,8 +14,13 @@
     --text-primary: #3a3a3a;
     --text-secondary: #6c757d;
     --white: #ffffff;
+    --card-padding: 25px;
+    --hover-bg: rgba(248, 187, 208, 0.1);
 }
 
+/* ======================================
+   Base Styles
+====================================== */
 body {
     font-family: 'Poppins', 'Segoe UI', sans-serif;
     background-color: #f5f7fa;
@@ -20,6 +28,7 @@ body {
     overflow-x: hidden;
     margin: 0;
     padding: 0;
+    line-height: 1.5;
 }
 
 .admin-container {
@@ -28,10 +37,12 @@ body {
     position: relative;
 }
 
-/* Top Bar Styles */
+/* ======================================
+   Top Bar Styles
+====================================== */
 .top-bar {
     height: var(--topbar-height);
-    background: #fff;
+    background: var(--white);
     position: fixed;
     top: 0;
     right: 0;
@@ -45,6 +56,7 @@ body {
     transition: var(--transition);
 }
 
+/* Brand section on top bar */
 .brand-section {
     display: flex;
     align-items: center;
@@ -60,6 +72,7 @@ body {
         -webkit-text-fill-color: transparent;
     }
 
+/* Mobile menu toggle button */
 .menu-toggle {
     background: transparent;
     border: none;
@@ -68,14 +81,22 @@ body {
     cursor: pointer;
     display: none;
     padding: 8px;
+    transition: var(--transition);
 }
 
+    .menu-toggle:hover {
+        color: var(--pink-light);
+        transform: scale(1.05);
+    }
+
+/* User section with search and profile */
 .user-section {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
+/* Search box styles */
 .search-box {
     position: relative;
     max-width: 250px;
@@ -104,6 +125,7 @@ body {
         outline: none;
     }
 
+/* Admin profile styles */
 .admin-profile {
     display: flex;
     align-items: center;
@@ -112,10 +134,11 @@ body {
     cursor: pointer;
     padding: 5px;
     border-radius: 8px;
+    transition: var(--transition);
 }
 
     .admin-profile:hover {
-        background-color: rgba(0, 0, 0, 0.03);
+        background-color: var(--hover-bg);
     }
 
 .admin-avatar {
@@ -123,8 +146,8 @@ body {
     height: 42px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #fff;
-    box-shadow: 0 0 0 2px #bbdefb;
+    border: 2px solid var(--white);
+    box-shadow: 0 0 0 2px var(--blue-light);
 }
 
 .admin-info {
@@ -143,23 +166,37 @@ body {
     margin: 0;
 }
 
+/* Profile dropdown menu */
 .profile-dropdown {
     position: absolute;
     top: 60px;
     right: 0;
     width: 200px;
-    background: #fff;
+    background: var(--white);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     padding: 10px 0;
     z-index: 999;
     display: none;
     transition: var(--transition);
+    animation: fadeIn 0.2s ease;
 }
 
-    .profile-dropdown.show {
-        display: block;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-dropdown.show {
+    display: block;
+}
 
 .dropdown-item {
     padding: 10px 20px;
@@ -172,8 +209,8 @@ body {
 }
 
     .dropdown-item:hover {
-        background-color: rgba(187, 222, 251, 0.1);
-        color: var(--blue-light);
+        background-color: var(--hover-bg);
+        color: var(--pink-light);
     }
 
 .dropdown-divider {
@@ -200,7 +237,9 @@ body {
         background-color: rgba(220, 53, 69, 0.1);
     }
 
-/* Sidebar Styles */
+/* ======================================
+   Sidebar Styles
+====================================== */
 .sidebar {
     width: var(--sidebar-width);
     height: 100vh;
@@ -213,6 +252,7 @@ body {
     transition: var(--transition);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .sidebar-header {
@@ -241,11 +281,28 @@ body {
         font-size: 24px;
     }
 
+/* Navigation menu styles */
 .nav-menu {
     flex: 1;
     padding: 20px 10px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--blue-light) transparent;
 }
+
+    /* Custom scrollbar for the nav menu */
+    .nav-menu::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .nav-menu::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .nav-menu::-webkit-scrollbar-thumb {
+        background-color: var(--blue-light);
+        border-radius: 10px;
+    }
 
 .nav-title {
     font-size: 12px;
@@ -282,9 +339,13 @@ body {
     }
 
     .nav-link:hover {
-        background-color: rgba(248, 187, 208, 0.1);
+        background-color: var(--hover-bg);
         color: var(--pink-light);
     }
+
+        .nav-link:hover i {
+            transform: translateX(2px);
+        }
 
     .nav-link.active {
         background: var(--primary-gradient);
@@ -296,7 +357,67 @@ body {
             color: white;
         }
 
-/* Main Content */
+/* Sub-navigation styles */
+.sub-nav {
+    margin-bottom: 5px;
+}
+
+.sub-nav-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    position: relative;
+}
+
+    .sub-nav-header i {
+        font-size: 20px;
+        width: 24px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    .sub-nav-header:hover {
+        background-color: var(--hover-bg);
+        color: var(--pink-light);
+    }
+
+    .sub-nav-header:after {
+        content: '\F282';
+        font-family: 'bootstrap-icons';
+        position: absolute;
+        right: 15px;
+        transition: var(--transition);
+    }
+
+.sub-nav.expanded .sub-nav-header:after {
+    transform: rotate(90deg);
+}
+
+.sub-nav-links {
+    list-style: none;
+    padding-left: 34px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.sub-nav.expanded .sub-nav-links {
+    max-height: 200px; /* Adjust as needed */
+}
+
+.sub-nav-links .nav-link {
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+/* ======================================
+   Main Content Styles
+====================================== */
 .main-content {
     margin-left: var(--sidebar-width);
     padding-top: var(--topbar-height);
@@ -337,15 +458,14 @@ body {
     background: var(--white);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    padding: 25px;
+    padding: var(--card-padding);
     margin-bottom: 30px;
+    transition: var(--transition);
 }
 
-
-
-
-
-/* Overlay for sidebar (mobile) */
+/* ======================================
+   Mobile Overlay
+====================================== */
 .sidebar-overlay {
     position: fixed;
     top: 0;
@@ -356,50 +476,79 @@ body {
     z-index: 199;
     display: none;
     transition: var(--transition);
+    backdrop-filter: blur(2px);
 }
 
-/* Responsive Styles */
+/* ======================================
+   Responsive Styles
+====================================== */
 @media (max-width: 991px) {
+    /* Mobile sidebar handling */
     .sidebar {
         transform: translateX(-100%);
+        box-shadow: none;
     }
 
         .sidebar.show {
             transform: translateX(0);
+            box-shadow: var(--box-shadow);
         }
 
+    /* Adjust main content when sidebar is hidden */
     .main-content, .top-bar {
         margin-left: 0;
         width: 100%;
         left: 0;
     }
 
+    /* Show mobile menu toggle */
     .menu-toggle {
         display: block;
     }
 
+    /* Show overlay when sidebar is visible */
     .sidebar-overlay.show {
         display: block;
     }
 
+    /* Hide title on mobile to save space */
     .brand-section h4 {
         display: none;
     }
 
+    /* Hide search on mobile */
     .search-box {
         display: none;
     }
 }
 
+@media (max-width: 768px) {
+    /* Reduce padding for better space usage */
+    .content-area {
+        padding: 0 20px 20px;
+    }
+
+    .content-card {
+        padding: 20px;
+    }
+
+    .page-header {
+        padding: 15px 20px;
+    }
+}
+
 @media (max-width: 576px) {
+    /* Further adjustments for very small screens */
     .user-section {
         gap: 10px;
     }
 
+    /* Hide admin info text on small screens */
     .admin-info {
         display: none;
     }
 
+    /* Reduce padding for better space usage */
     .top-bar {
         padding: 0 15px;
     }
@@ -415,5 +564,9 @@ body {
     .content-card {
         padding: 15px;
     }
-}
 
+    /* Smaller page title on mobile */
+    .page-title {
+        font-size: 20px;
+    }
+}

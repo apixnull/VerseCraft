@@ -16,6 +16,8 @@ namespace VerseCraft.Data
         public DbSet<FeaturedItem> FeaturedItems => Set<FeaturedItem>();
         public DbSet<SavedPoem> SavedPoems => Set<SavedPoem>();
         public DbSet<SavedAnthology> SavedAnthologies => Set<SavedAnthology>();
+        public DbSet<Rejection> Rejections  => Set<Rejection>();
+
 
         public DbSet<AnthologyPoem> AnthologyPoems { get; set; } // 👈 Add this
         protected override void OnModelCreating(ModelBuilder modelBuilder)

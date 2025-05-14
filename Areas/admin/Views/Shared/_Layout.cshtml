@@ -4,105 +4,127 @@
     <meta charset="UTF-8">
     <title>VerseCraft Admin Panel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Core stylesheets -->
     <link rel="stylesheet" href="~/css/adminLayout.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" /> 
-     <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" /> 
-    <!-- Bootstrap & Icons -->
+    <link rel="stylesheet" href="~/css/loading.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
+    <!-- External libraries - Bootstrap & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        
-    </style>
 </head>
 <body>
-    <!-- Toast container -->
+    <!-- Toast notification container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Sidebar Overlay (for mobile) -->
+    <!-- Mobile sidebar overlay - shown when sidebar is open on mobile -->
     <div class="sidebar-overlay"></div>
 
     <div class="admin-container">
-        <!-- Sidebar -->
+        <!-- Sidebar navigation -->
         <aside class="sidebar">
+            <!-- Brand logo and title -->
             <div class="sidebar-header">
                 <a href="#" class="sidebar-brand">
                     <i class="bi bi-gem"></i>
-                    VerseCraft
+                    <span class="brand-text">VerseCraft</span>
                 </a>
             </div>
 
+            <!-- Navigation menu -->
             <nav class="nav-menu">
+                <!-- Main navigation section -->
                 <div class="nav-title">Main Navigation</div>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" asp-area="admin" asp-controller="Dashboard" asp-action="Main">
                             <i class="bi bi-speedometer2"></i>
-                            Dashboard
+                            <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Users" asp-action="DisplayUser">
                             <i class="bi bi-people"></i>
-                            Users
+                            <span>Users</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Poems" asp-action="DisplayPoems">
                             <i class="bi bi-journal-text"></i>
-                            Poems
+                            <span>Poems</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="admin" asp-controller="Anthology" asp-action="DisplayAnthologies">
                             <i class="bi bi-collection"></i>
-                            Anthology
+                            <span>Anthology</span>
                         </a>
                     </li>
                 </ul>
 
+                <!-- Content management section -->
                 <div class="nav-title">Content Management</div>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link" asp-area="admin" asp-controller="Featured" asp-action="FeaturedItems">
                             <i class="bi bi-stars"></i>
-                            Featured Items
+                            <span>Featured Items</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="PublicItems" asp-action="AddPublic">
+                        <a class="nav-link" asp-controller="Publish" asp-action="DisplayPublishItems">
                             <i class="bi bi-globe2"></i>
-                            Publish Publicly
+                            <span>Publish Publicly</span>
                         </a>
                     </li>
+                    <!-- Nested navigation for approvals -->
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="admin" asp-controller="ApprovedItems" asp-action="DisplayApprovedItems">
-                            <i class="bi bi-shield-check"></i>
-                            Pending Approvals
-                        </a>
+                        <div class="sub-nav">
+                            <div class="sub-nav-header">
+                                <i class="bi bi-shield-check"></i>
+                                <span>Approvals</span>
+                            </div>
+                            <ul class="sub-nav-links">
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="admin" asp-controller="ApprovedItems" asp-action="PendingApprovals">
+                                        <i class="bi bi-hourglass-split me-2"></i>
+                                        <span>Pending Approvals</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="admin" asp-controller="ApprovedItems" asp-action="ApprovalHistory">
+                                        <i class="bi bi-clock-history me-2"></i>
+                                        <span>Approval History</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <div class="main-content">
+            <!-- Top navigation bar -->
             <header class="top-bar">
                 <div class="brand-section">
-                    <button class="menu-toggle" id="toggleSidebar">
+                    <!-- Mobile menu toggle button -->
+                    <button class="menu-toggle" id="toggleSidebar" aria-label="Toggle Menu">
                         <i class="bi bi-list"></i>
                     </button>
                     <h4 class="ms-3">VerseCraft Poetry Administration</h4>
                 </div>
 
                 <div class="user-section">
+                    <!-- Search functionality -->
                     <div class="search-box">
                         <i class="bi bi-search"></i>
-                        <input type="text" placeholder="Search..." class="form-control">
+                        <input type="text" placeholder="Search..." class="form-control" aria-label="Search">
                     </div>
 
+                    <!-- Admin profile dropdown -->
                     <div class="admin-profile" id="profileDropdown">
                         <div class="admin-info">
                             <p class="admin-name">Admin Apix</p>
@@ -110,12 +132,9 @@
                         </div>
                         <img src="/images/admin_pic.png" alt="Admin" class="admin-avatar">
                         <i class="bi bi-chevron-down"></i>
-                       
-                        <!-- Profile Dropdown -->
+
+                        <!-- Profile dropdown menu -->
                         <div class="profile-dropdown">
-                             @* <a href="#" class="dropdown-item">  *@
-                             @*     <i class="bi bi-gear"></i> Settings  *@
-                             @* </a>  *@
                             <div class="dropdown-divider"></div>
                             <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="mb-0">
                                 <button type="submit" class="logout-btn">
@@ -127,13 +146,15 @@
                 </div>
             </header>
 
+            <!-- Page header with title -->
             <div class="page-header">
                 <h4 class="page-title">@ViewData["Title"]</h4>
                 <div class="breadcrumb-wrapper">
-                    <!-- Breadcrumb can be added here if needed -->
+                    <!-- Breadcrumb navigation placeholder -->
                 </div>
             </div>
 
+            <!-- Main content area -->
             <div class="content-area">
                 <div class="content-card">
                     @RenderBody()
@@ -142,9 +163,10 @@
         </div>
     </div>
 
+    <!-- Core JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Toggle sidebar
+            // Toggle sidebar visibility for mobile view
             const toggleBtn = document.getElementById('toggleSidebar');
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.querySelector('.sidebar-overlay');
@@ -154,13 +176,13 @@
                 overlay.classList.toggle('show');
             });
 
-            // Close sidebar when clicking on overlay
+            // Close sidebar when clicking on overlay (mobile)
             overlay.addEventListener('click', function() {
                 sidebar.classList.remove('show');
                 overlay.classList.remove('show');
             });
 
-            // Profile dropdown toggle
+            // Profile dropdown toggle functionality
             const profileDropdown = document.getElementById('profileDropdown');
             const dropdownMenu = document.querySelector('.profile-dropdown');
 
@@ -181,7 +203,21 @@
             menuItems.forEach(item => {
                 if (item.getAttribute('href') && currentLocation.includes(item.getAttribute('href'))) {
                     item.classList.add('active');
+
+                    // If active item is in a sub-menu, expand the sub-menu
+                    const parentSubNav = item.closest('.sub-nav');
+                    if (parentSubNav) {
+                        parentSubNav.classList.add('expanded');
+                    }
                 }
+            });
+
+            // Expand/collapse sub-navigation sections
+            const subNavHeaders = document.querySelectorAll('.sub-nav-header');
+            subNavHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    this.parentElement.classList.toggle('expanded');
+                });
             });
 
             // Close sidebar on window resize if in mobile view
@@ -192,11 +228,11 @@
                 }
             });
         });
-
-       
     </script>
-    <script src="~/js/loading.js" asp-append-version="true"></script> 
-    <script src="~/js/toast.js" asp-append-version="true"></script> 
+
+    <!-- Utility scripts -->
+    <script src="~/js/loading.js" asp-append-version="true"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
 
     <!-- Handle toast messages from TempData -->
     @if (TempData["SUCCESS"] != null)

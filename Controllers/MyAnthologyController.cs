@@ -83,6 +83,7 @@ namespace VerseCraft.Controllers
                 _context.Anthologies.Add(anthology);
                 await _context.SaveChangesAsync();
 
+                TempData["SUCCESS"] = "Anthology created successfully.";
                 return RedirectToAction("DisplayCollections", "MyCollection");
             }
 
@@ -193,6 +194,7 @@ namespace VerseCraft.Controllers
             _context.Anthologies.Update(anthology);
             await _context.SaveChangesAsync();
 
+            TempData["SUCCESS"] = "Anthology updated successfully.";
             return RedirectToAction("ViewAnthology", new { id = model.Id});
         }
 

@@ -1,0 +1,430 @@
+﻿@model VerseCraft.Areas.admin.ViewModels.PendingApprovalsViewModel
+@{
+    ViewData["Title"] = "Pending Approvals";
+    var pendingPoems = Model.PendingPoems;
+    var pendingAnthologies = Model.PendingAnthologies;
+}
+
+<div class="pending-page">
+    <style>
+        .pending-page {
+            --accent-pink: #e999c0;
+            --accent-pink-dark: #d47fa8;
+            --accent-blue: #89b9e6;
+            --accent-blue-dark: #5a8fc9;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+            .pending-page .dashboard-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+
+            .pending-page .stats-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .pending-page .stat-card {
+                background: white;
+                border-radius: var(--border-radius);
+                padding: 1.5rem;
+                box-shadow: var(--card-shadow);
+                position: relative;
+                overflow: hidden;
+                transition: transform 0.3s ease;
+            }
+
+                .pending-page .stat-card:hover {
+                    transform: translateY(-5px);
+                }
+
+                .pending-page .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 5px;
+                    height: 100%;
+                    background: linear-gradient(to bottom, var(--accent-pink), var(--accent-blue));
+                }
+
+            .pending-page .stat-value {
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: var(--accent-blue-dark);
+                margin-bottom: 0.5rem;
+            }
+
+            .pending-page .stat-label {
+                color: var(--text-light);
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .pending-page .stat-icon {
+                position: absolute;
+                right: 1.5rem;
+                top: 1.5rem;
+                color: rgba(137, 185, 230, 0.2);
+                font-size: 2.5rem;
+            }
+
+            .pending-page .pending-container {
+                background: white;
+                padding: 2rem;
+                border-radius: var(--border-radius);
+                box-shadow: var(--card-shadow);
+            }
+
+            .pending-page .nav-tabs {
+                border-bottom: 2px solid #f0f0f0;
+                margin-bottom: 1.5rem;
+            }
+
+            .pending-page .nav-link {
+                border: none;
+                color: var(--text-light);
+                font-weight: 500;
+                padding: 1rem 2rem;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+                .pending-page .nav-link.active {
+                    color: var(--accent-blue);
+                    background: transparent;
+                }
+
+                    .pending-page .nav-link.active::after {
+                        content: '';
+                        position: absolute;
+                        bottom: -2px;
+                        left: 0;
+                        width: 100%;
+                        height: 3px;
+                        background: linear-gradient(to right, var(--accent-pink), var(--accent-blue));
+                    }
+
+                .pending-page .nav-link:hover {
+                    color: var(--accent-pink);
+                }
+
+            .pending-page .search-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .pending-page .search-container {
+                position: relative;
+                max-width: 300px;
+            }
+
+            .pending-page .search-input {
+                width: 100%;
+                padding: 0.75rem 2.5rem 0.75rem 1rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 30px;
+                transition: all 0.3s ease;
+            }
+
+                .pending-page .search-input:focus {
+                    border-color: var(--accent-blue);
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(137, 185, 230, 0.2);
+                }
+
+            .pending-page .search-icon {
+                position: absolute;
+                right: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-light);
+            }
+
+            .pending-page .pending-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .pending-page .pending-card {
+                background: white;
+                border-radius: var(--border-radius);
+                box-shadow: var(--card-shadow);
+                padding: 1.5rem;
+                position: relative;
+                transition: transform 0.3s ease;
+                border-top: 4px solid var(--accent-blue);
+            }
+
+                .pending-page .pending-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+                }
+
+            .pending-page .card-title {
+                color: var(--text-dark);
+                margin-bottom: 0.5rem;
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+
+            .pending-page .card-author {
+                color: var(--accent-blue);
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+            }
+
+                .pending-page .card-author i {
+                    margin-right: 0.5rem;
+                    color: var(--accent-pink);
+                }
+
+            .pending-page .card-description {
+                color: var(--text-light);
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin-bottom: 1.5rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .pending-page .action-btns {
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+            }
+
+            .pending-page .approve-btn {
+                background: var(--accent-blue);
+                color: white;
+                padding: 0.5rem 1.5rem;
+                border-radius: 30px;
+                transition: all 0.3s ease;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .pending-page .approve-btn:hover {
+                    background: var(--accent-blue-dark);
+                    transform: scale(1.05);
+                }
+
+            .pending-page .reject-btn {
+                background: white;
+                color: var(--accent-pink);
+                padding: 0.5rem 1.5rem;
+                border-radius: 30px;
+                transition: all 0.3s ease;
+                border: 1px solid var(--accent-pink);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .pending-page .reject-btn:hover {
+                    background: var(--accent-pink);
+                    color: white;
+                    transform: scale(1.05);
+                }
+
+            .pending-page .tab-pane {
+                display: none;
+            }
+
+                .pending-page .tab-pane.active {
+                    display: block;
+                }
+
+            .pending-page .empty-state {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 3rem;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: var(--border-radius);
+            }
+
+                .pending-page .empty-state i {
+                    font-size: 3rem;
+                    color: var(--accent-blue);
+                    margin-bottom: 1rem;
+                    opacity: 0.5;
+                }
+
+                .pending-page .empty-state h4 {
+                    color: var(--text-dark);
+                    margin-bottom: 0.5rem;
+                }
+
+                .pending-page .empty-state p {
+                    color: var(--text-light);
+                }
+    </style>
+
+    <div class="dashboard-header">
+        <h2>Pending Approvals</h2>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search all items..." />
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-value">@(pendingPoems.Count + pendingAnthologies.Count)</div>
+            <div class="stat-label">Total Pending Items</div>
+            <div class="stat-icon"><i class="fas fa-inbox"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@pendingPoems.Count</div>
+            <div class="stat-label">Pending Poems</div>
+            <div class="stat-icon"><i class="fas fa-scroll"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@pendingAnthologies.Count</div>
+            <div class="stat-label">Pending Anthologies</div>
+            <div class="stat-icon"><i class="fas fa-book"></i></div>
+        </div>
+    </div>
+
+    <div class="pending-container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <button class="nav-link active" data-tab="poems">
+                    <i class="fas fa-scroll"></i> Poems (@pendingPoems.Count)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-tab="anthologies">
+                    <i class="fas fa-book"></i> Anthologies (@pendingAnthologies.Count)
+                </button>
+            </li>
+        </ul>
+
+        <div id="poems" class="tab-pane active">
+            <div class="search-header">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search poems..." data-search-type="poems" />
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+            <div class="pending-grid" id="poems-grid">
+                @if (pendingPoems.Any())
+                {
+                    @foreach (var poem in pendingPoems)
+                    {
+                        <div class="pending-card" data-title="@poem.Title.ToLower()" data-author="@poem.AuthorName.ToLower()" data-summary="@(poem.Summary?.ToLower() ?? "")">
+                            <h3 class="card-title">@poem.Title</h3>
+                            <div class="card-author"><i class="fas fa-user-edit"></i> By @poem.AuthorName</div>
+                            @if (!string.IsNullOrEmpty(poem.Summary))
+                            {
+                                <p class="card-description">@poem.Summary</p>
+                            }
+                            <div class="action-btns"><a asp-action="ReviewPoem" asp-route-id="@poem.Id" class="approve-btn"><i class="fas fa-check"></i> Review</a></div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>No Pending Poems</h4>
+                        <p>All poems have been reviewed and approved.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div id="anthologies" class="tab-pane">
+            <div class="search-header">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search anthologies..." data-search-type="anthologies" />
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+            <div class="pending-grid" id="anthologies-grid">
+                @if (pendingAnthologies.Any())
+                {
+                    @foreach (var anthology in pendingAnthologies)
+                    {
+                        <div class="pending-card" data-title="@anthology.Title.ToLower()" data-author="@anthology.AuthorName.ToLower()" data-description="@(anthology.Description.ToLower() ?? "")">
+                            <h3 class="card-title">@anthology.Title</h3>
+                            <div class="card-author"><i class="fas fa-user-edit"></i> By @anthology.AuthorName</div>
+                            <p class="card-description">@anthology.Description</p>
+                            <div class="action-btns"><a asp-action="ReviewAnthology" asp-route-id="@anthology.Id" class="approve-btn"><i class="fas fa-check"></i> Review</a></div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>No Pending Anthologies</h4>
+                        <p>All anthologies have been reviewed and approved.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            document.querySelectorAll('.pending-page [data-tab]').forEach(btn => btn.addEventListener('click', function() {
+                document.querySelectorAll('.pending-page .nav-link, .pending-page .tab-pane').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            }));
+
+            document.querySelectorAll('.pending-page .search-input').forEach(input => input.addEventListener('input', function() {
+                const type = this.dataset.searchType || 'poems';
+                const term = this.value.trim().toLowerCase();
+                const grid = document.getElementById(`${type}-grid`);
+                const cards = grid.querySelectorAll('.pending-card');
+                let count = 0;
+                cards.forEach(card => {
+                    const t = card.dataset.title;
+                    const a = card.dataset.author;
+                    const c = card.dataset.description || card.dataset.summary;
+                    const show = t.includes(term) || a.includes(term) || (c && c.includes(term));
+                    card.style.display = show ? 'block' : 'none';
+                    if (show) count++;
+                });
+                const empty = grid.querySelector('.empty-state');
+                if (empty) empty.style.display = count === 0 ? 'block' : 'none';
+            }));
+
+            // global header search
+            const globalSearch = document.querySelector('.pending-page .dashboard-header .search-input');
+            if (globalSearch) {
+                globalSearch.addEventListener('input', function() {
+                    const term = this.value.trim().toLowerCase();
+                    const active = document.querySelector('.pending-page .tab-pane.active .pending-grid');
+                    active.querySelectorAll('.pending-card').forEach(card => {
+                        const t = card.dataset.title;
+                        const a = card.dataset.author;
+                        const c = card.dataset.description || card.dataset.summary;
+                        card.style.display = (t.includes(term) || a.includes(term) || (c && c.includes(term))) ? 'block' : 'none';
+                    });
+                });
+            }
+        </script>
+    }
+</div>

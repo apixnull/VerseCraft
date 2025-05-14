@@ -1,7 +1,167 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+﻿@model VerseCraft.Areas.Admin.Controllers.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<section class="home-section">
-    <div class="text">Welcome to the Admin Dashboard</div>
-</section>
+<div class="dashboard-page">
+    <style>
+        .dashboard-page {
+            --accent-blue: #89b9e6;
+            --accent-pink: #e999c0;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --shadow: 0 8px 16px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+            /* Stats grid */
+            .dashboard-page .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+                gap: 1rem;
+                margin: 1.5rem 0;
+            }
+
+            .dashboard-page .stat-card {
+                background: white;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                padding: 1rem;
+                position: relative;
+                overflow: hidden;
+                transition: transform .3s;
+            }
+
+                .dashboard-page .stat-card:hover {
+                    transform: translateY(-4px);
+                }
+
+                .dashboard-page .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 4px;
+                    height: 100%;
+                    background: var(--accent-blue);
+                }
+
+            .dashboard-page .stat-value {
+                font-size: 1.75rem;
+                font-weight: 700;
+                color: var(--text-dark);
+                margin-bottom: .25rem;
+            }
+
+            .dashboard-page .stat-label {
+                font-size: .9rem;
+                color: var(--text-light);
+            }
+
+            .dashboard-page .stat-icon {
+                position: absolute;
+                top: .75rem;
+                right: .75rem;
+                font-size: 1.5rem;
+                color: rgba(137,186,230,0.3);
+            }
+
+            /* Quick links grid */
+            .dashboard-page .links-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+                gap: 1rem;
+                margin: 2rem 0;
+            }
+
+            .dashboard-page .link-card {
+                background: white;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                padding: 1rem;
+                text-align: center;
+                transition: transform .3s;
+                text-decoration: none;
+                color: inherit;
+            }
+
+                .dashboard-page .link-card:hover {
+                    transform: translateY(-4px);
+                }
+
+            .dashboard-page .link-icon {
+                font-size: 1.75rem;
+                margin-bottom: .5rem;
+                color: var(--accent-pink);
+            }
+
+            .dashboard-page .link-title {
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+        /* Responsive tweaks */
+        /* media (max-width: 576px) { */
+        /*     .dashboard-page .stats-grid, .dashboard-page .links-grid */
+
+        /* { */
+        /*     grid-template-columns: 1fr; */
+        /* } */
+
+        /* } */
+    </style>
+
+    <h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">@Model.UsersCount</div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-icon"><i class="bi bi-people"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.PoemsCount</div>
+            <div class="stat-label">Total Poems</div>
+            <div class="stat-icon"><i class="bi bi-journal-text"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.AnthologiesCount</div>
+            <div class="stat-label">Total Anthologies</div>
+            <div class="stat-icon"><i class="bi bi-collection"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.FeaturedCount</div>
+            <div class="stat-label">Featured Items</div>
+            <div class="stat-icon"><i class="bi bi-stars"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.PublishedCount</div>
+            <div class="stat-label">Published Items</div>
+            <div class="stat-icon"><i class="bi bi-globe2"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.PendingPoemsCount</div>
+            <div class="stat-label">Pending Poems</div>
+            <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.PendingAnthologiesCount</div>
+            <div class="stat-label">Pending Anthologies</div>
+            <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <h3>Quick Links</h3>
+    <div class="links-grid">
+        @foreach (var link in Model.QuickLinks)
+        {
+            <a class="link-card" asp-controller="@link.Controller" asp-action="@link.Action">
+                <div class="link-icon"><i class="bi bi-arrow-right-circle"></i></div>
+                <div class="link-title">@link.Title</div>
+            </a>
+        }
+    </div>
+</div>

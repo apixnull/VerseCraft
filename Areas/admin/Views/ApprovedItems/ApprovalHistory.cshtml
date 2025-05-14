@@ -1,0 +1,215 @@
+﻿@model VerseCraft.Areas.admin.ViewModels.ApprovalHistoryViewModel
+@{
+    ViewData["Title"] = "Approval History";
+}
+
+<div class="approval-page">
+    <style>
+        .approval-page {
+            --accent-blue: #89b9e6;
+            --accent-blue-dark: #5a8fc9;
+            --accent-pink: #e999c0;
+            --text-light: #666666;
+            --text-dark: #333333;
+            --shadow: 0 8px 16px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+            /* Stat Cards */
+            .approval-page .stats-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+                gap: 1.5rem;
+                margin: 1.5rem 0;
+            }
+
+            .approval-page .stat-card {
+                background: white;
+                border-radius: var(--radius);
+                padding: 1.5rem;
+                box-shadow: var(--shadow);
+                position: relative;
+                transition: transform 0.3s;
+            }
+
+                .approval-page .stat-card:hover {
+                    transform: translateY(-5px);
+                }
+
+                .approval-page .stat-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 5px;
+                    height: 100%;
+                    background: var(--accent-blue);
+                }
+
+            .approval-page .stat-value {
+                font-size: 2rem;
+                font-weight: 700;
+                color: var(--accent-blue-dark);
+                margin-bottom: 0.5rem;
+            }
+
+            .approval-page .stat-label {
+                font-size: 0.9rem;
+                color: var(--text-light);
+            }
+
+            .approval-page .stat-icon {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                font-size: 2.5rem;
+                color: rgba(137,185,230,0.2);
+            }
+
+            /* Header */
+            .approval-page .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .approval-page .header h2 {
+                    margin: 0;
+                }
+
+            /* Tabs */
+            .approval-page .nav-tabs {
+                margin-top: 1.5rem;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .approval-page .nav-link {
+                color: var(--text-light);
+                font-weight: 500;
+                transition: color 0.3s;
+            }
+
+                .approval-page .nav-link.active {
+                    color: var(--accent-blue);
+                    font-weight: bold;
+                    border-bottom: 3px solid var(--accent-blue);
+                }
+
+                .approval-page .nav-link:hover {
+                    color: var(--accent-pink);
+                }
+
+            /* Table container */
+            .approval-page .table-wrap {
+                background: white;
+                padding: 1rem;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+            }
+
+            .approval-page .table-hover tbody tr:hover {
+                background: rgba(13,110,253,0.05);
+            }
+    </style>
+
+    <!-- Header and Stats -->
+    <div class="header">
+        <h2><i class="bi bi-clock-history"></i> Approval History</h2>
+    </div>
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-value">@Model.ApprovedItems.Count()</div>
+            <div class="stat-label">Approved</div>
+            <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@Model.RejectedItems.Count()</div>
+            <div class="stat-label">Rejected</div>
+            <div class="stat-icon"><i class="bi bi-x-circle"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@(Model.ApprovedItems.Count() + Model.RejectedItems.Count())</div>
+            <div class="stat-label">Total</div>
+            <div class="stat-icon"><i class="bi bi-list-check"></i></div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#approved">Approved (@Model.ApprovedItems.Count())</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rejected">Rejected (@Model.RejectedItems.Count())</button>
+        </li>
+    </ul>
+
+    <!-- Tables -->
+    <div class="table-wrap tab-content mt-3">
+        <div id="approved" class="tab-pane fade show active">
+            @if (Model.ApprovedItems.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>Type</th><th>Title</th><th>Author</th><th>Date</th><th>Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.ApprovedItems)
+                            {
+                                <tr>
+                                    <td>@item.WorkType</td>
+                                    <td>@(item.Poem != null ? item.Poem.Title : item.Anthology?.Title)</td>
+                                    <td>@(item.Poem?.User?.Name ?? item.Anthology?.User?.Name)</td>
+                                    <td>
+                                        <a asp-action="Details" asp-controller="@(item.WorkType==WorkType.Poem?"Poems":"Anthologies")" asp-route-id="@(item.WorkType==WorkType.Poem?item.PoemId:item.AnthologyId)" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">No approved items.</div>
+            }
+        </div>
+        <div id="rejected" class="tab-pane fade">
+            @if (Model.RejectedItems.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>Type</th><th>ID</th><th>Date</th><th>Reason</th><th>Action</th></tr></thead>
+                        <tbody>
+                            @foreach (var item in Model.RejectedItems)
+                            {
+                                <tr>
+                                    <td>@item.ItemType</td>
+                                    <td>@item.ItemId</td>
+                                    <td>@item.RejectedAt.ToString("g")</td>
+                                    <td>@(string.IsNullOrEmpty(item.RejectionReason) ? "No reason" : item.RejectionReason)</td>
+                                    <td>
+                                        <a asp-action="Review@(item.ItemType)" asp-route-id="@item.ItemId" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-pencil"></i> Review
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">No rejected items.</div>
+            }
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+            document.querySelectorAll('.approval-page button[data-bs-toggle="tab"]').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();new bootstrap.Tab(btn).show();}));
+        </script>
+    }
+</div>

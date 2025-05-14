@@ -87,6 +87,7 @@ namespace VerseCraft.Areas.admin.Controllers
                 _context.Anthologies.Add(anthology);
                 await _context.SaveChangesAsync();
 
+                TempData["SUCCESS"] = "Anthology Created successfully";
                 // Redirect to the DisplayAnthologies page after creation
                 return RedirectToAction(nameof(DisplayAnthologies));
             }
@@ -127,6 +128,7 @@ namespace VerseCraft.Areas.admin.Controllers
             _context.Anthologies.Remove(anthology);
             await _context.SaveChangesAsync();
 
+            TempData["SUCCESS"] = "Anthology deleted successfully";
             // 4. Redirect to the list of anthologies
             return RedirectToAction(nameof(DisplayAnthologies));
         }
@@ -194,6 +196,7 @@ namespace VerseCraft.Areas.admin.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SUCCESS"] = "Anthology updated successfully";
             return RedirectToAction(nameof(DisplayAnthologies));
         }
 
@@ -222,37 +225,6 @@ namespace VerseCraft.Areas.admin.Controllers
             return View(model);
         }
 
-
-        /* =========================== Add Poem to Anthology (POST) =========================== */
-        [HttpPost]
-        public async Task<IActionResult> AddPoemToAnthology(int anthologyId, int poemId)
-        {
-            // Find the anthology and poem
-            var anthology = await _context.Anthologies.FindAsync(anthologyId);
-            var poem = await _context.Poems.FindAsync(poemId);
-
-            if (anthology == null || poem == null)
-            {
-                return NotFound();
-            }
-
-            // Check if the relationship exists in the join table
-            bool alreadyExists = _context.AnthologyPoems.Any(ap => ap.AnthologyId == anthologyId && ap.PoemId == poemId);
-
-            if (!alreadyExists)
-            {
-                // Add new entry to AnthologyPoem join table
-                _context.AnthologyPoems.Add(new AnthologyPoem
-                {
-                    AnthologyId = anthologyId,
-                    PoemId = poemId
-                });
-                await _context.SaveChangesAsync();
-            }
-
-            TempData["SUCCESS"] = "Added Successfully";
-            return RedirectToAction("SearchPoem", new { anthologyId });
-        }
 
         /* =========================== View Specific Anthology =========================== */
 

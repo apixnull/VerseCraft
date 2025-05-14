@@ -4,24 +4,11 @@
     ViewData["Title"] = "Manage Anthologies";
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="~/css/displayUser.css" asp-append-version="true" />
 
 <style>
-    /* Consistent with poem display styling */
-    :root {
-        --primary-gradient: linear-gradient(135deg, #f8e1e9 0%, #d4e5f7 100%);
-        --accent-pink: #e999c0;
-        --accent-blue: #89b9e6;
-        --text-dark: #333333;
-        --text-light: #666666;
-        --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        --border-radius: 12px;
-    }
-
-    .container-fluid {
-        padding: 2rem;
-    }
-
+    
+   
     /* Stats Cards */
     .stats-container {
         display: grid;
@@ -294,9 +281,6 @@
                     </a>
                     <a asp-action="ViewAnthology" asp-route-id="@anthology.Id" class="btn btn-sm btn-outline-info" title="View">
                         <i class="bi bi-eye"></i>
-                    </a>
-                    <a asp-action="SearchPoem" asp-route-anthologyId="@anthology.Id" class="btn btn-sm btn-outline-success" title="Add Poem">
-                        <i class="bi bi-plus-square"></i>
                     </a>
                 </div>
             </div>

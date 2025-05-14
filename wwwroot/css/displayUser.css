@@ -1,35 +1,240 @@
-﻿@media (max-width: 575.98px) {
-    .card-header {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-
-        .card-header h5 {
-            font-size: 1.1rem;
-        }
-
-    .input-group {
-        width: 100% !important;
-        margin-top: 0.5rem !important;
-    }
-
-    .admin-body {
-        padding-left: 0.5rem !important;
-        padding-right: 0.5rem !important;
-    }
-
-    .table-responsive {
-        font-size: 0.95rem;
-    }
+﻿.user-management-page .user-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
 }
 
-
-
-.header-actions-scroll {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 0.25rem;
+.user-management-page .user-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
+.user-management-page .stat-card {
+    background: linear-gradient(135deg, rgba(248, 187, 208, 0.9) 0%, rgba(187, 222, 251, 0.9) 100%);
+    border-radius: 15px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+    .user-management-page .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
+
+.user-management-page .stat-icon {
+    background: white;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.user-management-page .stat-info {
+    flex: 1;
+}
+
+.user-management-page .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-management-page .stat-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.875rem;
+    margin: 0.25rem 0 0;
+    font-weight: 500;
+}
+
+.user-management-page .user-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .user-management-page .user-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+.user-management-page .user-card-header {
+    background: linear-gradient(135deg, rgba(248, 187, 208, 0.5) 0%, rgba(187, 222, 251, 0.5) 100%);
+    padding: 1.5rem;
+    position: relative;
+    text-align: center;
+}
+
+.user-management-page .user-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.user-management-page .user-card-body {
+    padding: 1.5rem;
+}
+
+.user-management-page .user-name {
+    margin: 0.75rem 0 0.25rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.user-management-page .user-email {
+    margin: 0 0 1.25rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-align: center;
+    word-break: break-word;
+}
+
+.user-management-page .user-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.user-management-page .user-status {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.user-management-page .badge-verified {
+    background: linear-gradient(135deg, #81c784, #4caf50);
+    color: white;
+}
+
+.user-management-page .badge-unverified {
+    background: linear-gradient(135deg, #ef9a9a, #f44336);
+    color: white;
+}
+
+.user-management-page .badge-admin {
+    background: linear-gradient(135deg, #90caf9, #2196f3);
+    color: white;
+}
+
+.user-management-page .badge-user {
+    background: linear-gradient(135deg, #e0e0e0, #9e9e9e);
+    color: white;
+}
+
+.user-management-page .search-container {
+    position: relative;
+    max-width: 350px;
+    margin-left: auto;
+    margin-bottom: 1.5rem;
+}
+
+.user-management-page .search-input {
+    width: 100%;
+    border-radius: 50px;
+    border: none;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+    .user-management-page .search-input:focus {
+        box-shadow: 0 4px 20px rgba(187, 222, 251, 0.3);
+        outline: none;
+    }
+
+.user-management-page .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+}
+
+.user-management-page .filters-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.user-management-page .filter-chip {
+    background: white;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+    .user-management-page .filter-chip.active {
+        border-color: #f8bbd0;
+        background: rgba(248, 187, 208, 0.1);
+        color: #f06292;
+        font-weight: 500;
+    }
+
+    .user-management-page .filter-chip:hover {
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    }
+
+.user-management-page .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    color: var(--text-secondary);
+}
+
+.user-management-page .section-heading {
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+    font-weight: 600;
+}
+
+    .user-management-page .section-heading::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 40px;
+        height: 4px;
+        background: linear-gradient(135deg, #f8bbd0 0%, #bbdefb 100%);
+        border-radius: 2px;
+    }

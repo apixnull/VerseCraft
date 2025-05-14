@@ -111,7 +111,7 @@ namespace VerseCraft.Controllers
                 return RedirectToAction("Main", "Dashboard", new { area = "admin" });
             }
 
-            return RedirectToAction("MainDashboard", "Collection");
+            return RedirectToAction("DisplayCollections", "MyCollection");
         }
 
         /********************************************** LOGOUT **********************************************/
