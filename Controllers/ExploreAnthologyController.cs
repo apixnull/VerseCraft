@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VerseCraft.Data;
 using VerseCraft.Models;
 
 namespace VerseCraft.Controllers
 {
+    [Authorize(Roles = "User,Admin")]
     public class ExploreAnthologyController : Controller
     {
         private readonly VerseCraftDbContext _context;

@@ -30,7 +30,7 @@
                 <p>
                     Browse poems from users worldwide. Use filters and tags to discover themes you connect with, or just enjoy browsing organically.
                 </p>
-                <a class="btn btn-outline-primary mt-2" asp-controller="Poems" asp-action="Feed">Start Exploring</a>
+                <a class="btn btn-outline-primary mt-2" asp-controller="ExplorePoem" asp-action="DisplayPoems">Start Exploring</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon"><i class="bi bi-pencil-square"></i></div>
@@ -38,7 +38,7 @@
                 <p>
                     Have a poem that deserves to be read? Share it on VerseCraft! Our simple submission form lets you upload your work in seconds.
                 </p>
-                <a class="btn btn-primary mt-2" asp-controller="Poems" asp-action="Submit">Share a Poem</a>
+                <a class="btn btn-primary mt-2" asp-controller="MyCollection" asp-action="DisplayCollections">Share a Poem</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon"><i class="bi bi-bookmark-heart"></i></div>
@@ -46,7 +46,7 @@
                 <p>
                     Build a personalized collection of your favorite poems. Save works you love, revisit them later, or explore public anthologies shared by others.
                 </p>
-                <a class="btn btn-outline-dark mt-2" asp-controller="Home" asp-action="Anthology">Build Your Collection</a>
+                <a class="btn btn-outline-dark mt-2" asp-controller="MyCollection" asp-action="DisplayCollections">Build Your Collection</a>
             </div>
             <div class="feature-card">
                 <div class="feature-icon"><i class="bi bi-people"></i></div>

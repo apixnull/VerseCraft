@@ -39,7 +39,7 @@ namespace VerseCraft
                                 return Task.CompletedTask;
                             }
 
-                            context.Response.Redirect("/Auth/Login");
+                            context.Response.Redirect("/Auth/Login?message=You need to login first to access this page");
                             return Task.CompletedTask;
                         },
                         OnRedirectToAccessDenied = context =>
