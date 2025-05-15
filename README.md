@@ -24,11 +24,11 @@ The application also includes a secure user authentication system and OTP (One-T
 
 ## Test Accounts
 
-Normal user  
+Admin user  
 Email: jaspercesa20@gmail.com  
 Password: @Apix12345
 
-Admin user  
+Normal user  
 Email: apixnull@gmail.com  
 Password: @Apix12345
 
