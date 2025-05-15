@@ -1,0 +1,589 @@
+﻿.anthology-feed {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.page-title {
+    text-align: center;
+    margin: 1rem 0 1.5rem;
+    color: #333;
+    font-weight: 700;
+    font-size: 1.7rem;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+    .page-title::after {
+        content: "";
+        display: block;
+        width: 60%;
+        height: 3px;
+        background: linear-gradient(to right, transparent, #FF6F91, transparent);
+        position: absolute;
+        bottom: -10px;
+        left: 20%;
+    }
+
+.filter-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.filter-toggle {
+    display: none;
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    background: white;
+    border: 2px solid #FF6F91;
+    border-radius: 25px;
+    text-align: center;
+    font-weight: 500;
+    color: #FF6F91;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+
+.filter-bar {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 1rem;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+.search-box {
+    width: 100%;
+    padding: 0.7rem 1rem 0.7rem 2.5rem;
+    border: 2px solid #FF6F91;
+    border-radius: 25px;
+    background: rgba(255, 111, 145, 0.05);
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #FF6F91;
+    font-size: 0.9rem;
+}
+
+.anthology-grid {
+    display: none;
+}
+
+.anthology-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+    .anthology-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+
+.anthology-cover {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.anthology-badge {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    background: rgba(255, 111, 145, 0.9);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.anthology-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.anthology-card:hover .anthology-image {
+    transform: scale(1.05);
+}
+
+.anthology-content {
+    padding: 1.2rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.anthology-info {
+    margin-bottom: 1rem;
+}
+
+.anthology-title {
+    font-size: 1.3rem;
+    color: #222;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.anthology-user {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #FF6F91;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+    line-height: 1.1;
+}
+
+.post-date {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.anthology-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.poem-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 111, 145, 0.1);
+    color: #FF6F91;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    width: fit-content;
+    margin-bottom: 0.8rem;
+}
+
+.anthology-actions {
+    margin-top: auto;
+    display: flex;
+    gap: 0.6rem;
+    justify-content: space-between;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    border-radius: 25px;
+    background: rgba(255, 111, 145, 0.05);
+    color: #FF6F91;
+    border: none;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    flex: 1;
+}
+
+    .action-button:hover {
+        background: #FF6F91;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .action-button.primary {
+        background: rgba(255, 111, 145, 0.1);
+        font-weight: 500;
+    }
+
+.count-badge {
+    background: rgba(255,255,255,0.3);
+    padding: 0.15rem 0.4rem;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+/* Detailed view for larger screens */
+.anthology-detail {
+    display: none;
+}
+
+.detail-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.detail-cover {
+    flex: 0 0 250px;
+    height: 250px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.detail-content {
+    flex: 1;
+    min-width: 300px;
+}
+
+.detail-title {
+    font-size: 1.8rem;
+    color: #222;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.detail-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 1.2rem;
+}
+
+.detail-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+
+.detail-pill {
+    background: rgba(255, 111, 145, 0.1);
+    color: #FF6F91;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.detail-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.detail-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .detail-button.primary {
+        background: #FF6F91;
+        color: white;
+    }
+
+    .detail-button.secondary {
+        background: rgba(255, 111, 145, 0.1);
+        color: #FF6F91;
+    }
+
+    .detail-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+.poems-container {
+    margin-top: 1.5rem;
+}
+
+.poems-header {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.poem-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.poem-item {
+    background: rgba(255, 111, 145, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 111, 145, 0.1);
+}
+
+    .poem-item:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 111, 145, 0.1);
+        border-color: rgba(255, 111, 145, 0.2);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+.poem-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.3rem;
+}
+
+.poem-author {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.poem-excerpt {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.5;
+    white-space: pre-line;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.view-poem {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #FF6F91;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+    .view-poem:hover {
+        text-decoration: underline;
+    }
+
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: none;
+    margin-top: 2rem;
+}
+
+.back-to-grid {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: #FF6F91;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+    .back-to-grid:hover {
+        transform: translateY(-3px) rotate(180deg);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+/* Responsive styles */
+@media (min-width: 992px) {
+
+    .anthology-detail {
+        display: block;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+    }
+
+    .anthology-grid .anthology-card {
+        cursor: pointer;
+    }
+}
+
+@media (max-width: 991px) {
+    .anthology-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-toggle {
+        display: block;
+    }
+
+    .filter-bar {
+        height: 0;
+        overflow: hidden;
+        padding: 0 1rem;
+        margin-bottom: 0;
+    }
+
+        .filter-bar.expanded {
+            height: auto;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+    .anthology-detail {
+        display: none !important;
+    }
+
+    .anthology-grid {
+        display: grid;
+        /* (re‑declare your grid template if needed) */
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .anthology-card {
+        display: block !important;
+    }
+
+    .detail-header {
+        flex-direction: column;
+    }
+
+    .detail-cover {
+        width: 100%;
+        max-width: 100%;
+        flex: none;
+    }
+
+    .detail-content {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .anthology-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .anthology-title {
+        font-size: 1.2rem;
+    }
+
+    .anthology-card {
+        margin-bottom: 1rem;
+    }
+
+    .anthology-badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .poem-list {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-actions {
+        flex-direction: column;
+    }
+
+    .detail-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anthology-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+    .anthology-card:nth-child(2n) {
+        animation-delay: 0.1s;
+    }
+
+    .anthology-card:nth-child(3n) {
+        animation-delay: 0.2s;
+    }
+
+    .anthology-card:nth-child(4n) {
+        animation-delay: 0.3s;
+    }

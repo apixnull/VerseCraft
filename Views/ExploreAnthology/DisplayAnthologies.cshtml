@@ -1,0 +1,459 @@
+﻿@model List<VerseCraft.Models.Anthology>
+
+@{
+    ViewData["Title"] = "Explore Anthologies";
+}
+
+<style>
+    .poetry-feed {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .filter-bar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+        position: sticky;
+        top: 1rem;
+        z-index: 100;
+    }
+
+    .search-box {
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        border: 2px solid #FF6F91;
+        border-radius: 25px;
+        background: rgba(255, 111, 145, 0.05);
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .post-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+        padding: 2rem;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #FF6F91;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .author-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .author-name {
+        font-weight: 700;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+    .post-date {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .metadata-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .metadata-pill {
+        background: rgba(255, 111, 145, 0.1);
+        color: #FF6F91;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .anthology-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .anthology-title {
+        font-size: 1.6rem;
+        color: #222;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .anthology-description {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #555;
+        margin-bottom: 1.5rem;
+    }
+
+    .legal-info {
+        background: rgba(255, 111, 145, 0.05);
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid #FF6F91;
+    }
+
+    .legal-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .legal-label {
+        font-weight: 600;
+        color: #555;
+        min-width: 120px;
+    }
+
+    .legal-value {
+        color: #333;
+        flex-grow: 1;
+    }
+
+    .poems-container {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .poems-header {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .poem-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    .poem-item {
+        background: rgba(255, 111, 145, 0.05);
+        border-radius: 8px;
+        padding: 1rem;
+        transition: transform 0.2s;
+    }
+
+        .poem-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 111, 145, 0.1);
+        }
+
+    .poem-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.3rem;
+    }
+
+    .poem-author {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+
+    .poem-excerpt {
+        font-size: 0.9rem;
+        color: #555;
+        line-height: 1.5;
+        white-space: pre-line;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .view-poem {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+        color: #FF6F91;
+        text-decoration: none;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .action-button {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.8rem 1.4rem;
+        border-radius: 25px;
+        background: rgba(255, 111, 145, 0.05);
+        color: #FF6F91;
+        border: none;
+        transition: all 0.2s ease;
+    }
+
+        .action-button:hover {
+            background: #FF6F91;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .count-badge {
+        background: rgba(255,255,255,0.3);
+        padding: 0.2rem 0.6rem;
+        border-radius: 15px;
+        font-weight: 500;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+        display: none;
+    }
+
+    @@media (max-width: 768px) {
+        .filter-bar {
+            padding: 1rem;
+            top: 0.5rem;
+        }
+
+        .search-box {
+            padding: 0.6rem 1rem;
+        }
+
+        .post-card {
+            padding: 1.5rem;
+        }
+
+        .anthology-image {
+            height: 250px;
+        }
+
+        .anthology-title {
+            font-size: 1.4rem;
+        }
+
+        .poem-list {
+            grid-template-columns: 1fr;
+        }
+
+        .legal-row {
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .legal-label {
+            min-width: auto;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+        }
+
+        .post-actions {
+            flex-direction: column;
+        }
+
+        .action-button {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="poetry-feed">
+    <h2 style="text-align:center; margin:1rem 0; color:var(--text-dark);">
+        <i class="bi bi-book-half"></i> Explore Anthologies
+    </h2>
+
+    <!-- Search Bar -->
+    <div class="filter-bar">
+        <input type="text" class="search-box" id="anthologySearch" placeholder="🔍 Search anthologies by title, author or description...">
+    </div>
+
+    <!-- Anthology Cards -->
+    <div id="anthologyContainer">
+        @foreach (var a in Model)
+        {
+            <div class="post-card"
+                 data-title="@a.Title.ToLower()"
+                 data-author="@(!string.IsNullOrEmpty(a.AuthorName) ? a.AuthorName.ToLower() : (a.User?.Email ?? $"user #{a.UserId}").ToLower())"
+                 data-description="@a.Description?.ToLower()">
+
+                <!-- Author Header -->
+                <div class="user-info">
+                    <img src="~/images/profile.png" class="user-avatar" alt="User avatar">
+                    <div class="author-details">
+                        <div class="author-name">
+                            @(!string.IsNullOrEmpty(a.AuthorName) ? a.AuthorName : (a.User?.Email ?? $"User #{a.UserId}"))
+                        </div>
+                        <div class="post-date">@a.CreatedAt.ToString("MMM dd, yyyy • h:mm tt")</div>
+                    </div>
+                </div>
+
+                <!-- Cover Image -->
+                <img src="~/uploads/anthologies/@a.ImagePath" class="anthology-image" alt="Anthology cover">
+
+                <!-- Content -->
+                <h2 class="anthology-title">@a.Title</h2>
+                <p class="anthology-description">@a.Description</p>
+
+                <!-- Legal Information -->
+                @if (!string.IsNullOrEmpty(a.LicenseType) || !string.IsNullOrEmpty(a.CopyrightNotice))
+                {
+                    <div class="legal-info">
+                        @if (!string.IsNullOrEmpty(a.LicenseType))
+                        {
+                            <div class="legal-row">
+                                <span class="legal-label">License:</span>
+                                <span class="legal-value">@a.LicenseType</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(a.CopyrightNotice))
+                        {
+                            <div class="legal-row">
+                                <span class="legal-label">Copyright:</span>
+                                <span class="legal-value">@a.CopyrightNotice</span>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Associated Poems -->
+                <div class="poems-container">
+                    <div class="poems-header">
+                        <i class="bi bi-journal-text"></i>
+                        Featured Poems (@a.AnthologyPoems.Count)
+                    </div>
+
+                    <div class="poem-list">
+                        @foreach (var ap in a.AnthologyPoems.Take(3))
+                        {
+                            var poem = ap.Poem;
+                            <div class="poem-item">
+                                <div class="poem-title">@poem.Title</div>
+                                <div class="poem-author">By @poem.AuthorName</div>
+                                <div class="poem-excerpt">@poem.Content</div>
+                                <a asp-controller="Poems" asp-action="Details" asp-route-id="@poem.Id" class="view-poem">
+                                    Read poem →
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    @if (a.AnthologyPoems.Count > 3)
+                    {
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <a asp-controller="Anthologies" asp-action="DisplaySpecificAnthology" asp-route-id="@a.Id" class="action-button" style="display: inline-flex;">
+                                View All @a.AnthologyPoems.Count Poems
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <!-- Actions -->
+                <div class="post-actions">
+                    <button class="action-button">
+                        <i class="bi bi-heart"></i>
+                        <span class="count-badge">13</span>
+                    </button>
+                    <button class="action-button">
+                        <i class="bi bi-bookmark"></i>
+                        <span class="count-badge">13</span>
+                    </button>
+                    <a class="action-button" asp-controller="Anthologies" asp-action="DisplaySpecificAnthology" asp-route-id="@a.Id">
+                        <i class="bi bi-eye"></i> View Collection
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="no-results">
+        <i class="bi bi-journal-x" style="font-size: 2.5rem;"></i>
+        <p>No anthologies found matching your search</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('anthologySearch');
+            const anthologyContainer = document.getElementById('anthologyContainer');
+            const noResults = document.getElementById('noResults');
+            const cards = document.querySelectorAll('.post-card');
+
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                cards.forEach(card => {
+                    const titleMatch = card.dataset.title.includes(searchTerm);
+                    const authorMatch = card.dataset.author.includes(searchTerm);
+                    const descMatch = card.dataset.description.includes(searchTerm);
+
+                    const shouldShow = titleMatch || authorMatch || descMatch;
+                    card.style.display = shouldShow ? 'block' : 'none';
+
+                    if (shouldShow) visibleCount++;
+                });
+
+                noResults.style.display = visibleCount > 0 ? 'none' : 'block';
+            }
+
+            // Search as you type with 300ms debounce
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(performSearch, 300);
+            });
+
+            // Initial check in case of empty state
+            performSearch();
+        });
+    </script>
+}

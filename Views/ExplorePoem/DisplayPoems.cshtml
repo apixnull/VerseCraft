@@ -1,0 +1,671 @@
+﻿@model List<VerseCraft.Models.Poem>
+@using System.Text.RegularExpressions
+
+@{
+    ViewData["Title"] = "Poetry Feed";
+    var genres = Model.Select(p => p.Genre).Distinct().Where(g => !string.IsNullOrEmpty(g)).ToList();
+    var styles = Model.Select(p => p.Style).Distinct().Where(s => !string.IsNullOrEmpty(s)).ToList();
+    var themes = Model.Select(p => p.Theme).Distinct().Where(t => !string.IsNullOrEmpty(t)).ToList();
+    var languages = Model.Select(p => p.Language).Distinct().Where(l => !string.IsNullOrEmpty(l)).ToList();
+    var moods = Model.Select(p => p.Mood).Distinct().Where(m => !string.IsNullOrEmpty(m)).ToList();
+    var tags = Model.SelectMany(p => p.Tags?.Split(',') ?? Array.Empty<string>()).Distinct().Where(t => !string.IsNullOrEmpty(t)).ToList();
+}
+
+<style>
+    .poetry-feed {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem;
+    }
+
+    .filter-wrapper {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-toggle {
+        display: none;
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        background: white;
+        border: 2px solid #FF6F91;
+        border-radius: 25px;
+        text-align: center;
+        font-weight: 500;
+        color: #FF6F91;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+    }
+
+    .filter-bar {
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        margin-bottom: 2rem;
+        position: sticky;
+        top: 1rem;
+        z-index: 100;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    .search-container {
+        flex: 1 1 200px;
+        position: relative;
+    }
+
+    .search-box {
+        width: 100%;
+        padding: 0.7rem 1rem 0.7rem 2.5rem;
+        border: 2px solid #FF6F91;
+        border-radius: 25px;
+        background: rgba(255, 111, 145, 0.05);
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 0.9rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #FF6F91;
+        font-size: 0.9rem;
+    }
+
+    .filters-container {
+        flex: 1 1 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .filter-select {
+        padding: 0.7rem 2rem 0.7rem 1rem;
+        border: 2px solid #FF6F91;
+        border-radius: 25px;
+        background: white;
+        color: #FF6F91;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF6F91' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 0.8em;
+        font-size: 0.9rem;
+        min-width: 120px;
+        max-width: 160px;
+        flex: 1 1 120px;
+    }
+
+    .post-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #FF6F91;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .author-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .author-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem;
+    }
+
+    .post-date {
+        color: #888;
+        font-size: 0.8rem;
+    }
+
+    .metadata-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+    }
+
+    .metadata-pill {
+        background: rgba(255, 111, 145, 0.1);
+        color: #FF6F91;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+    }
+
+    .post-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .text-section {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .image-section {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        max-height: 250px;
+        margin: 0 auto;
+        max-width: 100%;
+    }
+
+    .cover-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .image-section:hover .cover-image {
+        transform: scale(1.03);
+    }
+
+    .poem-title {
+        font-size: 1.4rem;
+        color: #222;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .poem-text {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #555;
+        white-space: pre-line;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+        .poem-text br {
+            display: block;
+            content: "";
+            margin-bottom: 0.6rem;
+        }
+
+    .tag-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+
+    .tag-pill {
+        background: rgba(255, 111, 145, 0.05);
+        color: #FF6F91;
+        padding: 0.3rem 0.7rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 111, 145, 0.2);
+        font-size: 0.8rem;
+    }
+
+    .post-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        padding-top: 1.2rem;
+        margin-top: 1.2rem;
+    }
+
+    .action-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 25px;
+        background: rgba(255, 111, 145, 0.05);
+        color: #FF6F91;
+        border: none;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+    }
+
+        .action-button:hover {
+            background: #FF6F91;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .count-badge {
+        background: rgba(255,255,255,0.3);
+        padding: 0.2rem 0.5rem;
+        border-radius: 15px;
+        font-weight: 500;
+        font-size: 0.8rem;
+    }
+
+    .anthology-section {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .anthology-pill {
+        background: rgba(255, 111, 145, 0.05);
+        color: #FF6F91;
+        padding: 0.4rem 0.8rem;
+        border-radius: 25px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin: 0.3rem;
+        font-size: 0.85rem;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Responsive adjustments */
+    @@media (min-width: 768px) {
+        .post-content
+
+    {
+        grid-template-columns: 1fr 200px;
+    }
+
+    .poem-text {
+        text-align: left;
+    }
+
+    .poem-title {
+        text-align: left;
+    }
+
+    .tag-section {
+        justify-content: flex-start;
+    }
+
+    }
+
+    @@media (max-width: 767px) {
+        .filter-toggle
+
+    {
+        display: block;
+    }
+
+    .filter-bar {
+        height: 0;
+        overflow: hidden;
+        padding: 0 1rem;
+        margin-bottom: 0;
+    }
+
+        .filter-bar.expanded {
+            height: auto;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+    .metadata-grid {
+        margin-top: 0.5rem;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .post-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .user-info {
+        justify-content: center;
+    }
+
+    .image-section {
+        height: 200px;
+    }
+
+    }
+</style>
+
+<div class="poetry-feed">
+    <!-- Search and Filters -->
+    <div class="filter-wrapper">
+        <button class="filter-toggle" id="filterToggle">
+            <i class="bi bi-funnel"></i> Filters & Search
+        </button>
+        <div class="filter-bar" id="filterBar">
+            <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" class="search-box" id="searchInput" placeholder="Search poems...">
+            </div>
+            <div class="filters-container">
+                <select class="filter-select" id="genreFilter">
+                    <option value="">All Genres</option>
+                    @foreach (var genre in genres)
+                    {
+                        <option>@genre</option>
+                    }
+                </select>
+                <select class="filter-select" id="styleFilter">
+                    <option value="">All Styles</option>
+                    @foreach (var style in styles)
+                    {
+                        <option>@style</option>
+                    }
+                </select>
+                <select class="filter-select" id="themeFilter">
+                    <option value="">All Themes</option>
+                    @foreach (var theme in themes)
+                    {
+                        <option>@theme</option>
+                    }
+                </select>
+                <select class="filter-select" id="languageFilter">
+                    <option value="">All Languages</option>
+                    @foreach (var lang in languages)
+                    {
+                        <option>@lang</option>
+                    }
+                </select>
+                <select class="filter-select" id="moodFilter">
+                    <option value="">All Moods</option>
+                    @foreach (var mood in moods)
+                    {
+                        <option>@mood</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Message -->
+    @if (!Model.Any())
+    {
+        <div class="no-results">
+            <i class="bi bi-journal-x" style="font-size: 2.5rem;"></i>
+            <p>No poems found matching your search</p>
+        </div>
+    }
+
+    <!-- Poem Cards -->
+    @foreach (var poem in Model)
+    {
+        <div class="post-card"
+             data-title="@poem.Title.ToLower()"
+             data-author="@poem.AuthorName.ToLower()"
+             data-genre="@poem.Genre?.ToLower()"
+             data-style="@poem.Style?.ToLower()"
+             data-theme="@poem.Theme?.ToLower()"
+             data-tags="@poem.Tags?.ToLower()"
+             data-language="@poem.Language?.ToLower()"
+             data-mood="@poem.Mood?.ToLower()">
+
+            <!-- Header Section -->
+            <div class="post-header">
+                <div class="user-info">
+                    <img src="~/images/profile.png" class="user-avatar" alt="User avatar">
+                    <div class="author-details">
+                        <div class="author-name">@poem.AuthorName</div>
+                        <div class="post-date">@poem.CreatedAt.ToString("MMM dd, yyyy • h:mm tt")</div>
+                    </div>
+                </div>
+
+                <!-- Top Right Metadata -->
+                <div class="metadata-grid">
+                    @if (!string.IsNullOrEmpty(poem.Language))
+                    {
+                        <div class="metadata-pill">
+                            <i class="bi bi-translate"></i> @poem.Language
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(poem.Genre))
+                    {
+                        <div class="metadata-pill">
+                            <i class="bi bi-bookmark"></i> @poem.Genre
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(poem.Mood))
+                    {
+                        <div class="metadata-pill">
+                            <i class="bi bi-emoji-smile"></i> @poem.Mood
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(poem.Style))
+                    {
+                        <div class="metadata-pill">
+                            <i class="bi bi-brush"></i> @poem.Style
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="post-content">
+                <div class="text-section">
+                    <h2 class="poem-title">@poem.Title</h2>
+                    <div class="poem-text">
+                        @Html.Raw(Regex.Replace(poem.Content.Trim(), @"\r\n?|\n", "<br>"))
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(poem.Tags))
+                    {
+                        <div class="tag-section">
+                            @foreach (var tag in poem.Tags.Split(','))
+                            {
+                                <span class="tag-pill">#@tag.Trim()</span>
+                            }
+                        </div>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(poem.CoverImagePath))
+                {
+                    <div class="image-section">
+                        <img src="~/uploads/poems/@poem.CoverImagePath"
+                             class="cover-image"
+                             alt="Cover image for @poem.Title"
+                             onerror="this.style.display='none'">
+                    </div>
+                }
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="post-actions">
+                <button class="action-button" onclick="toggleLike(this)">
+                    <i class="bi bi-heart"></i>
+                    <span class="count-badge">20</span>
+                </button>
+                <button class="action-button" onclick="toggleSave(this)">
+                    <i class="bi bi-bookmark"></i>
+                    <span class="count-badge">30</span>
+                </button>
+            </div>
+
+            <!-- Anthology Section -->
+            @if (poem.AnthologyPoems.Any())
+            {
+                <div class="anthology-section">
+                    <div class="metadata-pill">
+                        <i class="bi bi-journal-bookmark"></i> Featured in:
+                    </div>
+                    @foreach (var anthology in poem.AnthologyPoems)
+                    {
+                        <span class="anthology-pill">
+                            <i class="bi bi-collection"></i>
+                            @anthology.Anthology?.Title
+                        </span>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Filter toggle for mobile
+        document.getElementById('filterToggle').addEventListener('click', function() {
+            const filterBar = document.getElementById('filterBar');
+            filterBar.classList.toggle('expanded');
+        });
+
+        // Filtering System
+        const filters = {
+            search: '',
+            genre: '',
+            style: '',
+            theme: '',
+            language: '',
+            mood: ''
+        };
+
+        function updateFilters() {
+            filters.search = document.getElementById('searchInput').value.toLowerCase();
+            filters.genre = document.getElementById('genreFilter').value.toLowerCase();
+            filters.style = document.getElementById('styleFilter').value.toLowerCase();
+            filters.theme = document.getElementById('themeFilter').value.toLowerCase();
+            filters.language = document.getElementById('languageFilter').value.toLowerCase();
+            filters.mood = document.getElementById('moodFilter').value.toLowerCase();
+        }
+
+        function matchesFilters(card) {
+            const matchesSearch = card.dataset.title.includes(filters.search) ||
+                                 card.dataset.author.includes(filters.search) ||
+                                 card.dataset.tags?.includes(filters.search) ||
+                                 card.textContent.toLowerCase().includes(filters.search);
+
+            const matchesFilters =
+                (!filters.genre || card.dataset.genre === filters.genre) &&
+                (!filters.style || card.dataset.style === filters.style) &&
+                (!filters.theme || card.dataset.theme === filters.theme) &&
+                (!filters.language || card.dataset.language === filters.language) &&
+                (!filters.mood || card.dataset.mood === filters.mood);
+
+            return matchesSearch && matchesFilters;
+        }
+
+        function applyFilters() {
+            let visibleCount = 0;
+            document.querySelectorAll('.post-card').forEach(card => {
+                const isVisible = matchesFilters(card);
+                card.style.display = isVisible ? 'block' : 'none';
+                if (isVisible) visibleCount++;
+            });
+
+            // Show no results message if needed
+            const noResultsDiv = document.querySelector('.no-results');
+            if (noResultsDiv) {
+                noResultsDiv.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.filter-select, #searchInput').forEach(element => {
+            element.addEventListener('change', () => {
+                updateFilters();
+                applyFilters();
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('input', () => {
+            updateFilters();
+            applyFilters();
+        });
+
+        // Like/Save Interactions
+        async function toggleLike(button) {
+            const poemId = button.closest('.post-card').dataset.id;
+            const heart = button.querySelector('i');
+            const count = button.querySelector('.count-badge');
+
+            try {
+                const response = await fetch(`/poems/${poemId}/like`, { method: 'POST' });
+                const data = await response.json();
+
+                heart.classList.toggle('bi-heart-fill', data.isLiked);
+                count.textContent = data.newCount;
+
+            } catch (error) {
+                console.error('Like action failed:', error);
+                // Show visual feedback even if request fails
+                heart.classList.toggle('bi-heart-fill');
+                const currentCount = parseInt(count.textContent);
+                count.textContent = heart.classList.contains('bi-heart-fill')
+                    ? currentCount + 1
+                    : Math.max(currentCount - 1, 0);
+            }
+        }
+
+        async function toggleSave(button) {
+            const poemId = button.closest('.post-card').dataset.id;
+            const bookmark = button.querySelector('i');
+            const count = button.querySelector('.count-badge');
+
+            try {
+                const response = await fetch(`/poems/${poemId}/save`, { method: 'POST' });
+                const data = await response.json();
+
+                bookmark.classList.toggle('bi-bookmark-fill', data.isSaved);
+                count.textContent = data.newCount;
+
+            } catch (error) {
+                console.error('Save action failed:', error);
+                // Show visual feedback even if request fails
+                bookmark.classList.toggle('bi-bookmark-fill');
+                const currentCount = parseInt(count.textContent);
+                count.textContent = bookmark.classList.contains('bi-bookmark-fill')
+                    ? currentCount + 1
+                    : Math.max(currentCount - 1, 0);
+            }
+        }
+    </script>
+}

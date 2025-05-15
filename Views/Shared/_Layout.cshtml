@@ -58,10 +58,10 @@
                             <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Poems" asp-action="Feed">Explore Poems</a>
+                            <a class="nav-link" asp-controller="ExplorePoem" asp-action="DisplayPoems">Explore Poems</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="DisplayAnthology">Explore Anthology</a>
+                            <a class="nav-link" asp-controller="ExploreAnthology" asp-action="DisplayAnthologies">Explore Anthology</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
@@ -77,9 +77,7 @@
                                     <span class="fw-semibold" style="color: #333;">@userDisplayName</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end soft-dropdown" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item fw-semibold" asp-controller="Profile" asp-action="Index"><i class="bi bi-person-circle me-2 text-pink"></i>Profile</a></li>
                                     <li><a class="dropdown-item fw-semibold" asp-controller="MyCollection" asp-action="DisplayCollections"><i class="bi bi-heart-fill me-2 text-pink"></i>My Collections</a></li>
-                                    <li><a class="dropdown-item fw-semibold" asp-controller="SavedItems" asp-action="DisplaySavedItems"><i class="bi bi-bookmark-heart me-2 text-pink"></i>Saved Items</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="Auth" asp-action="Logout" method="post" class="dropdown-item p-0">

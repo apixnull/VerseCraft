@@ -1,4 +1,6 @@
 ﻿@model VerseCraft.Models.Poem
+@using System.Text.RegularExpressions
+
 @{
     ViewData["Title"] = "View Poem";
 }
@@ -272,7 +274,10 @@
             }
 
             <!-- Poem Content -->
-            <div class="poem-content">@Model.Content</div>
+         
+            <div class="poem-content">
+                @Html.Raw(Regex.Replace(@Model.Content.Trim(), @"\r?\n", "<br/>"))
+            </div>
 
             <!-- Badges for Genre, Style, Theme -->
             <div class="d-flex flex-wrap gap-2 mt-4">
