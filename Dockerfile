@@ -13,7 +13,12 @@ RUN dotnet publish -c Release -o out
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
+
+# Copy published app
 COPY --from=build /app/out ./
+
+# Copy SQLite database file into runtime image
+COPY VerseCraft.db ./
 
 # Expose port 80
 EXPOSE 80

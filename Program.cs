@@ -67,6 +67,9 @@ namespace VerseCraft
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
             );
 
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
