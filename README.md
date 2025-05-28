@@ -8,9 +8,9 @@ The application also includes a secure user authentication system and OTP (One-T
 
 # Deployed at Render
 link: https://versecraft.onrender.com/ 
-This could take at least 30 sec minute since we are using free plan . please be patient.
+This could take at least 30 sec since we are using free plan . please be patient.
 You can check the about page (for the project members)
-Additionally free accounts have been provided you can see the test account below
+Additionally free accounts have been provided you can check the test account below
 
 ## Features
 
